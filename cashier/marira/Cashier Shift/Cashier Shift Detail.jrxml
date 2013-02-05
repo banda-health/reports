@@ -43,6 +43,8 @@ FROM
         b.bill_id = bp.bill_id
 WHERE
     t.timesheet_id = $P{timesheetId}
+AND
+    b.status IN (1, 2)
 ORDER BY b.date_created ASC]]>
 	</queryString>
 	<field name="bill_id" class="java.lang.Integer"/>

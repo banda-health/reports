@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Cashier Shift Report" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ffa09c95-50c7-4fd7-8456-842c35e2c5ad">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Cashier Shift Report" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ffa09c95-50c7-4fd7-8456-842c35e2c5ad">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -44,14 +44,14 @@ WHERE
 				<text><![CDATA[Cashier Shift Report]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="564a6e3c-df0e-4870-8332-0042397dbb6a" x="77" y="59" width="264" height="20"/>
+				<reportElement uuid="564a6e3c-df0e-4870-8332-0042397dbb6a" x="92" y="59" width="237" height="20"/>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-dd-MM HH:mm").format($F{clock_in}) + " - " + ($F{clock_out} == null ? "Now" : new SimpleDateFormat("yyyy-dd-MM HH:mm").format($F{clock_out}))]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="4bf3974b-c7c5-482a-9948-ce8b8860e2a8" x="0" y="59" width="77" height="20"/>
+				<reportElement uuid="4bf3974b-c7c5-482a-9948-ce8b8860e2a8" x="0" y="59" width="92" height="20"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -61,21 +61,21 @@ WHERE
 				<reportElement uuid="be1ab64b-0ee4-4ccd-9ccc-556b3fd83d00" x="0" y="34" width="555" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="4bf3974b-c7c5-482a-9948-ce8b8860e2a8" x="0" y="39" width="77" height="20"/>
+				<reportElement uuid="4bf3974b-c7c5-482a-9948-ce8b8860e2a8" x="0" y="39" width="92" height="20"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Cashier:]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="564a6e3c-df0e-4870-8332-0042397dbb6a" x="77" y="39" width="187" height="20"/>
+				<reportElement uuid="564a6e3c-df0e-4870-8332-0042397dbb6a" x="92" y="39" width="172" height="20"/>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{username}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="4bf3974b-c7c5-482a-9948-ce8b8860e2a8" x="341" y="39" width="77" height="20"/>
+				<reportElement uuid="4bf3974b-c7c5-482a-9948-ce8b8860e2a8" x="329" y="39" width="89" height="20"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -89,7 +89,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{cash_point_name}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="4bf3974b-c7c5-482a-9948-ce8b8860e2a8" x="341" y="59" width="77" height="20"/>
+				<reportElement uuid="4bf3974b-c7c5-482a-9948-ce8b8860e2a8" x="329" y="59" width="89" height="20"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -108,11 +108,11 @@ WHERE
 		<band height="21" splitType="Stretch">
 			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} > 1]]></printWhenExpression>
 			<textField>
-				<reportElement uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf" x="0" y="0" width="432" height="20"/>
+				<reportElement uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf" x="0" y="0" width="476" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Cashier Shift Report - Cashier: " + $F{username} + " Shift: " + $F(clock_in) + " - " + $F(clock_out)]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Cashier Shift Report - Cashier: " + $F{username} + " Shift: " + $F{clock_in} + " - " + $F{clock_out}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -130,6 +130,9 @@ WHERE
 		<band height="50">
 			<subreport>
 				<reportElement uuid="8505a285-4b36-4141-b498-4b283d5596c2" x="0" y="0" width="356" height="50"/>
+				<subreportParameter name="timesheetId">
+					<subreportParameterExpression><![CDATA[$P{timesheetId}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Cashier Shift Departments.jasper"]]></subreportExpression>
 			</subreport>
@@ -143,11 +146,14 @@ WHERE
 				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-dd-MM HH:mm").format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="6f2f1b9b-4cb3-40fd-96dc-1b3ecbb4ec68" x="379" y="0" width="176" height="20"/>
-				<textElement textAlignment="Right">
-					<font size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of " + $V{PAGE_COUNT}]]></textFieldExpression>
+				<reportElement uuid="f96d7780-6357-4924-b519-27f72a508d29" x="432" y="2" width="87" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="7a9813a0-b37a-4dcb-a749-b1725b610579" x="522" y="2" width="33" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
