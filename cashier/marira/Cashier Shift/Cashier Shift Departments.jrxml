@@ -23,7 +23,7 @@ FROM
     INNER JOIN cashier_department d ON
         i.department_id = d.department_id
 WHERE
-    t.timesheet_id = 10
+    t.timesheet_id = $P{timesheetId}
 GROUP BY d.name]]>
 	</queryString>
 	<field name="department_name" class="java.lang.String"/>

@@ -7,7 +7,7 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[".\\"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT
@@ -21,10 +21,8 @@ FROM
         t.cash_point_id = cp.cash_point_id
     INNER JOIN provider ON
             provider.provider_id = t.provider_id
-    INNER JOIN person ON
-            provider.person_id = person.person_id
     INNER JOIN users ON
-            person.person_id = users.user_id
+            provider.person_id = users.person_id
 WHERE
     t.timesheet_id = $P{timesheetId}]]>
 	</queryString>
@@ -39,7 +37,7 @@ WHERE
 	<title>
 		<band height="79" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="5d36523d-e189-4d47-a03f-52bdb42c2c48" x="151" y="0" width="240" height="31"/>
+				<reportElement uuid="5d36523d-e189-4d47-a03f-52bdb42c2c48" x="151" y="0" width="281" height="31"/>
 				<textElement>
 					<font size="24" isBold="true"/>
 				</textElement>
