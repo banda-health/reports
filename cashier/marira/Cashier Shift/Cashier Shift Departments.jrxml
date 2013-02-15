@@ -9,8 +9,7 @@
 	<queryString>
 		<![CDATA[SELECT
     d.name AS department_name,
-    SUM(li.quantity) AS department_quantity,
-    SUM(li.price) AS department_amount
+    SUM(li.price * li.quantity) AS department_amount
 FROM
     cashier_bill b INNER JOIN cashier_timesheet t ON
         b.provider_id = t.provider_id AND
@@ -29,7 +28,6 @@ AND
 GROUP BY d.name]]>
 	</queryString>
 	<field name="department_name" class="java.lang.String"/>
-	<field name="department_quantity" class="java.math.BigDecimal"/>
 	<field name="department_amount" class="java.math.BigDecimal"/>
 	<variable name="totalAmount" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{department_amount}]]></variableExpression>
