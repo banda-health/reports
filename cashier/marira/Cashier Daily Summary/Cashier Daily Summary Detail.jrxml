@@ -197,7 +197,7 @@ AND
 								<bottomPen lineWidth="1.0"/>
 							</box>
 							<textField>
-								<reportElement uuid="e14e06a8-2a2c-4499-b897-ee8ddd1c7bd6" style="Crosstab Data Text" x="0" y="0" width="50" height="19"/>
+								<reportElement uuid="e14e06a8-2a2c-4499-b897-ee8ddd1c7bd6" style="Crosstab Data Text" x="0" y="0" width="55" height="19"/>
 								<textElement textAlignment="Right">
 									<font isBold="true"/>
 								</textElement>
@@ -226,22 +226,22 @@ AND
 				<measure name="billMeasure" class="java.lang.Integer" calculation="DistinctCount">
 					<measureExpression><![CDATA[$F{bill_id}]]></measureExpression>
 				</measure>
-				<crosstabCell width="50" height="15">
+				<crosstabCell width="55" height="15">
 					<cellContents>
 						<textField pattern="#,##0.00">
-							<reportElement uuid="fa2ae18b-37a4-409f-a88c-555225bd0d1c" style="Crosstab Data Text" x="0" y="0" width="50" height="15"/>
+							<reportElement uuid="fa2ae18b-37a4-409f-a88c-555225bd0d1c" style="Crosstab Data Text" x="0" y="0" width="55" height="15"/>
 							<textElement textAlignment="Right"/>
 							<textFieldExpression><![CDATA[$V{amountMeasure}]]></textFieldExpression>
 						</textField>
 					</cellContents>
 				</crosstabCell>
-				<crosstabCell height="15" rowTotalGroup="username">
+				<crosstabCell width="55" height="15" rowTotalGroup="username">
 					<cellContents backcolor="#005FB3" mode="Transparent">
 						<box>
 							<topPen lineWidth="1.0"/>
 						</box>
 						<textField pattern="#,##0.00">
-							<reportElement uuid="8e749441-1eed-4f12-898a-fa2dea930459" style="Crosstab Data Text" x="0" y="0" width="50" height="15" forecolor="#000000"/>
+							<reportElement uuid="8e749441-1eed-4f12-898a-fa2dea930459" style="Crosstab Data Text" x="0" y="0" width="55" height="15" forecolor="#000000"/>
 							<textElement textAlignment="Right">
 								<font isBold="true"/>
 							</textElement>
