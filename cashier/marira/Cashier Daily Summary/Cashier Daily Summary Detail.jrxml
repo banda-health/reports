@@ -11,7 +11,7 @@
 		<![CDATA[SELECT
     b.bill_id,
     b.provider_id,
-    provider.identifier,
+    u.username,
 
     t.timesheet_id,
     t.clock_in,
@@ -31,10 +31,12 @@ FROM
         b.provider_id = t.provider_id AND
         b.date_created >= t.clock_in AND
         (t.clock_out IS NULL OR b.date_created < t.clock_out)
-    INNER JOIN provider ON
-            provider.provider_id = b.provider_id
+    INNER JOIN provider p ON
+        p.provider_id = b.provider_id
+    INNER JOIN users u ON
+        u.person_id = p.person_id
 WHERE
-    b.status = 1
+    b.status = 2
 AND
     ((b.date_changed IS NULL AND b.date_created >= $P{summaryDate} AND b.date_created < DATE_ADD($P{summaryDate}, INTERVAL 1 DAY))
         OR
@@ -42,7 +44,7 @@ AND
 	</queryString>
 	<field name="bill_id" class="java.lang.Integer"/>
 	<field name="provider_id" class="java.lang.Integer"/>
-	<field name="identifier" class="java.lang.String"/>
+	<field name="username" class="java.lang.String"/>
 	<field name="timesheet_id" class="java.lang.Integer"/>
 	<field name="clock_in" class="java.sql.Timestamp"/>
 	<field name="clock_out" class="java.sql.Timestamp"/>
@@ -92,7 +94,7 @@ AND
 				</crosstabHeaderCell>
 				<rowGroup name="username" width="70" totalPosition="End">
 					<bucket class="java.lang.String">
-						<bucketExpression><![CDATA[$F{identifier}]]></bucketExpression>
+						<bucketExpression><![CDATA[$F{username}]]></bucketExpression>
 					</bucket>
 					<crosstabRowHeader>
 						<cellContents backcolor="#F0F8FF" mode="Transparent">
