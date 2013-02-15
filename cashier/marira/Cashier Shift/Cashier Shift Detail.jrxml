@@ -175,7 +175,7 @@ ORDER BY b.date_created ASC]]>
 								<bottomPen lineWidth="1.0"/>
 							</box>
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement uuid="1cd0f767-d741-42e1-839b-d94506981749" style="Crosstab Data Text" stretchType="RelativeToBandHeight" x="0" y="0" width="57" height="19"/>
+								<reportElement uuid="1cd0f767-d741-42e1-839b-d94506981749" style="Crosstab Data Text" stretchType="RelativeToBandHeight" x="0" y="0" width="65" height="19"/>
 								<textElement textAlignment="Right">
 									<font size="12" isBold="true"/>
 								</textElement>
@@ -201,10 +201,10 @@ ORDER BY b.date_created ASC]]>
 				<measure name="amountMeasure" class="java.math.BigDecimal" calculation="Sum">
 					<measureExpression><![CDATA[$F{amount}]]></measureExpression>
 				</measure>
-				<crosstabCell width="57" height="18">
+				<crosstabCell width="66" height="18">
 					<cellContents>
 						<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="false">
-							<reportElement uuid="5c89538d-0cab-41d1-af68-a3997d792e46" style="Crosstab Data Text" x="0" y="0" width="57" height="18"/>
+							<reportElement uuid="5c89538d-0cab-41d1-af68-a3997d792e46" style="Crosstab Data Text" x="0" y="0" width="65" height="18"/>
 							<box>
 								<topPen lineWidth="0.0"/>
 								<leftPen lineWidth="0.0"/>
@@ -216,13 +216,13 @@ ORDER BY b.date_created ASC]]>
 						</textField>
 					</cellContents>
 				</crosstabCell>
-				<crosstabCell height="19" rowTotalGroup="receipt_number">
+				<crosstabCell width="66" height="19" rowTotalGroup="receipt_number">
 					<cellContents backcolor="#FFFFFF" mode="Transparent">
 						<box>
 							<topPen lineWidth="1.0"/>
 						</box>
 						<textField pattern="#,##0.00">
-							<reportElement uuid="17b5f9b2-086c-4c6c-98f8-d7334463a0a7" style="Crosstab Data Text" x="0" y="0" width="57" height="19"/>
+							<reportElement uuid="17b5f9b2-086c-4c6c-98f8-d7334463a0a7" style="Crosstab Data Text" x="0" y="0" width="65" height="19"/>
 							<textElement textAlignment="Right"/>
 							<textFieldExpression><![CDATA[$V{amountMeasure}]]></textFieldExpression>
 						</textField>
