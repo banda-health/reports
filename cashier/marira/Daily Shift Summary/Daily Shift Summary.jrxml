@@ -44,7 +44,7 @@
 					<subreportParameterExpression><![CDATA[$P{summaryDate}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Cashier Daily Summary Detail.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Daily Shift Summary Detail.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>

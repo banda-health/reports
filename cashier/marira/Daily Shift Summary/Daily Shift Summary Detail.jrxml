@@ -306,7 +306,7 @@ AND
 		</band>
 	</summary>
 	<noData>
-		<band height="37">
+		<band height="31">
 			<staticText>
 				<reportElement uuid="8928f70d-a0b0-481f-bc42-b801f1d2493c" x="0" y="0" width="422" height="20"/>
 				<textElement/>
