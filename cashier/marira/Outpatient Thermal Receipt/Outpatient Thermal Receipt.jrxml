@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Outpatient Thermal Receipt" language="groovy" pageWidth="216" pageHeight="297" columnWidth="216" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="b0650e21-f6cf-4aad-acec-9e81aea4c41f">
 	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="134"/>
+	<property name="ireport.y" value="81"/>
 	<style name="style1" fontName="Courier New" fontSize="12"/>
 	<parameter name="billId" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[4]]></defaultValueExpression>
@@ -14,7 +14,10 @@
 		<![CDATA[SELECT
     b.bill_id,
     b.receipt_number,
-    bill_date.bill_date,
+    CASE
+        WHEN bill_date.bill_date IS NOT NULL THEN bill_date.bill_date
+        ELSE b.date_created
+    END as bill_date,
     cp.name cash_point,
     u.username cashier,
     patient_person_name.given_name patient_given_name,
@@ -55,7 +58,7 @@ WHERE
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="151" splitType="Stretch">
+		<band height="153" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="e49ce628-bd2d-4cb0-b1c7-1ae5d963e2c3" style="style1" mode="Transparent" x="0" y="0" width="216" height="70"/>
 				<textElement textAlignment="Center">
@@ -69,56 +72,63 @@ Fax: 020 324 6355
 Email: info.kh@kijabe.net]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="0d6439ca-7f1c-489d-944a-c648c6a72d21" style="style1" x="59" y="117" width="151" height="17"/>
+				<reportElement uuid="0d6439ca-7f1c-489d-944a-c648c6a72d21" style="style1" x="69" y="117" width="141" height="17"/>
 				<textElement>
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{receipt_number}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5" x="59" y="100" width="151" height="17"/>
+				<reportElement uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5" x="69" y="100" width="141" height="17"/>
 				<textElement>
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-dd-MM HH:mm").format($F{bill_date})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5" x="59" y="134" width="151" height="17"/>
+				<reportElement uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5" x="69" y="134" width="141" height="17"/>
 				<textElement>
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{patient_family_name} + ", " + $F{patient_given_name}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="c583cfb7-4b4a-4320-a203-d61ae2e3311f" x="0" y="66" width="216" height="35"/>
+				<reportElement uuid="c583cfb7-4b4a-4320-a203-d61ae2e3311f" x="0" y="77" width="216" height="17"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial"/>
 				</textElement>
-				<text><![CDATA[----------------------------------------------------------------
-Receipt
-----------------------------------------------------------------]]></text>
+				<text><![CDATA[Receipt]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="11372256-903a-4f4c-9d38-a588c5f39958" x="13" y="117" width="46" height="17"/>
+				<reportElement uuid="11372256-903a-4f4c-9d38-a588c5f39958" x="13" y="117" width="56" height="17"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<text><![CDATA[Receipt #:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="11372256-903a-4f4c-9d38-a588c5f39958" x="13" y="100" width="46" height="17"/>
+				<reportElement uuid="11372256-903a-4f4c-9d38-a588c5f39958" x="13" y="100" width="56" height="17"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<text><![CDATA[Date:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="11372256-903a-4f4c-9d38-a588c5f39958" x="13" y="134" width="46" height="17"/>
+				<reportElement uuid="11372256-903a-4f4c-9d38-a588c5f39958" x="13" y="134" width="56" height="17"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<text><![CDATA[Patient:]]></text>
 			</staticText>
+			<line>
+				<reportElement uuid="3da84233-25c2-471f-be29-1e9532a22240" x="0" y="72" width="216" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="3da84233-25c2-471f-be29-1e9532a22240" x="0" y="94" width="216" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="3da84233-25c2-471f-be29-1e9532a22240" x="0" y="152" width="216" height="1"/>
+			</line>
 		</band>
 	</title>
 	<detail>
@@ -132,13 +142,6 @@ Receipt
 				<returnValue subreportVariable="totalCost" toVariable="totalCost"/>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Outpatient Thermal Receipt Details.jasper"]]></subreportExpression>
 			</subreport>
-			<staticText>
-				<reportElement uuid="2f067069-8d46-4213-9e42-0ea2754af518" x="0" y="-5" width="216" height="15"/>
-				<textElement textAlignment="Center">
-					<font fontName="Arial" size="10"/>
-				</textElement>
-				<text><![CDATA[----------------------------------------------------------------]]></text>
-			</staticText>
 		</band>
 		<band height="25">
 			<subreport>
@@ -170,13 +173,6 @@ Receipt
 				</textElement>
 				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-dd-MM HH:mm").format(new Date())]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement uuid="2f067069-8d46-4213-9e42-0ea2754af518" x="0" y="-4" width="216" height="15"/>
-				<textElement textAlignment="Center">
-					<font fontName="Arial" size="10"/>
-				</textElement>
-				<text><![CDATA[----------------------------------------------------------------]]></text>
-			</staticText>
 		</band>
 	</summary>
 </jasperReport>
