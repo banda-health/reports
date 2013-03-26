@@ -45,6 +45,9 @@ GROUP BY d.department_id, d.Name, i.Name]]>
 		<variableExpression><![CDATA[$F{Count}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
+	<variable name="amountTotal" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Amount}]]></variableExpression>
+	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
