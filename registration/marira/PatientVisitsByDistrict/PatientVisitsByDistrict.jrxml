@@ -10,7 +10,7 @@
     IFNULL(county_district, 'No District Defined') District,
     COUNT(*) VisitCount
 FROM
-    patient pt INNER JOIN person_address a ON
+    patient pt LEFT OUTER JOIN person_address a ON
         pt.patient_id = a.person_id
     INNER JOIN (
         SELECT visit_id, date_started, patient_id FROM visit WHERE
