@@ -8,10 +8,6 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="VisitCount" class="java.lang.Long"/>
-	<variable name="totalVisits" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$F{VisitCount}]]></variableExpression>
-	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -60,11 +56,7 @@
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="19" splitType="Stretch">
-			<line>
-				<reportElement uuid="4a7f5ff7-4533-45bc-9e4b-1ab21201037a" x="110" y="0" width="141" height="1"/>
-			</line>
-		</band>
+		<band height="19" splitType="Stretch"/>
 	</summary>
 	<noData>
 		<band height="20">
