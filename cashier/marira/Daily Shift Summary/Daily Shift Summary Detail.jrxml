@@ -63,28 +63,28 @@ AND
 							<bottomPen lineWidth="1.0"/>
 						</box>
 						<staticText>
-							<reportElement uuid="a1aed733-bfe1-4a00-bbed-cb5c61ccd0c4" style="Crosstab Data Text" x="0" y="0" width="70" height="19"/>
+							<reportElement uuid="a1aed733-bfe1-4a00-bbed-cb5c61ccd0c4" style="Crosstab Data Text" x="0" y="0" width="70" height="16"/>
 							<textElement textAlignment="Left">
 								<font isBold="true"/>
 							</textElement>
 							<text><![CDATA[Cashier]]></text>
 						</staticText>
 						<staticText>
-							<reportElement uuid="239305cc-5363-4a52-83e9-ed7ca29b83fc" style="Crosstab Data Text" x="70" y="0" width="70" height="19"/>
-							<textElement textAlignment="Left">
+							<reportElement uuid="239305cc-5363-4a52-83e9-ed7ca29b83fc" style="Crosstab Data Text" x="89" y="0" width="70" height="16"/>
+							<textElement textAlignment="Right">
 								<font isBold="true"/>
 							</textElement>
 							<text><![CDATA[Clock In]]></text>
 						</staticText>
 						<staticText>
-							<reportElement uuid="c808adbd-8337-418e-852d-305cc64e2427" style="Crosstab Data Text" x="140" y="0" width="70" height="19"/>
-							<textElement textAlignment="Left">
+							<reportElement uuid="c808adbd-8337-418e-852d-305cc64e2427" style="Crosstab Data Text" x="159" y="0" width="70" height="16"/>
+							<textElement textAlignment="Right">
 								<font isBold="true"/>
 							</textElement>
 							<text><![CDATA[Clock Out]]></text>
 						</staticText>
 						<staticText>
-							<reportElement uuid="17dc1aa5-e9e2-4e50-a1a7-bad369e98469" style="Crosstab Data Text" x="210" y="0" width="25" height="19"/>
+							<reportElement uuid="17dc1aa5-e9e2-4e50-a1a7-bad369e98469" style="Crosstab Data Text" x="229" y="0" width="32" height="16"/>
 							<textElement textAlignment="Right">
 								<font isBold="true"/>
 							</textElement>
@@ -92,14 +92,14 @@ AND
 						</staticText>
 					</cellContents>
 				</crosstabHeaderCell>
-				<rowGroup name="username" width="70" totalPosition="End">
+				<rowGroup name="username" width="89" totalPosition="End">
 					<bucket class="java.lang.String">
 						<bucketExpression><![CDATA[$F{username}]]></bucketExpression>
 					</bucket>
 					<crosstabRowHeader>
 						<cellContents backcolor="#F0F8FF" mode="Transparent">
 							<textField>
-								<reportElement uuid="d87fde7a-998e-4e17-8dad-5a42f2f6f6f4" style="Crosstab Data Text" x="0" y="0" width="70" height="15"/>
+								<reportElement uuid="d87fde7a-998e-4e17-8dad-5a42f2f6f6f4" style="Crosstab Data Text" x="0" y="2" width="89" height="15"/>
 								<textElement textAlignment="Left"/>
 								<textFieldExpression><![CDATA[$V{username}]]></textFieldExpression>
 							</textField>
@@ -111,14 +111,14 @@ AND
 								<topPen lineWidth="1.0"/>
 							</box>
 							<staticText>
-								<reportElement uuid="8190e9fe-9c04-4d76-a5f7-336a7ae7e6bc" x="0" y="0" width="199" height="14" forecolor="#000000"/>
+								<reportElement uuid="8190e9fe-9c04-4d76-a5f7-336a7ae7e6bc" x="0" y="3" width="199" height="16" forecolor="#000000"/>
 								<textElement textAlignment="Right" verticalAlignment="Top">
 									<font size="10" isBold="true"/>
 								</textElement>
 								<text><![CDATA[Total:]]></text>
 							</staticText>
 							<textField>
-								<reportElement uuid="3cd977f8-a405-44a5-b515-4a6ab4bc0b1d" style="Crosstab Data Text" x="210" y="0" width="25" height="14"/>
+								<reportElement uuid="3cd977f8-a405-44a5-b515-4a6ab4bc0b1d" style="Crosstab Data Text" x="210" y="3" width="32" height="16"/>
 								<textElement textAlignment="Right">
 									<font size="10" isBold="true"/>
 								</textElement>
@@ -137,9 +137,9 @@ AND
 								<bottomPen lineWidth="0.0"/>
 							</box>
 							<textField>
-								<reportElement uuid="64c652cb-ce14-4df0-b89a-62298b375b9a" style="Crosstab Data Text" x="0" y="0" width="70" height="15"/>
-								<textElement textAlignment="Left"/>
-								<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-MMM-dd").format($V{clock_in})]]></textFieldExpression>
+								<reportElement uuid="64c652cb-ce14-4df0-b89a-62298b375b9a" style="Crosstab Data Text" x="0" y="2" width="70" height="15"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[new SimpleDateFormat("HH:mm").format($V{clock_in})]]></textFieldExpression>
 							</textField>
 						</cellContents>
 					</crosstabRowHeader>
@@ -160,9 +160,9 @@ AND
 					<crosstabRowHeader>
 						<cellContents>
 							<textField isBlankWhenNull="true">
-								<reportElement uuid="967cad02-5825-48ad-978d-1e9f5e984e69" style="Crosstab Data Text" x="0" y="0" width="70" height="15"/>
-								<textElement textAlignment="Left"/>
-								<textFieldExpression><![CDATA[$V{clock_out} == null ? "Open" : new SimpleDateFormat("yyyy-MMM-dd").format($V{clock_out})]]></textFieldExpression>
+								<reportElement uuid="967cad02-5825-48ad-978d-1e9f5e984e69" style="Crosstab Data Text" x="0" y="2" width="70" height="15"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$V{clock_out} == null ? "Open" : new SimpleDateFormat("HH:mm").format($V{clock_out})]]></textFieldExpression>
 							</textField>
 						</cellContents>
 					</crosstabRowHeader>
@@ -170,14 +170,14 @@ AND
 						<cellContents/>
 					</crosstabTotalRowHeader>
 				</rowGroup>
-				<rowGroup name="billCount" width="25">
+				<rowGroup name="billCount" width="32">
 					<bucket class="java.lang.Integer">
 						<bucketExpression><![CDATA[$F{provider_id}]]></bucketExpression>
 					</bucket>
 					<crosstabRowHeader>
 						<cellContents>
 							<textField>
-								<reportElement uuid="3cd977f8-a405-44a5-b515-4a6ab4bc0b1d" style="Crosstab Data Text" x="0" y="0" width="25" height="15"/>
+								<reportElement uuid="3cd977f8-a405-44a5-b515-4a6ab4bc0b1d" style="Crosstab Data Text" x="0" y="2" width="32" height="15"/>
 								<textElement textAlignment="Right"/>
 								<textFieldExpression><![CDATA[$V{billMeasure_name_ALL}]]></textFieldExpression>
 							</textField>
@@ -187,7 +187,7 @@ AND
 						<cellContents/>
 					</crosstabTotalRowHeader>
 				</rowGroup>
-				<columnGroup name="name" height="19" totalPosition="End">
+				<columnGroup name="name" height="16" totalPosition="End">
 					<bucket class="java.lang.String">
 						<bucketExpression><![CDATA[$F{name}]]></bucketExpression>
 					</bucket>
@@ -197,7 +197,7 @@ AND
 								<bottomPen lineWidth="1.0"/>
 							</box>
 							<textField>
-								<reportElement uuid="e14e06a8-2a2c-4499-b897-ee8ddd1c7bd6" style="Crosstab Data Text" x="0" y="0" width="55" height="19"/>
+								<reportElement uuid="e14e06a8-2a2c-4499-b897-ee8ddd1c7bd6" style="Crosstab Data Text" x="0" y="0" width="72" height="16"/>
 								<textElement textAlignment="Right">
 									<font isBold="true"/>
 								</textElement>
@@ -211,7 +211,7 @@ AND
 								<bottomPen lineWidth="1.0"/>
 							</box>
 							<staticText>
-								<reportElement uuid="ee2bf873-d0e6-4a7e-bc8a-a5f7ff4e2994" x="0" y="0" width="50" height="19"/>
+								<reportElement uuid="ee2bf873-d0e6-4a7e-bc8a-a5f7ff4e2994" x="11" y="0" width="65" height="16"/>
 								<textElement textAlignment="Right" verticalAlignment="Top">
 									<font size="10" isBold="true"/>
 								</textElement>
@@ -226,22 +226,22 @@ AND
 				<measure name="billMeasure" class="java.lang.Integer" calculation="DistinctCount">
 					<measureExpression><![CDATA[$F{bill_id}]]></measureExpression>
 				</measure>
-				<crosstabCell width="55" height="15">
+				<crosstabCell width="72" height="18">
 					<cellContents>
 						<textField pattern="#,##0.00">
-							<reportElement uuid="fa2ae18b-37a4-409f-a88c-555225bd0d1c" style="Crosstab Data Text" x="0" y="0" width="55" height="15"/>
+							<reportElement uuid="fa2ae18b-37a4-409f-a88c-555225bd0d1c" style="Crosstab Data Text" x="0" y="2" width="72" height="15"/>
 							<textElement textAlignment="Right"/>
 							<textFieldExpression><![CDATA[$V{amountMeasure}]]></textFieldExpression>
 						</textField>
 					</cellContents>
 				</crosstabCell>
-				<crosstabCell width="55" height="15" rowTotalGroup="username">
+				<crosstabCell width="72" height="22" rowTotalGroup="username">
 					<cellContents backcolor="#005FB3" mode="Transparent">
 						<box>
 							<topPen lineWidth="1.0"/>
 						</box>
 						<textField pattern="#,##0.00">
-							<reportElement uuid="8e749441-1eed-4f12-898a-fa2dea930459" style="Crosstab Data Text" x="0" y="0" width="55" height="15" forecolor="#000000"/>
+							<reportElement uuid="8e749441-1eed-4f12-898a-fa2dea930459" style="Crosstab Data Text" x="0" y="3" width="72" height="16" forecolor="#000000"/>
 							<textElement textAlignment="Right">
 								<font isBold="true"/>
 							</textElement>
@@ -249,22 +249,22 @@ AND
 						</textField>
 					</cellContents>
 				</crosstabCell>
-				<crosstabCell width="50" height="15" columnTotalGroup="name">
+				<crosstabCell width="76" height="18" columnTotalGroup="name">
 					<cellContents backcolor="#BFE1FF" mode="Transparent">
 						<textField pattern="#,##0.00">
-							<reportElement uuid="a9078814-c6c8-4708-87b0-e57f527576d0" style="Crosstab Data Text" x="0" y="0" width="50" height="15"/>
+							<reportElement uuid="a9078814-c6c8-4708-87b0-e57f527576d0" style="Crosstab Data Text" x="11" y="2" width="65" height="15"/>
 							<textElement textAlignment="Right"/>
 							<textFieldExpression><![CDATA[$V{amountMeasure}]]></textFieldExpression>
 						</textField>
 					</cellContents>
 				</crosstabCell>
-				<crosstabCell height="15" rowTotalGroup="username" columnTotalGroup="name">
+				<crosstabCell width="76" height="22" rowTotalGroup="username" columnTotalGroup="name">
 					<cellContents backcolor="#005FB3" mode="Transparent">
 						<box>
 							<topPen lineWidth="1.0"/>
 						</box>
 						<textField pattern="#,##0.00">
-							<reportElement uuid="10179572-bf90-4dfe-a126-e80c7d274bd4" style="Crosstab Data Text" x="0" y="0" width="50" height="15" forecolor="#000000"/>
+							<reportElement uuid="10179572-bf90-4dfe-a126-e80c7d274bd4" style="Crosstab Data Text" x="11" y="3" width="65" height="16" forecolor="#000000"/>
 							<textElement textAlignment="Right">
 								<font isBold="true"/>
 							</textElement>
