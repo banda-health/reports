@@ -36,20 +36,36 @@ FROM
     INNER JOIN users u ON
         u.person_id = p.person_id
 WHERE
-    b.status = 2
+    b.status IN (1, 2)
 AND
     ((b.date_changed IS NULL AND b.date_created >= $P{summaryDate} AND b.date_created < DATE_ADD($P{summaryDate}, INTERVAL 1 DAY))
         OR
      (b.date_changed >= $P{summaryDate} AND b.date_changed < DATE_ADD($P{summaryDate}, INTERVAL 1 DAY)));]]>
 	</queryString>
-	<field name="bill_id" class="java.lang.Integer"/>
-	<field name="provider_id" class="java.lang.Integer"/>
-	<field name="username" class="java.lang.String"/>
-	<field name="timesheet_id" class="java.lang.Integer"/>
-	<field name="clock_in" class="java.sql.Timestamp"/>
-	<field name="clock_out" class="java.sql.Timestamp"/>
-	<field name="amount" class="java.math.BigDecimal"/>
-	<field name="name" class="java.lang.String"/>
+	<field name="bill_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="provider_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="username" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="timesheet_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="clock_in" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="clock_out" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="amount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -118,7 +134,7 @@ AND
 								<text><![CDATA[Total:]]></text>
 							</staticText>
 							<textField>
-								<reportElement uuid="3cd977f8-a405-44a5-b515-4a6ab4bc0b1d" style="Crosstab Data Text" x="210" y="3" width="32" height="16"/>
+								<reportElement uuid="3cd977f8-a405-44a5-b515-4a6ab4bc0b1d" style="Crosstab Data Text" x="229" y="3" width="32" height="16"/>
 								<textElement textAlignment="Right">
 									<font size="10" isBold="true"/>
 								</textElement>
