@@ -231,7 +231,7 @@ AND
 								<textElement textAlignment="Right" verticalAlignment="Top">
 									<font size="10" isBold="true"/>
 								</textElement>
-								<text><![CDATA[Total name]]></text>
+								<text><![CDATA[Total]]></text>
 							</staticText>
 						</cellContents>
 					</crosstabTotalColumnHeader>
