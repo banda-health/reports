@@ -55,7 +55,7 @@ WHERE (
 	<detail>
 		<band height="46">
 			<subreport>
-				<reportElement uuid="811d20f8-0054-4a94-9e54-e693220b1308" x="128" y="0" width="200" height="40"/>
+				<reportElement uuid="811d20f8-0054-4a94-9e54-e693220b1308" x="128" y="0" width="200" height="36"/>
 				<subreportParameter name="date_started">
 					<subreportParameterExpression><![CDATA[$P{date_started}]]></subreportParameterExpression>
 				</subreportParameter>

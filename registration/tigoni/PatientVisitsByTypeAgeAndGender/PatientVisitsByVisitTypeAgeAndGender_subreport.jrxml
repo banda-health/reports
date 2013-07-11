@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VisitsByVisitTypeAgeAndGender_subreport" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c38239b8-2471-45d0-9b30-63bfc50faa96">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="15"/>
 	<property name="ireport.y" value="0"/>
 	<subDataset name="adult_male" uuid="7b581da2-b39a-4df5-8187-8dccee4de3af">
 		<parameter name="visit_type_id" class="java.lang.Integer" isForPrompting="false"/>
@@ -151,9 +151,9 @@ WHERE
 		</band>
 	</title>
 	<detail>
-		<band height="98" splitType="Stretch">
+		<band height="77" splitType="Stretch">
 			<frame>
-				<reportElement uuid="1e2225ba-801c-4b35-8a00-7f031267f33c" x="20" y="0" width="415" height="84"/>
+				<reportElement uuid="1e2225ba-801c-4b35-8a00-7f031267f33c" x="20" y="0" width="415" height="74"/>
 				<box>
 					<pen lineWidth="0.0" lineStyle="Solid"/>
 					<topPen lineWidth="0.0" lineStyle="Solid"/>
