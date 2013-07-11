@@ -5,8 +5,8 @@
 	<property name="ireport.y" value="0"/>
 	<subDataset name="adult_male" uuid="7b581da2-b39a-4df5-8187-8dccee4de3af">
 		<parameter name="visit_type_id" class="java.lang.Integer" isForPrompting="false"/>
-		<parameter name="date_started" class="java.sql.Timestamp" isForPrompting="false"/>
-		<parameter name="date_stopped" class="java.sql.Timestamp" isForPrompting="false"/>
+		<parameter name="date_started" class="java.util.Date" isForPrompting="false"/>
+		<parameter name="date_stopped" class="java.util.Date" isForPrompting="false"/>
 		<queryString>
 			<![CDATA[SELECT COUNT(p.gender) AS male_over_five
 FROM person p
@@ -32,8 +32,8 @@ WHERE (
 	</subDataset>
 	<subDataset name="adult_female" uuid="4c16fb33-839b-4fd9-9678-64cf94496719">
 		<parameter name="visit_type_id" class="java.lang.Integer" isForPrompting="false"/>
-		<parameter name="date_started" class="java.sql.Timestamp" isForPrompting="false"/>
-		<parameter name="date_stopped" class="java.sql.Timestamp" isForPrompting="false"/>
+		<parameter name="date_started" class="java.util.Date" isForPrompting="false"/>
+		<parameter name="date_stopped" class="java.util.Date" isForPrompting="false"/>
 		<queryString>
 			<![CDATA[SELECT COUNT(p.gender) AS female_over_five
 FROM person p
@@ -59,8 +59,8 @@ WHERE (
 	</subDataset>
 	<subDataset name="child_male" uuid="5052380c-57eb-4ba9-951c-fb0b084276db">
 		<parameter name="visit_type_id" class="java.lang.Integer" isForPrompting="false"/>
-		<parameter name="date_started" class="java.sql.Timestamp" isForPrompting="false"/>
-		<parameter name="date_stopped" class="java.sql.Timestamp" isForPrompting="false"/>
+		<parameter name="date_started" class="java.util.Date" isForPrompting="false"/>
+		<parameter name="date_stopped" class="java.util.Date" isForPrompting="false"/>
 		<queryString>
 			<![CDATA[SELECT COUNT(p.gender) AS male_under_five
 FROM person p
@@ -86,8 +86,8 @@ WHERE (
 	</subDataset>
 	<subDataset name="child_female" uuid="b956035f-b762-4ccc-b60e-6da25a72f32d">
 		<parameter name="visit_type_id" class="java.lang.Integer" isForPrompting="false"/>
-		<parameter name="date_started" class="java.sql.Timestamp" isForPrompting="false"/>
-		<parameter name="date_stopped" class="java.sql.Timestamp" isForPrompting="false"/>
+		<parameter name="date_started" class="java.util.Date" isForPrompting="false"/>
+		<parameter name="date_stopped" class="java.util.Date" isForPrompting="false"/>
 		<queryString>
 			<![CDATA[SELECT COUNT(p.gender) AS female_under_five
 FROM person p
@@ -111,8 +111,8 @@ WHERE (
 		</queryString>
 		<field name="female_under_five" class="java.lang.Long"/>
 	</subDataset>
-	<parameter name="date_started" class="java.sql.Timestamp" isForPrompting="false"/>
-	<parameter name="date_stopped" class="java.sql.Timestamp" isForPrompting="false"/>
+	<parameter name="date_started" class="java.util.Date" isForPrompting="false"/>
+	<parameter name="date_stopped" class="java.util.Date" isForPrompting="false"/>
 	<parameter name="visit_type_id" class="java.lang.Integer" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[SELECT vt.name, COUNT(v.visit_type_id) AS total

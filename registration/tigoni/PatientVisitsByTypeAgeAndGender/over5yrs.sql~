@@ -1,0 +1,105 @@
+
+##########Select number of males UNDER 5 yrs visiting a particular clinic over a given period of time#################################
+
+SELECT vt.name AS visit_type, COUNT(p.gender) AS gender 
+FROM person p 
+	INNER JOIN visit v ON p.person_id=v.patient_id 
+	INNER JOIN visit_type vt ON v.visit_type_id=vt.visit_type_id 
+WHERE (
+		(v.date_started BETWEEN '1999-01-01' AND '2013-12-12' 
+			OR 
+		v.date_stopped BETWEEN '1999-12-12' AND '2013-12-12') 
+	OR 
+		(v.date_started <= '1999-01-01' AND 
+			(v.date_stopped IS NULL OR v.date_stopped >= '2013-12-12')
+		)
+	)
+	AND 
+		P.gender='M' 
+	AND 
+		p.birthdate > DATE_SUB(v.date_started, INTERVAL 5 YEAR)
+GROUP BY vt.visit_type_id;
+
+
+##########Select number of females UNDER 5 yrs visiting a particular clinic over a given period of time#################################
+
+SELECT vt.name AS visit_type, COUNT(p.gender) AS gender 
+FROM person p 
+	INNER JOIN visit v ON p.person_id=v.patient_id 
+	INNER JOIN visit_type vt ON v.visit_type_id=vt.visit_type_id 
+WHERE (
+		(v.date_started BETWEEN '1999-01-01' AND '2013-12-12' 
+			OR 
+		v.date_stopped BETWEEN '1999-12-12' AND '2013-12-12') 
+	OR 
+		(v.date_started <= '1999-01-01' AND 
+			(v.date_stopped IS NULL OR v.date_stopped >= '2013-12-12')
+		)
+	)
+	AND 
+		P.gender='F' 
+	AND 
+		p.birthdate > DATE_SUB(v.date_started, INTERVAL 5 YEAR)
+GROUP BY vt.visit_type_id;
+
+
+
+
+##########The above share a query, the gender should be a parameter i.e. same subDataset but different parameters##############################
+
+##########Select number of males over 5 yrs visiting a particular clinic over a given period of time#################################
+
+SELECT vt.name AS visit_type, COUNT(p.gender) AS gender 
+FROM person p 
+	INNER JOIN visit v ON p.person_id=v.patient_id 
+	INNER JOIN visit_type vt ON v.visit_type_id=vt.visit_type_id 
+WHERE (
+		(v.date_started BETWEEN '1999-01-01' AND '2013-12-12' 
+			OR 
+		v.date_stopped BETWEEN '1999-12-12' AND '2013-12-12') 
+	OR 
+		(v.date_started <= '1999-01-01' AND 
+			(v.date_stopped IS NULL OR v.date_stopped >= '2013-12-12')
+		)
+	)
+	AND 
+		p.gender='M' 
+	AND 
+		p.birthdate <= DATE_SUB(v.date_started, INTERVAL 5 YEAR)
+GROUP BY vt.visit_type_id;
+
+
+##########Select number of females over 5 yrs visiting a particular clinic over a given period of time#################################
+
+SELECT vt.name AS visit_type, COUNT(p.gender) AS gender 
+FROM person p 
+	INNER JOIN visit v ON p.person_id=v.patient_id 
+	INNER JOIN visit_type vt ON v.visit_type_id=vt.visit_type_id 
+WHERE (
+		(v.date_started BETWEEN '1999-01-01' AND '2013-12-12' 
+			OR 
+		v.date_stopped BETWEEN '1999-12-12' AND '2013-12-12') 
+	OR 
+		(v.date_started <= '1999-01-01' AND 
+			(v.date_stopped IS NULL OR v.date_stopped >= '2013-12-12')
+		)
+	)
+	AND 
+		p.gender='F' 
+	AND 
+		p.birthdate <= DATE_SUB(v.date_started, INTERVAL 5 YEAR)
+GROUP BY vt.visit_type_id;
+
+
+##########The above share a query, the gender should be a parameter i.e. same subDataset but different parameters##############################
+
+
+
+
+
+
+
+
+
+
+

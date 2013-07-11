@@ -6,7 +6,7 @@
 	<parameter name="date_started" class="java.util.Date"/>
 	<parameter name="date_stopped" class="java.util.Date"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["/home/joeseff/Documents/development/My Reports/PatientVisitsByVisitType,AgeAndGender/"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["/home/joeseff/openhmis/reports/registration/tigoni/PatientVisitsByTypeAgeAndGender/"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT visit_type_id FROM visit v

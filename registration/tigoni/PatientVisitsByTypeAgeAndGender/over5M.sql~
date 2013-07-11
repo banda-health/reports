@@ -1,0 +1,19 @@
+SELECT vt.name AS visit_type, COUNT(p.gender) AS gender
+FROM person p
+	INNER JOIN visit v ON p.person_id=v.patient_id
+	INNER JOIN visit_type vt ON v.visit_type_id=vt.visit_type_id
+WHERE (
+		(v.date_started BETWEEN '1999-01-01' AND '2013-12-12'
+			OR
+		v.date_stopped BETWEEN '1999-12-12' AND '2013-12-12')
+	OR
+		(v.date_started <= '1999-01-01' AND
+			(v.date_stopped IS NULL OR v.date_stopped >= '2013-12-12')
+		)
+	)
+	AND
+		p.gender='M'
+	AND
+		p.birthdate <= DATE_SUB(v.date_started, INTERVAL 5 YEAR)
+	AND
+		v.visit_type_id=$P{visit_type_id};
