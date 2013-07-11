@@ -9,7 +9,7 @@
 		<defaultValueExpression><![CDATA["/home/joeseff/openhmis/reports/registration/tigoni/PatientVisitsByTypeAgeAndGender/"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT visit_type_id FROM visit v
+		<![CDATA[SELECT DISTINCT vt.visit_type_id FROM visit v INNER JOIN visit_type vt ON v.visit_type_id=vt.visit_type_id
 WHERE (
 		(v.date_started BETWEEN $P{date_started} AND $P{date_stopped}
 			OR
