@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VisitsByVisitTypeAgeAndGender_subreport" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c38239b8-2471-45d0-9b30-63bfc50faa96">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="adult_male" uuid="7b581da2-b39a-4df5-8187-8dccee4de3af">
+		<parameter name="visit_type_id" class="java.lang.Integer" isForPrompting="false"/>
+		<parameter name="date_started" class="java.sql.Timestamp" isForPrompting="false"/>
+		<parameter name="date_stopped" class="java.sql.Timestamp" isForPrompting="false"/>
+		<queryString>
+			<![CDATA[SELECT COUNT(p.gender) AS male_over_five
+FROM person p
+	INNER JOIN visit v ON p.person_id=v.patient_id
+	INNER JOIN visit_type vt ON v.visit_type_id=vt.visit_type_id
+WHERE (
+		(v.date_started BETWEEN $P{date_started} AND $P{date_stopped}
+			OR
+		v.date_stopped BETWEEN $P{date_started} AND $P{date_stopped})
+	OR
+		(v.date_started <= $P{date_started} AND
+			(v.date_stopped IS NULL OR v.date_stopped >= $P{date_stopped})
+		)
+	)
+	AND
+		p.gender='M'
+	AND
+		p.birthdate <= DATE_SUB(v.date_started, INTERVAL 5 YEAR)
+	AND
+		v.visit_type_id=$P{visit_type_id};]]>
+		</queryString>
+		<field name="male_over_five" class="java.lang.Long"/>
+	</subDataset>
+	<subDataset name="adult_female" uuid="4c16fb33-839b-4fd9-9678-64cf94496719">
+		<parameter name="visit_type_id" class="java.lang.Integer" isForPrompting="false"/>
+		<parameter name="date_started" class="java.sql.Timestamp" isForPrompting="false"/>
+		<parameter name="date_stopped" class="java.sql.Timestamp" isForPrompting="false"/>
+		<queryString>
+			<![CDATA[SELECT COUNT(p.gender) AS female_over_five
+FROM person p
+	INNER JOIN visit v ON p.person_id=v.patient_id
+	INNER JOIN visit_type vt ON v.visit_type_id=vt.visit_type_id
+WHERE (
+		(v.date_started BETWEEN $P{date_started} AND $P{date_stopped}
+			OR
+		v.date_stopped BETWEEN $P{date_started} AND $P{date_stopped})
+	OR
+		(v.date_started <= $P{date_started} AND
+			(v.date_stopped IS NULL OR v.date_stopped >= $P{date_stopped})
+		)
+	)
+	AND
+		p.gender='F'
+	AND
+		p.birthdate <= DATE_SUB(v.date_started, INTERVAL 5 YEAR)
+	AND
+		v.visit_type_id=$P{visit_type_id};]]>
+		</queryString>
+		<field name="female_over_five" class="java.lang.Long"/>
+	</subDataset>
+	<subDataset name="child_male" uuid="5052380c-57eb-4ba9-951c-fb0b084276db">
+		<parameter name="visit_type_id" class="java.lang.Integer" isForPrompting="false"/>
+		<parameter name="date_started" class="java.sql.Timestamp" isForPrompting="false"/>
+		<parameter name="date_stopped" class="java.sql.Timestamp" isForPrompting="false"/>
+		<queryString>
+			<![CDATA[SELECT COUNT(p.gender) AS male_under_five
+FROM person p
+	INNER JOIN visit v ON p.person_id=v.patient_id
+	INNER JOIN visit_type vt ON v.visit_type_id=vt.visit_type_id
+WHERE (
+		(v.date_started BETWEEN $P{date_started} AND $P{date_stopped}
+			OR
+		v.date_stopped BETWEEN $P{date_started} AND $P{date_stopped})
+	OR
+		(v.date_started <= $P{date_started} AND
+			(v.date_stopped IS NULL OR v.date_stopped >= $P{date_stopped})
+		)
+	)
+	AND
+		p.gender='M'
+	AND
+		p.birthdate > DATE_SUB(v.date_started, INTERVAL 5 YEAR)
+	AND
+		v.visit_type_id=$P{visit_type_id};]]>
+		</queryString>
+		<field name="male_under_five" class="java.lang.Long"/>
+	</subDataset>
+	<subDataset name="child_female" uuid="b956035f-b762-4ccc-b60e-6da25a72f32d">
+		<parameter name="visit_type_id" class="java.lang.Integer" isForPrompting="false"/>
+		<parameter name="date_started" class="java.sql.Timestamp" isForPrompting="false"/>
+		<parameter name="date_stopped" class="java.sql.Timestamp" isForPrompting="false"/>
+		<queryString>
+			<![CDATA[SELECT COUNT(p.gender) AS female_under_five
+FROM person p
+	INNER JOIN visit v ON p.person_id=v.patient_id
+	INNER JOIN visit_type vt ON v.visit_type_id=vt.visit_type_id
+WHERE (
+		(v.date_started BETWEEN $P{date_started} AND $P{date_stopped}
+			OR
+		v.date_stopped BETWEEN $P{date_started} AND $P{date_stopped})
+	OR
+		(v.date_started <= $P{date_started} AND
+			(v.date_stopped IS NULL OR v.date_stopped >= $P{date_stopped})
+		)
+	)
+	AND
+		p.gender='F'
+	AND
+		p.birthdate > DATE_SUB(v.date_started, INTERVAL 5 YEAR)
+	AND
+		v.visit_type_id=$P{visit_type_id};]]>
+		</queryString>
+		<field name="female_under_five" class="java.lang.Long"/>
+	</subDataset>
+	<parameter name="date_started" class="java.sql.Timestamp" isForPrompting="false"/>
+	<parameter name="date_stopped" class="java.sql.Timestamp" isForPrompting="false"/>
+	<parameter name="visit_type_id" class="java.lang.Integer" isForPrompting="false"/>
+	<queryString>
+		<![CDATA[SELECT vt.name, COUNT(v.visit_type_id) AS total
+FROM visit v INNER JOIN visit_type vt
+		ON v.visit_type_id = vt.visit_type_id
+WHERE
+		v.visit_type_id=$P{visit_type_id};]]>
+	</queryString>
+	<field name="name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="total" class="java.lang.Long"/>
+	<title>
+		<band height="51">
+			<staticText>
+				<reportElement uuid="227d7c4f-4545-4a60-a784-63de987c0639" x="116" y="31" width="42" height="20"/>
+				<textElement textAlignment="Left">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Male]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3c5cc301-3092-450c-8e17-e1bd64d82427" x="209" y="31" width="56" height="20"/>
+				<textElement textAlignment="Left">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Female]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="1a1ad884-a63e-4f0a-9c18-4864f406b932" x="0" y="0" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="98" splitType="Stretch">
+			<frame>
+				<reportElement uuid="1e2225ba-801c-4b35-8a00-7f031267f33c" x="20" y="0" width="415" height="84"/>
+				<box>
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<componentElement>
+					<reportElement uuid="c662a9d3-7ace-4ca6-8feb-ee8779b7d1d6" x="96" y="3" width="74" height="21"/>
+					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+						<datasetRun subDataset="adult_male" uuid="83e07496-4a9e-467e-8a91-d2755140a11d">
+							<datasetParameter name="visit_type_id">
+								<datasetParameterExpression><![CDATA[$P{visit_type_id}]]></datasetParameterExpression>
+							</datasetParameter>
+							<datasetParameter name="date_started">
+								<datasetParameterExpression><![CDATA[$P{date_started}]]></datasetParameterExpression>
+							</datasetParameter>
+							<datasetParameter name="date_stopped">
+								<datasetParameterExpression><![CDATA[$P{date_stopped}]]></datasetParameterExpression>
+							</datasetParameter>
+							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+						</datasetRun>
+						<jr:listContents height="21" width="74">
+							<textField>
+								<reportElement uuid="2034b6fd-35bc-4370-a1f6-60a079c16739" x="0" y="0" width="60" height="20"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$F{male_over_five}]]></textFieldExpression>
+							</textField>
+						</jr:listContents>
+					</jr:list>
+				</componentElement>
+				<componentElement>
+					<reportElement uuid="0418b238-a2a2-4502-b250-f941b04eeae4" x="189" y="3" width="76" height="20"/>
+					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+						<datasetRun subDataset="adult_female" uuid="28437c46-01a0-4773-853f-a8fbac8ca677">
+							<datasetParameter name="visit_type_id">
+								<datasetParameterExpression><![CDATA[$P{visit_type_id}]]></datasetParameterExpression>
+							</datasetParameter>
+							<datasetParameter name="date_started">
+								<datasetParameterExpression><![CDATA[$P{date_started}]]></datasetParameterExpression>
+							</datasetParameter>
+							<datasetParameter name="date_stopped">
+								<datasetParameterExpression><![CDATA[$P{date_stopped}]]></datasetParameterExpression>
+							</datasetParameter>
+							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+						</datasetRun>
+						<jr:listContents height="20" width="76">
+							<textField>
+								<reportElement uuid="39d32ce2-027c-40db-a54e-977228621652" x="0" y="2" width="59" height="18"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$F{female_over_five}]]></textFieldExpression>
+							</textField>
+						</jr:listContents>
+					</jr:list>
+				</componentElement>
+				<componentElement>
+					<reportElement uuid="5bc484a0-a31f-44ea-b9a7-be626cde32dc" x="96" y="27" width="74" height="21"/>
+					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+						<datasetRun subDataset="child_male" uuid="cd2414fb-347c-456c-a655-55ab91712174">
+							<datasetParameter name="visit_type_id">
+								<datasetParameterExpression><![CDATA[$P{visit_type_id}]]></datasetParameterExpression>
+							</datasetParameter>
+							<datasetParameter name="date_started">
+								<datasetParameterExpression><![CDATA[$P{date_started}]]></datasetParameterExpression>
+							</datasetParameter>
+							<datasetParameter name="date_stopped">
+								<datasetParameterExpression><![CDATA[$P{date_stopped}]]></datasetParameterExpression>
+							</datasetParameter>
+							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+						</datasetRun>
+						<jr:listContents height="21" width="74">
+							<textField>
+								<reportElement uuid="79357dab-7ac1-400c-9abf-30fedff58ce7" x="0" y="0" width="57" height="20"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$F{male_under_five}]]></textFieldExpression>
+							</textField>
+						</jr:listContents>
+					</jr:list>
+				</componentElement>
+				<componentElement>
+					<reportElement uuid="8f869c94-96fe-430b-a93e-d2082af36b69" x="189" y="27" width="76" height="22"/>
+					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+						<datasetRun subDataset="child_female" uuid="1c4fc15c-ceb4-40e8-a09b-edd08af3477a">
+							<datasetParameter name="visit_type_id">
+								<datasetParameterExpression><![CDATA[$P{visit_type_id}]]></datasetParameterExpression>
+							</datasetParameter>
+							<datasetParameter name="date_started">
+								<datasetParameterExpression><![CDATA[$P{date_started}]]></datasetParameterExpression>
+							</datasetParameter>
+							<datasetParameter name="date_stopped">
+								<datasetParameterExpression><![CDATA[$P{date_stopped}]]></datasetParameterExpression>
+							</datasetParameter>
+							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+						</datasetRun>
+						<jr:listContents height="22" width="76">
+							<textField>
+								<reportElement uuid="9966255f-5182-431e-b29d-fd89c8cbfebf" x="0" y="2" width="59" height="20"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$F{female_under_five}]]></textFieldExpression>
+							</textField>
+						</jr:listContents>
+					</jr:list>
+				</componentElement>
+				<staticText>
+					<reportElement uuid="56f86b94-0a22-4152-b954-c8593fabd650" x="0" y="5" width="75" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="false"/>
+					</textElement>
+					<text><![CDATA[Over 5yrs]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="27081492-c221-4565-afe1-f91c016c4798" x="0" y="25" width="75" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="false"/>
+					</textElement>
+					<text><![CDATA[Under 5 yrs]]></text>
+				</staticText>
+				<line>
+					<reportElement uuid="f73f20b0-85fd-43a9-88ad-4b419258059c" x="0" y="49" width="232" height="1"/>
+				</line>
+				<staticText>
+					<reportElement uuid="4aef162b-dd34-40df-a0e3-5ff1dddca3e3" x="10" y="50" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="2f6dbf33-9bf2-4a91-9622-cda20b9c979f" x="189" y="50" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+</jasperReport>
