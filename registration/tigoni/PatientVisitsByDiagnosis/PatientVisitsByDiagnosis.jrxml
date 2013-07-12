@@ -8,7 +8,10 @@
 	<queryString>
 		<![CDATA[SELECT
     CASE
-        WHEN c.short_name IS NULL THEN cn.name
+        WHEN c.short_name IS NULL THEN
+
+(SELECT cq.name FROM concept_name cq WHERE cq.concept_id=c.concept_id LIMIT 1)
+
         ELSE c.short_name
     END
     Diagnosis,
@@ -27,9 +30,7 @@ FROM
         vt.visit_type_id = v.visit_type_id
     LEFT OUTER JOIN concept c ON
         v.concept_id = c.concept_id
-	LEFT OUTER JOIN concept_name cn ON
-		c.concept_id = cn.concept_id
-GROUP BY c.concept_id]]>
+GROUP BY v.concept_id]]>
 	</queryString>
 	<field name="Diagnosis" class="java.lang.String"/>
 	<field name="VisitCount" class="java.lang.Long"/>
