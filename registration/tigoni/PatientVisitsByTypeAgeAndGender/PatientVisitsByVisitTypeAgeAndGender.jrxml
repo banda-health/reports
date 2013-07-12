@@ -53,7 +53,7 @@ WHERE (
 		<band height="19" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="46">
+		<band height="46" splitType="Prevent">
 			<subreport>
 				<reportElement uuid="811d20f8-0054-4a94-9e54-e693220b1308" x="128" y="0" width="200" height="36"/>
 				<subreportParameter name="date_started">
