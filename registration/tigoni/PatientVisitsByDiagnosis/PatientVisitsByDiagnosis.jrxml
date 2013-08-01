@@ -8,29 +8,23 @@
 	<queryString>
 		<![CDATA[SELECT
     CASE
-        WHEN c.short_name IS NULL THEN
+        WHEN c.short_name IS NULL OR c.short_name='' THEN
 
 (SELECT cq.name FROM concept_name cq WHERE cq.concept_id=c.concept_id LIMIT 1)
 
         ELSE c.short_name
     END
     Diagnosis,
-    COUNT(v.visit_id) VisitCount
+    COUNT(*) VisitCount
 FROM
-    visit_type vt LEFT OUTER JOIN (
-    SELECT visit_id, visit_type_id, active_list.concept_id FROM visit, active_list WHERE (
-        (date_started BETWEEN $P{startDate} AND $P{endDate}
-        OR
-         date_stopped BETWEEN $P{startDate} AND $P{endDate})
-    OR
-        (date_started <= $P{startDate}
-            AND
-        (date_stopped IS NULL OR date_stopped >= $P{endDate})) ) AND active_list_type_id = 2
-    ) v ON
-        vt.visit_type_id = v.visit_type_id
-    LEFT OUTER JOIN concept c ON
-        v.concept_id = c.concept_id
-GROUP BY v.concept_id]]>
+    concept c INNER JOIN active_list al
+		ON  c.concept_id = al.concept_id
+
+WHERE
+    (start_date BETWEEN $P{startDate} AND $P{endDate} )
+	AND active_list_type_id = 2
+
+GROUP BY c.concept_id]]>
 	</queryString>
 	<field name="Diagnosis" class="java.lang.String"/>
 	<field name="VisitCount" class="java.lang.Long"/>
