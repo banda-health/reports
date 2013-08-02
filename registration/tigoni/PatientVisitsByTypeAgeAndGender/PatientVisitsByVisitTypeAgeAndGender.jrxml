@@ -28,7 +28,7 @@ WHERE (
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="35" splitType="Stretch">
+		<band height="44" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="a334a322-2426-4915-ac87-2fc6a0d5d573" x="0" y="0" width="555" height="32"/>
 				<textElement textAlignment="Center">
@@ -39,23 +39,20 @@ WHERE (
 		</band>
 	</title>
 	<pageHeader>
-		<band height="27" splitType="Stretch">
+		<band height="48">
 			<textField>
-				<reportElement uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf" x="0" y="0" width="555" height="25"/>
+				<reportElement uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf" x="10" y="10" width="529" height="25"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Data for " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date(($P{date_started}).getTime())) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date(($P{date_stopped}).getTime()))]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Patient Visits by Diagnosis for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{date_started}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{date_stopped})]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
-	<columnHeader>
-		<band height="19" splitType="Stretch"/>
-	</columnHeader>
 	<detail>
-		<band height="46" splitType="Prevent">
+		<band height="10" splitType="Prevent">
 			<subreport>
-				<reportElement uuid="811d20f8-0054-4a94-9e54-e693220b1308" x="128" y="0" width="200" height="36"/>
+				<reportElement uuid="811d20f8-0054-4a94-9e54-e693220b1308" x="20" y="0" width="133" height="10"/>
 				<subreportParameter name="date_started">
 					<subreportParameterExpression><![CDATA[$P{date_started}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -89,9 +86,6 @@ WHERE (
 			</textField>
 		</band>
 	</pageFooter>
-	<summary>
-		<band height="19" splitType="Stretch"/>
-	</summary>
 	<noData>
 		<band height="20">
 			<staticText>
