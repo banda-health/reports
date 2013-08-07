@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VisitsByVisitTypeAgeAndGender" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
-	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<subDataset name="total_visits" uuid="03409af5-f2ad-40d4-845d-e298f4ea8f6c">
@@ -102,6 +102,17 @@ WHERE (
 			</staticText>
 		</band>
 	</pageHeader>
+	<columnHeader>
+		<band height="29">
+			<staticText>
+				<reportElement uuid="c098e9ee-7126-4137-9c92-adca4a253f54" x="0" y="0" width="82" height="20"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Visit Type:]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
 	<detail>
 		<band height="10" splitType="Prevent">
 			<subreport>
@@ -150,7 +161,7 @@ WHERE (
 			</staticText>
 			<componentElement>
 				<reportElement uuid="a1e33b69-4a24-4911-a1b5-9b4a2649f0b5" x="280" y="15" width="132" height="20"/>
-				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
 					<datasetRun subDataset="total_visits" uuid="e9257d8b-bd67-4e4e-bcba-0288d3205bd2">
 						<datasetParameter name="date_started">
 							<datasetParameterExpression><![CDATA[$P{date_started}]]></datasetParameterExpression>
