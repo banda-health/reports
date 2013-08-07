@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VisitsByVisitTypeAgeAndGender_subreport" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="575" leftMargin="0" rightMargin="20" topMargin="0" bottomMargin="10" uuid="c38239b8-2471-45d0-9b30-63bfc50faa96">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VisitsByVisitTypeAgeAndGender_subreport" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="575" leftMargin="0" rightMargin="20" topMargin="5" bottomMargin="0" uuid="c38239b8-2471-45d0-9b30-63bfc50faa96">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="157"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<subDataset name="adult_male" uuid="7b581da2-b39a-4df5-8187-8dccee4de3af">
 		<parameter name="visit_type_id" class="java.lang.Integer" isForPrompting="false"/>
@@ -882,7 +882,7 @@ WHERE
 				</componentElement>
 				<componentElement>
 					<reportElement uuid="072390cc-0c91-4136-8209-c3624c0cfa3b" x="466" y="0" width="46" height="12"/>
-					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
 						<datasetRun subDataset="children_total" uuid="b50df616-992e-42ae-b164-aca4c47e4a6a">
 							<datasetParameter name="date_started">
 								<datasetParameterExpression><![CDATA[$P{date_started}]]></datasetParameterExpression>
@@ -908,7 +908,7 @@ WHERE
 				</componentElement>
 				<componentElement>
 					<reportElement uuid="ba7b46f0-a535-4628-a505-f9e26421e5df" x="466" y="16" width="46" height="12"/>
-					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
 						<datasetRun subDataset="adult_total" uuid="fc2176bc-011b-4dc2-b67a-d8870bb04cf7">
 							<datasetParameter name="date_started">
 								<datasetParameterExpression><![CDATA[$P{date_started}]]></datasetParameterExpression>
@@ -934,7 +934,7 @@ WHERE
 				</componentElement>
 				<componentElement>
 					<reportElement uuid="4890e1f9-8abb-44d9-a703-a8048f9a7617" x="466" y="32" width="46" height="12"/>
-					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
 						<datasetRun subDataset="unknown_age_total" uuid="98a42629-da6f-4785-bfb6-cb314f17ffe7">
 							<datasetParameter name="date_started">
 								<datasetParameterExpression><![CDATA[$P{date_started}]]></datasetParameterExpression>
