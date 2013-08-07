@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VisitsByVisitTypeAgeAndGender" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="192"/>
 	<property name="ireport.y" value="0"/>
 	<subDataset name="total_visits" uuid="03409af5-f2ad-40d4-845d-e298f4ea8f6c">
 		<parameter name="date_started" class="java.util.Date">
@@ -61,7 +61,7 @@ WHERE (
 		</band>
 	</title>
 	<pageHeader>
-		<band height="42">
+		<band height="37">
 			<textField>
 				<reportElement uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf" x="0" y="0" width="529" height="17"/>
 				<textElement>
@@ -70,22 +70,22 @@ WHERE (
 				<textFieldExpression><![CDATA["Visits by Diagnosis for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{date_started}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{date_stopped})]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="e3d8a030-1bf2-446a-a4d7-9c68092ac2a6" x="277" y="17" width="29" height="19"/>
-				<textElement verticalAlignment="Bottom">
+				<reportElement uuid="e3d8a030-1bf2-446a-a4d7-9c68092ac2a6" x="229" y="18" width="45" height="19"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Male]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1483dd52-cf71-4fe3-a0f0-e43741706d12" x="316" y="18" width="42" height="18"/>
-				<textElement verticalAlignment="Bottom">
+				<reportElement uuid="1483dd52-cf71-4fe3-a0f0-e43741706d12" x="294" y="18" width="46" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Female]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="8a57f28e-22bd-4ac9-b30d-a5a7fdc8c988" x="370" y="16" width="72" height="20"/>
-				<textElement verticalAlignment="Bottom">
+				<reportElement uuid="8a57f28e-22bd-4ac9-b30d-a5a7fdc8c988" x="359" y="16" width="68" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Unspecified]]></text>
@@ -94,29 +94,18 @@ WHERE (
 				<reportElement uuid="831abda8-64a3-4e34-9e86-0beab97ed234" x="0" y="36" width="555" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="71f6e69e-047f-4360-ab11-cec2d6f6c38a" x="448" y="16" width="91" height="20"/>
-				<textElement verticalAlignment="Bottom">
+				<reportElement uuid="71f6e69e-047f-4360-ab11-cec2d6f6c38a" x="446" y="16" width="86" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Grouping Total]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
-	<columnHeader>
-		<band height="29">
-			<staticText>
-				<reportElement uuid="c098e9ee-7126-4137-9c92-adca4a253f54" x="0" y="0" width="82" height="20"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Visit Type:]]></text>
-			</staticText>
-		</band>
-	</columnHeader>
 	<detail>
 		<band height="10" splitType="Prevent">
 			<subreport>
-				<reportElement uuid="811d20f8-0054-4a94-9e54-e693220b1308" x="20" y="0" width="133" height="10"/>
+				<reportElement uuid="811d20f8-0054-4a94-9e54-e693220b1308" x="0" y="0" width="133" height="10"/>
 				<subreportParameter name="date_started">
 					<subreportParameterExpression><![CDATA[$P{date_started}]]></subreportParameterExpression>
 				</subreportParameter>
