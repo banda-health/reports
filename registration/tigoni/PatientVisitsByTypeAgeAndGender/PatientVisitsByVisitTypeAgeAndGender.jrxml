@@ -1,8 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VisitsByVisitTypeAgeAndGender" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
-	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<subDataset name="total_visits" uuid="03409af5-f2ad-40d4-845d-e298f4ea8f6c">
+		<parameter name="date_started" class="java.util.Date">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="date_stopped" class="java.util.Date">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<queryString>
+			<![CDATA[SELECT COUNT(*) AS total_visits FROM visit v INNER JOIN visit_type vt ON v.visit_type_id=vt.visit_type_id
+WHERE (
+		(v.date_started BETWEEN $P{date_started} AND $P{date_stopped}
+			OR
+		v.date_stopped BETWEEN $P{date_started} AND $P{date_stopped})
+	OR
+		(v.date_started <= $P{date_started} AND
+			(v.date_stopped IS NULL OR v.date_stopped >= $P{date_stopped})
+		)
+	)
+;]]>
+		</queryString>
+		<field name="total_visits" class="java.lang.Long"/>
+	</subDataset>
 	<parameter name="date_started" class="java.util.Date"/>
 	<parameter name="date_stopped" class="java.util.Date"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -28,7 +50,7 @@ WHERE (
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="35" splitType="Stretch">
+		<band height="44" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="a334a322-2426-4915-ac87-2fc6a0d5d573" x="0" y="0" width="555" height="32"/>
 				<textElement textAlignment="Center">
@@ -39,23 +61,51 @@ WHERE (
 		</band>
 	</title>
 	<pageHeader>
-		<band height="27" splitType="Stretch">
+		<band height="37">
 			<textField>
-				<reportElement uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf" x="0" y="0" width="555" height="25"/>
+				<reportElement uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf" x="0" y="0" width="529" height="17"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Data for " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date(($P{date_started}).getTime())) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date(($P{date_stopped}).getTime()))]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Visits by Diagnosis for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{date_started}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{date_stopped})]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement uuid="e3d8a030-1bf2-446a-a4d7-9c68092ac2a6" x="229" y="18" width="45" height="19"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Male]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1483dd52-cf71-4fe3-a0f0-e43741706d12" x="294" y="18" width="46" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Female]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8a57f28e-22bd-4ac9-b30d-a5a7fdc8c988" x="359" y="16" width="68" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Unspecified]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="831abda8-64a3-4e34-9e86-0beab97ed234" x="0" y="36" width="531" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="71f6e69e-047f-4360-ab11-cec2d6f6c38a" x="446" y="16" width="86" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Grouping Total]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
-	<columnHeader>
-		<band height="19" splitType="Stretch"/>
-	</columnHeader>
 	<detail>
-		<band height="46" splitType="Prevent">
+		<band height="10" splitType="Prevent">
 			<subreport>
-				<reportElement uuid="811d20f8-0054-4a94-9e54-e693220b1308" x="128" y="0" width="200" height="36"/>
+				<reportElement uuid="811d20f8-0054-4a94-9e54-e693220b1308" x="0" y="0" width="133" height="10"/>
 				<subreportParameter name="date_started">
 					<subreportParameterExpression><![CDATA[$P{date_started}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -90,10 +140,41 @@ WHERE (
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="19" splitType="Stretch"/>
+		<band height="50">
+			<staticText>
+				<reportElement uuid="465331cc-2528-4ac6-be8f-29df0f0e05f5" x="0" y="15" width="277" height="20"/>
+				<textElement>
+					<font size="12" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[The total number of visits for all the clinics is:]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement uuid="a1e33b69-4a24-4911-a1b5-9b4a2649f0b5" x="280" y="15" width="132" height="20"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="total_visits" uuid="e9257d8b-bd67-4e4e-bcba-0288d3205bd2">
+						<datasetParameter name="date_started">
+							<datasetParameterExpression><![CDATA[$P{date_started}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="date_stopped">
+							<datasetParameterExpression><![CDATA[$P{date_stopped}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="132">
+						<textField>
+							<reportElement uuid="20f11416-af57-465d-a261-8f34447b1215" x="0" y="0" width="110" height="20"/>
+							<textElement>
+								<font size="12" isItalic="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{total_visits}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
 	</summary>
 	<noData>
-		<band height="20">
+		<band height="21">
 			<staticText>
 				<reportElement uuid="e8da193c-2a64-44be-96ca-7416132f7400" x="0" y="0" width="306" height="16"/>
 				<textElement textAlignment="Left">
