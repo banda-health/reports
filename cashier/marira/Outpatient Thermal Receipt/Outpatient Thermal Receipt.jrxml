@@ -96,7 +96,7 @@ Email: info.kh@kijabe.net]]></text>
 				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-dd-MM HH:mm").format($F{bill_date})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5" x="69" y="151" width="141" height="17"/>
+				<reportElement uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5" x="69" y="151" width="141" height="16"/>
 				<textElement>
 					<font fontName="Arial" size="10"/>
 				</textElement>
@@ -140,7 +140,7 @@ Email: info.kh@kijabe.net]]></text>
 				<reportElement uuid="3da84233-25c2-471f-be29-1e9532a22240" x="0" y="167" width="216" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="11372256-903a-4f4c-9d38-a588c5f39958" x="13" y="151" width="56" height="17"/>
+				<reportElement uuid="11372256-903a-4f4c-9d38-a588c5f39958" x="13" y="151" width="56" height="16"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
