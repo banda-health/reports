@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Outpatient Thermal Receipt" language="groovy" pageWidth="216" pageHeight="297" columnWidth="216" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="b0650e21-f6cf-4aad-acec-9e81aea4c41f">
 	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="81"/>
+	<property name="ireport.y" value="0"/>
 	<style name="style1" fontName="Courier New" fontSize="12"/>
 	<parameter name="billId" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[4]]></defaultValueExpression>
@@ -20,6 +20,8 @@
     END as bill_date,
     cp.name cash_point,
     u.username cashier,
+    upn.given_name cashier_given_name,
+    upn.family_name cashier_family_name,
     patient_person_name.given_name patient_given_name,
     patient_person_name.family_name patient_family_name
 FROM
@@ -27,6 +29,8 @@ FROM
         provider.provider_id = b.provider_id
     INNER JOIN users u ON
         provider.person_id = u.person_id
+    INNER JOIN person_name upn ON
+        u.person_id = upn.person_id
     INNER JOIN patient ON
         b.patient_id = patient.patient_id
     INNER JOIN person patient_person ON
@@ -44,11 +48,17 @@ FROM
 WHERE
     b.bill_id = $P{billId}]]>
 	</queryString>
-	<field name="bill_id" class="java.lang.Integer"/>
-	<field name="receipt_number" class="java.lang.String"/>
+	<field name="bill_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="receipt_number" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="bill_date" class="java.sql.Timestamp"/>
 	<field name="cash_point" class="java.lang.String"/>
 	<field name="cashier" class="java.lang.String"/>
+	<field name="cashier_given_name" class="java.lang.String"/>
+	<field name="cashier_family_name" class="java.lang.String"/>
 	<field name="patient_given_name" class="java.lang.String"/>
 	<field name="patient_family_name" class="java.lang.String"/>
 	<variable name="totalCost" class="java.math.BigDecimal">
@@ -58,7 +68,7 @@ WHERE
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="153" splitType="Stretch">
+		<band height="170" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="e49ce628-bd2d-4cb0-b1c7-1ae5d963e2c3" style="style1" mode="Transparent" x="0" y="0" width="216" height="70"/>
 				<textElement textAlignment="Center">
@@ -86,7 +96,7 @@ Email: info.kh@kijabe.net]]></text>
 				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-dd-MM HH:mm").format($F{bill_date})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5" x="69" y="134" width="141" height="17"/>
+				<reportElement uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5" x="69" y="151" width="141" height="17"/>
 				<textElement>
 					<font fontName="Arial" size="10"/>
 				</textElement>
@@ -118,7 +128,7 @@ Email: info.kh@kijabe.net]]></text>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
-				<text><![CDATA[Patient:]]></text>
+				<text><![CDATA[Cashier:]]></text>
 			</staticText>
 			<line>
 				<reportElement uuid="3da84233-25c2-471f-be29-1e9532a22240" x="0" y="72" width="216" height="1"/>
@@ -127,8 +137,22 @@ Email: info.kh@kijabe.net]]></text>
 				<reportElement uuid="3da84233-25c2-471f-be29-1e9532a22240" x="0" y="94" width="216" height="1"/>
 			</line>
 			<line>
-				<reportElement uuid="3da84233-25c2-471f-be29-1e9532a22240" x="0" y="152" width="216" height="1"/>
+				<reportElement uuid="3da84233-25c2-471f-be29-1e9532a22240" x="0" y="167" width="216" height="1"/>
 			</line>
+			<staticText>
+				<reportElement uuid="11372256-903a-4f4c-9d38-a588c5f39958" x="13" y="151" width="56" height="17"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Patient:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5" x="69" y="134" width="141" height="17"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cashier_family_name} + ", " + $F{cashier_given_name}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<detail>
