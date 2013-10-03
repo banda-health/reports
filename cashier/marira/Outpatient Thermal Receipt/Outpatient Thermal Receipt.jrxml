@@ -29,8 +29,6 @@ FROM
         provider.provider_id = b.provider_id
     INNER JOIN users u ON
         provider.person_id = u.person_id
-    INNER JOIN person_name upn ON
-        u.person_id = upn.person_id
     INNER JOIN patient ON
         b.patient_id = patient.patient_id
     INNER JOIN person patient_person ON
@@ -44,7 +42,8 @@ FROM
         SELECT $P{billId} bill_id, MAX(bp.date_created) bill_date FROM cashier_bill_payment bp WHERE bp.bill_id = $P{billId}
     ) bill_date ON
         b.bill_id = bill_date.bill_id
-
+    LEFT OUTER JOIN person_name upn ON
+        u.person_id = upn.person_id
 WHERE
     b.bill_id = $P{billId}]]>
 	</queryString>
