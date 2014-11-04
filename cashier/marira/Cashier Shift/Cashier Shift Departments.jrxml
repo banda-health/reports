@@ -17,9 +17,9 @@ FROM
         (t.clock_out IS NULL OR b.date_created < t.clock_out)
     INNER JOIN cashier_bill_line_item li ON
         b.bill_id = li.bill_id
-    INNER JOIN cashier_item i ON
+    INNER JOIN inv_item i ON
        li.item_id = i.item_id
-    INNER JOIN cashier_department d ON
+    INNER JOIN inv_department d ON
         i.department_id = d.department_id
 WHERE
     t.timesheet_id = $P{timesheetId}

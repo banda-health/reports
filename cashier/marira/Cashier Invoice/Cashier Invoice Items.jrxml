@@ -13,7 +13,7 @@
 FROM
     cashier_bill b INNER JOIN cashier_bill_line_item bi ON
         b.bill_id = bi.bill_id
-    INNER JOIN cashier_item i ON
+    INNER JOIN inv_item i ON
         bi.item_id = i.item_id
 WHERE
     b.bill_id = $P{billId}

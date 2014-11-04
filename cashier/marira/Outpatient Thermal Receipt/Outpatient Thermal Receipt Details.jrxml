@@ -16,20 +16,26 @@
 FROM
     cashier_bill b INNER JOIN cashier_bill_line_item bi ON
         b.bill_id = bi.bill_id
-    INNER JOIN cashier_item i ON
+    INNER JOIN inv_item i ON
         bi.item_id = i.item_id
-    INNER JOIN cashier_department d ON
+    INNER JOIN inv_department d ON
         i.department_id = d.department_id
 WHERE
     b.bill_id = $P{billId}
 ORDER BY
     bi.line_item_order ASC]]>
 	</queryString>
-	<field name="bill_id" class="java.lang.Integer"/>
+	<field name="bill_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="item_name" class="java.lang.String"/>
 	<field name="department_name" class="java.lang.String"/>
-	<field name="quantity" class="java.lang.Integer"/>
-	<field name="price" class="java.math.BigDecimal"/>
+	<field name="quantity" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="price" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<variable name="totalCost" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{price}.multiply($F{quantity})]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>

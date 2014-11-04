@@ -11,9 +11,9 @@
 	cashier_department.name AS departmentName,
 	SUM(cashier_bill_line_item.price * cashier_bill_line_item.quantity) AS departmentTotal
 FROM
-     cashier_bill_line_item INNER JOIN cashier_item ON
+     cashier_bill_line_item INNER JOIN inv_item ON
 		cashier_bill_line_item.item_id = cashier_item.item_id
-	INNER JOIN cashier_department ON
+	INNER JOIN inv_department ON
 		cashier_item.department_id = cashier_department.department_id
 WHERE
 	cashier_bill_line_item.bill_id = $P{billId}
