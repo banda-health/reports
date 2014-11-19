@@ -86,29 +86,10 @@ WHERE
 			</textField>
 		</band>
 	</pageHeader>
-	<pageFooter>
-		<band height="18" splitType="Stretch">
-			<textField>
-				<reportElement uuid="f96d7780-6357-4924-b519-27f72a508d29" x="432" y="0" width="87" height="16"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="6c430987-cd11-40be-bd9d-2077e233745f" x="0" y="0" width="379" height="16"/>
-				<textElement/>
-				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-dd-MM HH:mm").format(new Date())]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Report">
-				<reportElement uuid="7a9813a0-b37a-4dcb-a749-b1725b610579" x="522" y="0" width="33" height="16"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
-		</band>
-	</pageFooter>
-	<summary>
+	<detail>
 		<band height="50">
 			<componentElement>
-				<reportElement uuid="52d9eeb5-519a-465c-af9a-bad6fc6fb750" key="table" style="table" x="1" y="0" width="554" height="50"/>
+				<reportElement uuid="52d9eeb5-519a-465c-af9a-bad6fc6fb750" key="table" style="table" x="0" y="0" width="554" height="50"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
 					<datasetRun subDataset="Table Dataset 1" uuid="f543ee67-97c1-4018-9893-36b77deea9e3">
 						<datasetParameter name="stockroomId">
@@ -149,7 +130,7 @@ WHERE
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table_TD" height="15" rowSpan="1">
-							<textField>
+							<textField pattern="#,##0">
 								<reportElement uuid="062541c2-2b60-4c14-9424-1dac8cfc1eed" x="0" y="0" width="70" height="15"/>
 								<textElement textAlignment="Right">
 									<paragraph rightIndent="2"/>
@@ -187,5 +168,24 @@ WHERE
 				</jr:table>
 			</componentElement>
 		</band>
-	</summary>
+	</detail>
+	<pageFooter>
+		<band height="18" splitType="Stretch">
+			<textField>
+				<reportElement uuid="f96d7780-6357-4924-b519-27f72a508d29" x="432" y="0" width="87" height="16"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6c430987-cd11-40be-bd9d-2077e233745f" x="0" y="0" width="379" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-dd-MM HH:mm").format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="7a9813a0-b37a-4dcb-a749-b1725b610579" x="522" y="0" width="33" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
 </jasperReport>
