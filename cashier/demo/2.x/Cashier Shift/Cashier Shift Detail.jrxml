@@ -44,13 +44,21 @@ FROM
 WHERE
     t.timesheet_id = $P{timesheetId}
 AND
-    b.status IN (1, 2)
+    b.status IN ('POSTED', 'PAID')
 ORDER BY b.date_created ASC]]>
 	</queryString>
-	<field name="bill_id" class="java.lang.Integer"/>
-	<field name="date_created" class="java.sql.Timestamp"/>
-	<field name="receipt_number" class="java.lang.String"/>
-	<field name="patient_id" class="java.lang.Integer"/>
+	<field name="bill_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="date_created" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="receipt_number" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="patient_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="patient_given_name" class="java.lang.String"/>
 	<field name="patient_family_name" class="java.lang.String"/>
 	<field name="amount" class="java.math.BigDecimal"/>

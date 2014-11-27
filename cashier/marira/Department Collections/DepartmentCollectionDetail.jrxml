@@ -25,7 +25,7 @@ FROM
     INNER JOIN inv_department d ON
         i.department_id = d.department_id
 WHERE
-    b.status = 2
+    b.status = 'Paid'
 AND
     d.department_id = $P{departmentId}
 AND

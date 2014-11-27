@@ -44,13 +44,21 @@ FROM
 WHERE
     t.timesheet_id = $P{timesheetId}
 AND
-    b.status IN (1, 2)
+    b.status IN ('POSTED', 'PAID')
 ORDER BY b.date_created ASC]]>
 	</queryString>
-	<field name="bill_id" class="java.lang.Integer"/>
-	<field name="date_created" class="java.sql.Timestamp"/>
-	<field name="receipt_number" class="java.lang.String"/>
-	<field name="patient_id" class="java.lang.Integer"/>
+	<field name="bill_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="date_created" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="receipt_number" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="patient_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="patient_given_name" class="java.lang.String"/>
 	<field name="patient_family_name" class="java.lang.String"/>
 	<field name="amount" class="java.math.BigDecimal"/>
@@ -68,14 +76,14 @@ ORDER BY b.date_created ASC]]>
 							<bottomPen lineWidth="1.0"/>
 						</box>
 						<staticText>
-							<reportElement uuid="976a2244-b902-4f98-b680-5db7f76ceb0b" style="Crosstab Data Text" x="179" y="0" width="103" height="16"/>
+							<reportElement uuid="976a2244-b902-4f98-b680-5db7f76ceb0b" style="Crosstab Data Text" x="188" y="0" width="103" height="16"/>
 							<textElement textAlignment="Left">
 								<font size="12" isBold="true"/>
 							</textElement>
 							<text><![CDATA[Patient]]></text>
 						</staticText>
 						<staticText>
-							<reportElement uuid="976a2244-b902-4f98-b680-5db7f76ceb0b" style="Crosstab Data Text" x="115" y="0" width="60" height="16"/>
+							<reportElement uuid="976a2244-b902-4f98-b680-5db7f76ceb0b" style="Crosstab Data Text" x="115" y="0" width="67" height="16"/>
 							<textElement textAlignment="Left">
 								<font size="12" isBold="true"/>
 							</textElement>
@@ -122,21 +130,23 @@ ORDER BY b.date_created ASC]]>
 						</cellContents>
 					</crosstabTotalRowHeader>
 				</rowGroup>
-				<rowGroup name="date_created" width="60">
+				<rowGroup name="date_created" width="67">
 					<bucket class="java.sql.Timestamp">
 						<bucketExpression><![CDATA[$F{date_created}]]></bucketExpression>
 					</bucket>
 					<crosstabRowHeader>
 						<cellContents backcolor="#FFFFFF" mode="Transparent">
 							<textField isStretchWithOverflow="true">
-								<reportElement uuid="a95badc1-bddc-44cd-8795-92b37e699b20" style="Crosstab Data Text" x="0" y="2" width="60" height="16"/>
+								<reportElement uuid="a95badc1-bddc-44cd-8795-92b37e699b20" style="Crosstab Data Text" x="0" y="2" width="67" height="16"/>
 								<box>
 									<topPen lineWidth="0.0"/>
 									<leftPen lineWidth="0.0"/>
 									<bottomPen lineWidth="0.0"/>
 									<rightPen lineWidth="0.0"/>
 								</box>
-								<textElement textAlignment="Right"/>
+								<textElement textAlignment="Right">
+									<paragraph rightIndent="2"/>
+								</textElement>
 								<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($V{date_created})]]></textFieldExpression>
 							</textField>
 						</cellContents>

@@ -25,7 +25,7 @@ FROM
     INNER JOIN inv_department d ON
         i.department_id = d.department_id
 WHERE
-    b.status = 2
+    b.status = 'PAID'
 AND
     d.department_id = $P{departmentId}
 AND
@@ -36,9 +36,7 @@ GROUP BY d.department_id, d.Name, i.Name]]>
 	</queryString>
 	<field name="Item" class="java.lang.String"/>
 	<field name="Count" class="java.lang.Long"/>
-	<field name="Amount" class="java.math.BigDecimal">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="Amount" class="java.math.BigDecimal"/>
 	<variable name="runningTotal" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{Amount}]]></variableExpression>
 		<initialValueExpression><![CDATA[$F{Amount}]]></initialValueExpression>

@@ -22,7 +22,7 @@ FROM
     RIGHT OUTER JOIN inv_department d ON
         i.department_id = d.department_id
 WHERE
-    b.status = 2
+    b.status = 'PAID'
 AND
     ((b.date_changed IS NULL AND b.date_created BETWEEN $P{startDate} AND $P{endDate})
         OR
@@ -33,9 +33,7 @@ GROUP BY d.Name]]>
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="Cases" class="java.lang.Long"/>
-	<field name="Amount" class="java.math.BigDecimal">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="Amount" class="java.math.BigDecimal"/>
 	<variable name="runningAmount" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{Amount}]]></variableExpression>
 		<initialValueExpression><![CDATA[$F{Amount}]]></initialValueExpression>

@@ -22,7 +22,7 @@ FROM
     RIGHT OUTER JOIN inv_department d ON
         i.department_id = d.department_id
 WHERE
-    b.status = 2
+    b.status = 'PAID'
 AND
     ((b.date_changed IS NULL AND b.date_created BETWEEN $P{startDate} AND $P{endDate})
         OR

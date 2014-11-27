@@ -13,11 +13,7 @@
 		<![CDATA[SELECT
      cashier_bill.bill_id,
      cashier_bill.receipt_number,
-     CASE cashier_bill.status
-        WHEN 0 THEN 'PENDING'
-        WHEN 1 THEN 'PAID'
-        WHEN 2 THEN 'ADJUSTED'
-     END AS `Status`,
+     cashier_bill.status AS `Status`,
      bill_date.bill_date,
 
      cashier_person_name.given_name cashier_given_name,
@@ -64,19 +60,31 @@ LEFT OUTER JOIN person_name cashier_person_name ON
 WHERE
     cashier_bill.bill_id = $P{billId}]]>
 	</queryString>
-	<field name="bill_id" class="java.lang.Integer"/>
-	<field name="receipt_number" class="java.lang.String"/>
-	<field name="Status" class="java.lang.String"/>
+	<field name="bill_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="receipt_number" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Status" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="bill_date" class="java.sql.Timestamp"/>
 	<field name="cashier_given_name" class="java.lang.String"/>
 	<field name="cashier_family_name" class="java.lang.String"/>
 	<field name="patient_given_name" class="java.lang.String"/>
 	<field name="patient_family_name" class="java.lang.String"/>
-	<field name="address1" class="java.lang.String"/>
-	<field name="address2" class="java.lang.String"/>
+	<field name="address1" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="address2" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="city" class="java.lang.String"/>
 	<field name="phone" class="java.lang.String"/>
-	<field name="identifier" class="java.lang.String"/>
+	<field name="identifier" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<variable name="totalInvoiced" class="java.math.BigDecimal"/>
 	<variable name="totalPaid" class="java.math.BigDecimal">
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>

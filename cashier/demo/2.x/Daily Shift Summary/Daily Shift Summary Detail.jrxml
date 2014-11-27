@@ -36,7 +36,7 @@ FROM
     INNER JOIN users u ON
         u.person_id = p.person_id
 WHERE
-    b.status IN (1, 2)
+    b.status IN ('POSTED', 'PAID')
 AND
     ((b.date_changed IS NULL AND b.date_created >= $P{summaryDate} AND b.date_created < DATE_ADD($P{summaryDate}, INTERVAL 1 DAY))
         OR
@@ -60,12 +60,8 @@ AND
 	<field name="clock_out" class="java.sql.Timestamp">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="amount" class="java.math.BigDecimal">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="name" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="amount" class="java.math.BigDecimal"/>
+	<field name="name" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>

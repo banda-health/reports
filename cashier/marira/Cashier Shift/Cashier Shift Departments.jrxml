@@ -24,7 +24,7 @@ FROM
 WHERE
     t.timesheet_id = $P{timesheetId}
 AND
-    b.status IN (1, 2)
+    b.status IN ('POSTED', 'PAID')
 GROUP BY d.name]]>
 	</queryString>
 	<field name="department_name" class="java.lang.String"/>
