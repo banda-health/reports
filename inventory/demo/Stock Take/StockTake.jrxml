@@ -39,7 +39,8 @@ FROM
 	INNER JOIN inv_item i ON
 		ist.item_id = i.item_id
 WHERE
-	sr.stockroom_id = $P{stockroomId}]]>
+	sr.stockroom_id = $P{stockroomId}
+ORDER BY i.name ASC]]>
 		</queryString>
 		<field name="item_name" class="java.lang.String"/>
 		<field name="quantity" class="java.lang.Integer">
