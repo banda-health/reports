@@ -63,9 +63,9 @@
     IF (so.date_changed IS NULL, so.date_created, so.date_changed) AS operation_date,
 	sot.name AS operation_type,
     so.operation_number,
-    CASE -- Adjusted, Receipt, Return operations
+    CASE -- Adjusted, Receipt, Return, and Intital operations
         WHEN sot.uuid IN ('288fd7fe-1374-4f7a-89e6-d5f1ac97d4a5', 'fce0b4fc-9402-424a-aacb-f99599e51a9f',
-			'128924d7-72ee-414e-ae40-52f1f89d3e7d') THEN soi.quantity
+			'128924d7-72ee-414e-ae40-52f1f89d3e7d', '20f3734f-5b1a-490d-8676-1225a9cdddf7') THEN soi.quantity
 		-- Transfer operations only count for recceived once completed
         WHEN sot.uuid = 'db40707f-9175-4199-8df2-a5702f41ec7d' THEN
 			IF (so.status = 'COMPLETED', soi.quantity, NULL)
@@ -126,7 +126,7 @@ AND
 AND
 	(so.status = 'COMPLETED'
 		OR
-	 (so.status = 'PENDING' AND sot.uuid NOT IN ('fce0b4fc-9402-424a-aacb-f99599e51a9f', '128924d7-72ee-414e-ae40-52f1f89d3e7d')))
+	 (so.status = 'PENDING' AND sot.uuid NOT IN ('fce0b4fc-9402-424a-aacb-f99599e51a9f', '128924d7-72ee-414e-ae40-52f1f89d3e7d', '20f3734f-5b1a-490d-8676-1225a9cdddf7')))
 ORDER BY operation_date ASC]]>
 		</queryString>
 		<field name="operation_date" class="java.sql.Timestamp"/>
