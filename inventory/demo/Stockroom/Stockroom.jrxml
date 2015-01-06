@@ -63,28 +63,32 @@
 FROM
 	inv_stockroom sr INNER JOIN
 		(SELECT stockroom_id, item_id, SUM(trans.quantity) AS qty
-		 FROM inv_transaction trans
-		 WHERE stockroom_id = $P{stockroomId} AND date_created <= $P{endDate}
+		 FROM inv_transaction trans INNER JOIN inv_stock_operation op1 ON
+			trans.operation_id = op1.stock_operation_id
+		 WHERE stockroom_id = $P{stockroomId} AND op1.operation_date <= $P{endDate}
 		 GROUP BY stockroom_id, item_id) end_stock ON
 			sr.stockroom_id = end_stock.stockroom_id
 	LEFT OUTER JOIN
 		(SELECT stockroom_id, item_id, SUM(trans.quantity) AS qty
-		 FROM inv_transaction trans
-		 WHERE stockroom_id = $P{stockroomId} AND date_created  <= $P{beginDate}
+		 FROM inv_transaction trans INNER JOIN inv_stock_operation op2 ON
+			trans.operation_id = op2.stock_operation_id
+		 WHERE stockroom_id = $P{stockroomId} AND op2.operation_date  <= $P{beginDate}
 		 GROUP BY stockroom_id, item_id) begin_stock ON
 			sr.stockroom_id = begin_stock.stockroom_id AND
 			end_stock.item_id = begin_stock.item_id
 	LEFT OUTER JOIN
 		(SELECT stockroom_id, item_id, SUM(trans.quantity) AS qty
-		 FROM inv_transaction trans
-		 WHERE stockroom_id = $P{stockroomId} AND date_created > $P{beginDate} AND date_created <= $P{endDate} AND quantity > 0
+		 FROM inv_transaction trans INNER JOIN inv_stock_operation op3 ON
+			trans.operation_id = op3.stock_operation_id
+		 WHERE stockroom_id = $P{stockroomId} AND op3.operation_date > $P{beginDate} AND op3.operation_date <= $P{endDate} AND quantity > 0
 		 GROUP BY stockroom_id, item_id) incoming_stock ON
 			sr.stockroom_id = incoming_stock.stockroom_id AND
 			end_stock.item_id = incoming_stock.item_id
 	LEFT OUTER JOIN
 		(SELECT stockroom_id, item_id, SUM(trans.quantity) AS qty
-		 FROM inv_transaction trans
-		 WHERE stockroom_id = $P{stockroomId} AND date_created > $P{beginDate} AND date_created <= $P{endDate} AND quantity <= 0
+		 FROM inv_transaction trans INNER JOIN inv_stock_operation op4 ON
+			trans.operation_id = op4.stock_operation_id
+		 WHERE stockroom_id = $P{stockroomId} AND op4.operation_date > $P{beginDate} AND op4.operation_date <= $P{endDate} AND quantity <= 0
 		 GROUP BY stockroom_id, item_id) outgoing_stock ON
 			sr.stockroom_id = outgoing_stock.stockroom_id AND
 			end_stock.item_id = outgoing_stock.item_id
