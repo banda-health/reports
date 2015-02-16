@@ -27,6 +27,9 @@
 		<parameter name="expiresBy" class="java.util.Date">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
+		<parameter name="stockroomId" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
 		<queryString language="SQL">
 			<![CDATA[SELECT
         ii.name AS item_name,
@@ -37,6 +40,12 @@ FROM inv_item_stock_detail as isd
 JOIN inv_item as ii on isd.item_id = ii.item_id
 JOIN inv_stockroom as ins on ins.stockroom_id = isd.stockroom_id
 WHERE DATE(isd.expiration) <= DATE($P{expiresBy})
+AND CASE
+    WHEN ($P{stockroomId} IS NOT NULL OR $P{stockroomId} != "")
+    THEN isd.stockroom_id = $P{stockroomId}
+    ELSE true = true
+END
+
 ORDER BY item_name]]>
 		</queryString>
 		<field name="item_name" class="java.lang.String"/>
@@ -47,6 +56,7 @@ ORDER BY item_name]]>
 		<field name="expiry_date" class="java.util.Date"/>
 	</subDataset>
 	<parameter name="expiresBy" class="java.util.Date"/>
+	<parameter name="stockroomId" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT 'Data in sub-dataset' AS Field]]>
 	</queryString>
@@ -84,6 +94,9 @@ ORDER BY item_name]]>
 					<datasetRun subDataset="Expiring Stock" uuid="09292c6a-cf28-47b4-9778-35e5c1fe5941">
 						<datasetParameter name="expiresBy">
 							<datasetParameterExpression><![CDATA[$P{expiresBy}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="stockroomId">
+							<datasetParameterExpression><![CDATA[$P{stockroomId}]]></datasetParameterExpression>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
