@@ -118,9 +118,9 @@ FROM
 WHERE
 	i.item_id = $P{itemId}
 AND
-	((so.date_changed IS NULL AND so.date_created BETWEEN $P{beginDate} AND $P{endDate})
+	((so.date_changed IS NULL AND so.date_created BETWEEN CONCAT($P{beginDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59'))
         OR
-     (so.date_changed IS NOT NULL AND so.date_changed BETWEEN $P{beginDate} AND $P{endDate}))
+     (so.date_changed IS NOT NULL AND so.date_changed BETWEEN CONCAT($P{beginDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59')))
 AND
 	so.status <> 'CANCELLED'
 AND

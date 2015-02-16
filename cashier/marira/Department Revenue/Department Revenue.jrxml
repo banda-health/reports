@@ -24,9 +24,9 @@ FROM
 WHERE
     b.status = 'PAID'
 AND
-    ((b.date_changed IS NULL AND b.date_created BETWEEN $P{startDate} AND $P{endDate})
+    ((b.date_changed IS NULL AND b.date_created BETWEEN CONCAT($P{startDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59'))
         OR
-     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN $P{startDate} AND $P{endDate}))
+     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN CONCAT($P{startDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59')))
 GROUP BY d.Name]]>
 	</queryString>
 	<field name="Name" class="java.lang.String">
