@@ -63,7 +63,7 @@
 		<parameter name="balanceParm" class="java.lang.Integer"/>
 		<queryString>
 			<![CDATA[SELECT
-    IF (so.date_changed IS NULL, so.date_created, so.date_changed) AS operation_date,
+    so.operation_date AS operation_date,
 	sot.name AS operation_type,
     so.operation_number,
     CASE -- Adjusted, Receipt, Return, and Intital operations
@@ -124,9 +124,7 @@ WHERE
 	i.item_id = $P{itemId}
 AND (so.source_id = $P{stockroomId} OR so.destination_id = $P{stockroomId})
 AND
-	((so.date_changed IS NULL AND so.date_created BETWEEN CONCAT($P{beginDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59'))
-        OR
-     (so.date_changed IS NOT NULL AND so.date_changed BETWEEN CONCAT($P{beginDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59')))
+	so.operation_date BETWEEN CONCAT($P{beginDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59')
 AND
 	so.status <> 'CANCELLED'
 AND
@@ -180,8 +178,7 @@ ORDER BY operation_date ASC]]>
          JOIN inv_stock_operation AS iso ON trans.operation_id = iso.stock_operation_id
          WHERE trans.item_id = $P{itemId}
          AND trans.stockroom_id = $P{stockroomId}
-         AND (trans.date_created  <= $P{beginDate}
-         OR iso.operation_date <= $P{beginDate})) AS starting_stock]]>
+         AND  iso.operation_date <= $P{beginDate}) AS starting_stock]]>
 	</queryString>
 	<field name="item_name" class="java.lang.String"/>
 	<field name="total_stock" class="java.math.BigDecimal"/>
