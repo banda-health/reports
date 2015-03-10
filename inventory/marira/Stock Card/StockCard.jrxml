@@ -162,9 +162,11 @@ FROM
      FROM inv_item i
      WHERE i.item_id = $P{itemId}
     ) item,
-    (SELECT SUM(stock.quantity) AS stock
-	 FROM inv_item_stock stock
-	 WHERE stock.item_id = $P{itemId}) total,
+    (SELECT SUM(trans.quantity) AS stock
+	 FROM inv_transaction trans
+     JOIN inv_stock_operation AS iso ON trans.operation_id = iso.stock_operation_id
+     WHERE trans.item_id = $P{itemId}
+     AND iso.operation_date <= CONCAT($P{endDate} ,' ' ,'23:59:59')) total,
     (SELECT SUM(trans.quantity) AS stock
 	 FROM inv_transaction trans
      JOIN inv_stock_operation AS iso ON trans.operation_id = iso.stock_operation_id
