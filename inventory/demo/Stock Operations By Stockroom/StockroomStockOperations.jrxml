@@ -57,6 +57,9 @@
 		<parameter name="endDate" class="java.util.Date">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
+		<parameter name="stockroomId" class="java.lang.Integer">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
 		<parameter name="balanceParm" class="java.lang.Integer"/>
 		<queryString>
 			<![CDATA[SELECT
@@ -68,11 +71,13 @@
 			'128924d7-72ee-414e-ae40-52f1f89d3e7d', '20f3734f-5b1a-490d-8676-1225a9cdddf7') THEN soi.quantity
 		-- Transfer operations only count for recceived once completed
         WHEN sot.uuid = 'db40707f-9175-4199-8df2-a5702f41ec7d' THEN
-			IF (so.status = 'COMPLETED', soi.quantity, NULL)
+			IF (so.status = 'COMPLETED' AND so.destination_id = $P{stockroomId}, soi.quantity, NULL)
         ELSE NULL
     END AS quantity_received,
     CASE -- Disposed, Distribution, and Transfer operations
-		WHEN sot.uuid IN ('84be0aaf-70cf-4ebb-83e3-088e5d375905', 'c264f34b-c795-4576-9928-454d1fa20e09', 'db40707f-9175-4199-8df2-a5702f41ec7d') THEN soi.quantity
+		WHEN sot.uuid IN ('84be0aaf-70cf-4ebb-83e3-088e5d375905', 'c264f34b-c795-4576-9928-454d1fa20e09') THEN soi.quantity
+        WHEN sot.uuid = 'db40707f-9175-4199-8df2-a5702f41ec7d' THEN
+			IF (so.status = 'COMPLETED' AND so.source_id = $P{stockroomId}, soi.quantity, NULL)
         ELSE NULL
 	END AS quantity_issued,
     ssr.name AS source_stockroom,
@@ -117,6 +122,7 @@ FROM
         pi.identifier_type = 3
 WHERE
 	i.item_id = $P{itemId}
+AND (so.source_id = $P{stockroomId} OR so.destination_id = $P{stockroomId})
 AND
 	so.operation_date BETWEEN CONCAT($P{beginDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59')
 AND
@@ -152,26 +158,29 @@ ORDER BY operation_date ASC]]>
 	</parameter>
 	<parameter name="beginDate" class="java.util.Date"/>
 	<parameter name="endDate" class="java.util.Date"/>
+	<parameter name="stockroomId" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[SELECT
-    item.name as item_name,
-    IFNULL(total.stock, 0) AS total_stock,
-    IFNULL(starting_stock.stock, 0) AS starting_stock
-FROM
-    (SELECT i.name
-     FROM inv_item i
-     WHERE i.item_id = $P{itemId}
-    ) item,
-    (SELECT SUM(trans.quantity) AS stock
-	 FROM inv_transaction trans
-     JOIN inv_stock_operation AS iso ON trans.operation_id = iso.stock_operation_id
-     WHERE trans.item_id = $P{itemId}
-     AND iso.operation_date <= CONCAT($P{endDate} ,' ' ,'23:59:59')) total,
-    (SELECT SUM(trans.quantity) AS stock
-	 FROM inv_transaction trans
-     JOIN inv_stock_operation AS iso ON trans.operation_id = iso.stock_operation_id
-     WHERE trans.item_id = $P{itemId}
-     AND iso.operation_date <= $P{beginDate}) starting_stock]]>
+        item.name as item_name,
+        IFNULL(total.stock, 0) AS total_stock,
+        IFNULL(starting_stock.stock, 0) AS starting_stock
+    FROM
+        (SELECT i.name
+         FROM inv_item i
+         WHERE i.item_id = $P{itemId}
+        ) AS item,
+        (SELECT SUM(trans.quantity) AS stock
+         FROM inv_transaction trans
+         JOIN inv_stock_operation AS iso ON trans.operation_id = iso.stock_operation_id
+         WHERE trans.item_id = $P{itemId}
+         AND trans.stockroom_id = $P{stockroomId}
+         AND iso.operation_date <= CONCAT($P{endDate} ,' ' ,'23:59:59')) total,
+        (SELECT SUM(trans.quantity) AS stock
+         FROM inv_transaction trans
+         JOIN inv_stock_operation AS iso ON trans.operation_id = iso.stock_operation_id
+         WHERE trans.item_id = $P{itemId}
+         AND trans.stockroom_id = $P{stockroomId}
+         AND  iso.operation_date <= $P{beginDate}) AS starting_stock]]>
 	</queryString>
 	<field name="item_name" class="java.lang.String"/>
 	<field name="total_stock" class="java.math.BigDecimal"/>
@@ -256,6 +265,9 @@ FROM
 						</datasetParameter>
 						<datasetParameter name="endDate">
 							<datasetParameterExpression><![CDATA[$P{endDate}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="stockroomId">
+							<datasetParameterExpression><![CDATA[$P{stockroomId}]]></datasetParameterExpression>
 						</datasetParameter>
 						<datasetParameter name="balanceParm">
 							<datasetParameterExpression><![CDATA[$F{starting_stock}]]></datasetParameterExpression>
