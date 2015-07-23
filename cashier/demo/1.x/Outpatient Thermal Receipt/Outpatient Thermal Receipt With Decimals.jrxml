@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Outpatient Thermal Receipt" language="groovy" pageWidth="216" pageHeight="297" columnWidth="216" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="b0650e21-f6cf-4aad-acec-9e81aea4c41f">
 	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="215"/>
+	<property name="ireport.y" value="210"/>
 	<style name="style1" fontName="Courier New" fontSize="12"/>
 	<parameter name="billId" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[4]]></defaultValueExpression>
@@ -74,12 +74,12 @@ WHERE
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="10"/>
 				</textElement>
-				<text><![CDATA[AIC KIJABE HOSPITAL
-MARIRA CLINIC
-Address: 00220 20 KIJABE
-Tel: 020 324 6500
-Fax: 020 324 6355
-Email: info.kh@kijabe.net]]></text>
+				<text><![CDATA[OpenHMIS Demo
+DEMO CLINIC
+Address: 12345 Nairobi
+Tel: 070 712 3456
+Fax: 070 712 3457
+Email: openhmisproject@gmail.com]]></text>
 			</staticText>
 			<textField>
 				<reportElement style="style1" x="69" y="117" width="141" height="17" uuid="0d6439ca-7f1c-489d-944a-c648c6a72d21"/>
@@ -164,7 +164,7 @@ Email: info.kh@kijabe.net]]></text>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<returnValue subreportVariable="totalCost" toVariable="totalCost"/>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Outpatient Thermal Receipt Details.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Outpatient Thermal Receipt Details With Decimals.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="25">
@@ -177,7 +177,7 @@ Email: info.kh@kijabe.net]]></text>
 					<subreportParameterExpression><![CDATA[$P{billId}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Outpatient Thermal Receipt Payments.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Outpatient Thermal Receipt Payments With Decimals.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>

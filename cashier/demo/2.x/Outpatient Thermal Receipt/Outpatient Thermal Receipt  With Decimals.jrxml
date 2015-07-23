@@ -70,7 +70,7 @@ WHERE
 	<title>
 		<band height="170" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="e49ce628-bd2d-4cb0-b1c7-1ae5d963e2c3" style="style1" mode="Transparent" x="0" y="0" width="216" height="70"/>
+				<reportElement style="style1" mode="Transparent" x="0" y="0" width="216" height="70" uuid="e49ce628-bd2d-4cb0-b1c7-1ae5d963e2c3"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="10"/>
 				</textElement>
@@ -82,72 +82,72 @@ Fax: 070 712 3457
 Email: openhmisproject@gmail.com]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="0d6439ca-7f1c-489d-944a-c648c6a72d21" style="style1" x="69" y="117" width="141" height="17"/>
+				<reportElement style="style1" x="69" y="117" width="141" height="17" uuid="0d6439ca-7f1c-489d-944a-c648c6a72d21"/>
 				<textElement>
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{receipt_number}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5" x="69" y="100" width="141" height="17"/>
+				<reportElement x="69" y="100" width="141" height="17" uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5"/>
 				<textElement>
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-dd-MM HH:mm").format($F{bill_date})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5" x="69" y="151" width="141" height="16"/>
+				<reportElement x="69" y="151" width="141" height="16" uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5"/>
 				<textElement>
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{patient_family_name} + ", " + $F{patient_given_name}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="c583cfb7-4b4a-4320-a203-d61ae2e3311f" x="0" y="77" width="216" height="17"/>
+				<reportElement x="0" y="77" width="216" height="17" uuid="c583cfb7-4b4a-4320-a203-d61ae2e3311f"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial"/>
 				</textElement>
 				<text><![CDATA[Receipt]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="11372256-903a-4f4c-9d38-a588c5f39958" x="13" y="117" width="56" height="17"/>
+				<reportElement x="13" y="117" width="56" height="17" uuid="11372256-903a-4f4c-9d38-a588c5f39958"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<text><![CDATA[Receipt #:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="11372256-903a-4f4c-9d38-a588c5f39958" x="13" y="100" width="56" height="17"/>
+				<reportElement x="13" y="100" width="56" height="17" uuid="11372256-903a-4f4c-9d38-a588c5f39958"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<text><![CDATA[Date:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="11372256-903a-4f4c-9d38-a588c5f39958" x="13" y="134" width="56" height="17"/>
+				<reportElement x="13" y="134" width="56" height="17" uuid="11372256-903a-4f4c-9d38-a588c5f39958"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<text><![CDATA[Cashier:]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="3da84233-25c2-471f-be29-1e9532a22240" x="0" y="72" width="216" height="1"/>
+				<reportElement x="0" y="72" width="216" height="1" uuid="3da84233-25c2-471f-be29-1e9532a22240"/>
 			</line>
 			<line>
-				<reportElement uuid="3da84233-25c2-471f-be29-1e9532a22240" x="0" y="94" width="216" height="1"/>
+				<reportElement x="0" y="94" width="216" height="1" uuid="3da84233-25c2-471f-be29-1e9532a22240"/>
 			</line>
 			<line>
-				<reportElement uuid="3da84233-25c2-471f-be29-1e9532a22240" x="0" y="167" width="216" height="1"/>
+				<reportElement x="0" y="167" width="216" height="1" uuid="3da84233-25c2-471f-be29-1e9532a22240"/>
 			</line>
 			<staticText>
-				<reportElement uuid="11372256-903a-4f4c-9d38-a588c5f39958" x="13" y="151" width="56" height="16"/>
+				<reportElement x="13" y="151" width="56" height="16" uuid="11372256-903a-4f4c-9d38-a588c5f39958"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<text><![CDATA[Patient:]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5" x="69" y="134" width="141" height="17"/>
+				<reportElement x="69" y="134" width="141" height="17" uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5"/>
 				<textElement>
 					<font fontName="Arial" size="10"/>
 				</textElement>
@@ -158,18 +158,18 @@ Email: openhmisproject@gmail.com]]></text>
 	<detail>
 		<band height="31" splitType="Stretch">
 			<subreport>
-				<reportElement uuid="43fd8c34-ad1b-4f84-a082-d22f749fe009" x="0" y="5" width="216" height="18"/>
+				<reportElement x="0" y="5" width="216" height="18" uuid="43fd8c34-ad1b-4f84-a082-d22f749fe009"/>
 				<subreportParameter name="billId">
 					<subreportParameterExpression><![CDATA[$P{billId}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<returnValue subreportVariable="totalCost" toVariable="totalCost"/>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Outpatient Thermal Receipt Details.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Outpatient Thermal Receipt Details With Decimals.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="25">
 			<subreport>
-				<reportElement uuid="1e6ea689-e420-4b4e-b7a9-fe9cf5da9b91" x="0" y="0" width="216" height="21"/>
+				<reportElement x="0" y="0" width="216" height="21" uuid="1e6ea689-e420-4b4e-b7a9-fe9cf5da9b91"/>
 				<subreportParameter name="totalCost">
 					<subreportParameterExpression><![CDATA[$V{totalCost}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -177,21 +177,21 @@ Email: openhmisproject@gmail.com]]></text>
 					<subreportParameterExpression><![CDATA[$P{billId}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Outpatient Thermal Receipt Payments.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Outpatient Thermal Receipt Payments With Decimals.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
 	<summary>
 		<band height="21">
 			<textField>
-				<reportElement uuid="7e44d78c-4b3c-4a07-89af-fd0a08995dbe" x="13" y="6" width="96" height="12"/>
+				<reportElement x="13" y="6" width="96" height="12" uuid="7e44d78c-4b3c-4a07-89af-fd0a08995dbe"/>
 				<textElement>
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Cashier: " + $F{cashier}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="6c430987-cd11-40be-bd9d-2077e233745f" x="109" y="6" width="101" height="12"/>
+				<reportElement x="109" y="6" width="101" height="12" uuid="6c430987-cd11-40be-bd9d-2077e233745f"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10"/>
 				</textElement>
