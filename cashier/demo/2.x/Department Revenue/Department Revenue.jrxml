@@ -3,7 +3,7 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<parameter name="startDate" class="java.util.Date">
+	<parameter name="beginDate" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="endDate" class="java.util.Date">
@@ -24,9 +24,9 @@ FROM
 WHERE
     b.status = 'PAID'
 AND
-    ((b.date_changed IS NULL AND b.date_created BETWEEN $P{startDate} AND $P{endDate})
+    ((b.date_changed IS NULL AND b.date_created BETWEEN $P{beginDate} AND $P{endDate})
         OR
-     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN $P{startDate} AND $P{endDate}))
+     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN $P{beginDate} AND $P{endDate}))
 GROUP BY d.Name]]>
 	</queryString>
 	<field name="Name" class="java.lang.String">
@@ -65,7 +65,7 @@ GROUP BY d.Name]]>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Department Revenue for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{startDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Department Revenue for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
