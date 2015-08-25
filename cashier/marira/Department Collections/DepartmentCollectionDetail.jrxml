@@ -3,7 +3,7 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<parameter name="startDate" class="java.util.Date">
+	<parameter name="beginDate" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="endDate" class="java.util.Date">
@@ -29,9 +29,9 @@ WHERE
 AND
     d.department_id = $P{departmentId}
 AND
-    ((b.date_changed IS NULL AND b.date_created BETWEEN CONCAT($P{startDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59'))
+    ((b.date_changed IS NULL AND b.date_created BETWEEN CONCAT($P{beginDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59'))
         OR
-     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN CONCAT($P{startDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59')))
+     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN CONCAT($P{beginDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59')))
 GROUP BY d.department_id, d.Name, i.Name]]>
 	</queryString>
 	<field name="Item" class="java.lang.String"/>

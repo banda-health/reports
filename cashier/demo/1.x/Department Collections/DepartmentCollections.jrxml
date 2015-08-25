@@ -3,7 +3,7 @@
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<parameter name="startDate" class="java.util.Date">
+	<parameter name="beginDate" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="endDate" class="java.util.Date">
@@ -46,7 +46,7 @@ FROM
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Department Collections for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{startDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Department Collections for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -89,8 +89,8 @@ FROM
 			</textField>
 			<subreport>
 				<reportElement uuid="6f88e28c-3f71-46f3-9931-83b369323bb1" x="14" y="18" width="541" height="22"/>
-				<subreportParameter name="startDate">
-					<subreportParameterExpression><![CDATA[$P{startDate}]]></subreportParameterExpression>
+				<subreportParameter name="beginDate">
+					<subreportParameterExpression><![CDATA[$P{beginDate}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="endDate">
 					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
