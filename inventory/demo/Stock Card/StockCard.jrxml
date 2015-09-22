@@ -142,9 +142,9 @@ ORDER BY operation_date ASC]]>
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<variable name="balance" class="java.lang.Integer" calculation="Sum">
-			<variableExpression><![CDATA[($V{balance} == 0 ? $P{balanceParm} : 0) + ($F{quantity_received} == null ? 0 : $F{quantity_received} ) -
+			<variableExpression><![CDATA[($V{balance} == null ? $P{balanceParm} : 0) + ($F{quantity_received} == null ? 0 : $F{quantity_received} ) -
 ($F{quantity_issued} == null ? 0 : $F{quantity_issued})]]></variableExpression>
-			<initialValueExpression><![CDATA[0]]></initialValueExpression>
+			<initialValueExpression><![CDATA[]]></initialValueExpression>
 		</variable>
 	</subDataset>
 	<parameter name="itemId" class="java.lang.Integer">
