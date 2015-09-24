@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Outpatient Thermal Receipt Payments" language="groovy" pageWidth="216" pageHeight="297" columnWidth="216" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="40dbf2df-a037-42cd-9808-b1285b682703">
 	<property name="ireport.zoom" value="3.305785123966942"/>
-	<property name="ireport.x" value="29"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="billId" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -36,16 +36,16 @@ GROUP BY b.bill_id, pm.name]]>
 	<detail>
 		<band height="13" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="3c6e796f-4ded-4100-859a-fbec76f7868b" x="17" y="0" width="106" height="12"/>
+				<reportElement x="17" y="0" width="106" height="12" uuid="3c6e796f-4ded-4100-859a-fbec76f7868b"/>
 				<textElement>
-					<font fontName="Arial" size="10"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}.toUpperCase()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0">
-				<reportElement uuid="3c6e796f-4ded-4100-859a-fbec76f7868b" x="123" y="0" width="88" height="12"/>
+				<reportElement x="123" y="0" width="88" height="12" uuid="3c6e796f-4ded-4100-859a-fbec76f7868b"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial" size="10"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{amount_tendered}]]></textFieldExpression>
 			</textField>
@@ -54,47 +54,47 @@ GROUP BY b.bill_id, pm.name]]>
 	<summary>
 		<band height="42" splitType="Stretch">
 			<textField pattern="#,##0">
-				<reportElement uuid="5f290662-d3d5-4249-9627-8a69a89724d9" x="144" y="6" width="67" height="12"/>
+				<reportElement x="144" y="6" width="67" height="12" uuid="5f290662-d3d5-4249-9627-8a69a89724d9"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial"/>
+					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{totalPayments}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0">
-				<reportElement uuid="5f290662-d3d5-4249-9627-8a69a89724d9" x="144" y="26" width="67" height="12"/>
+				<reportElement x="144" y="26" width="67" height="12" uuid="5f290662-d3d5-4249-9627-8a69a89724d9"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial"/>
+					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{totalPayments}.subtract($P{totalCost})]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="1e8beb63-73e7-4b46-9a7f-56e10587f782" x="74" y="6" width="70" height="12"/>
+				<reportElement x="74" y="6" width="70" height="12" uuid="1e8beb63-73e7-4b46-9a7f-56e10587f782"/>
 				<textElement>
-					<font fontName="Arial"/>
+					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<text><![CDATA[Total Payment:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1e8beb63-73e7-4b46-9a7f-56e10587f782" x="74" y="26" width="70" height="12">
+				<reportElement x="74" y="26" width="70" height="12" uuid="1e8beb63-73e7-4b46-9a7f-56e10587f782">
 					<printWhenExpression><![CDATA[$V{totalPayments}.subtract($P{totalCost}) >= 0]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial"/>
+					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<text><![CDATA[Change Due:]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="5215741e-00ff-4a42-9306-c0e4933cd70d" x="153" y="2" width="63" height="1"/>
+				<reportElement x="153" y="2" width="63" height="1" uuid="5215741e-00ff-4a42-9306-c0e4933cd70d"/>
 			</line>
 			<line>
-				<reportElement uuid="5215741e-00ff-4a42-9306-c0e4933cd70d" x="153" y="21" width="63" height="1"/>
+				<reportElement x="153" y="21" width="63" height="1" uuid="5215741e-00ff-4a42-9306-c0e4933cd70d"/>
 			</line>
 			<staticText>
-				<reportElement uuid="1e8beb63-73e7-4b46-9a7f-56e10587f782" x="74" y="26" width="70" height="12">
+				<reportElement x="74" y="26" width="70" height="12" uuid="1e8beb63-73e7-4b46-9a7f-56e10587f782">
 					<printWhenExpression><![CDATA[$V{totalPayments}.subtract($P{totalCost}) < 0]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial"/>
+					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<text><![CDATA[Outstanding:]]></text>
 			</staticText>

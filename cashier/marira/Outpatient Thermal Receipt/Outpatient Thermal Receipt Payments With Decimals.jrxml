@@ -38,14 +38,14 @@ GROUP BY b.bill_id, pm.name]]>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="17" y="0" width="106" height="12" uuid="3c6e796f-4ded-4100-859a-fbec76f7868b"/>
 				<textElement>
-					<font fontName="Arial" size="10"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}.toUpperCase()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0">
 				<reportElement x="123" y="0" width="88" height="12" uuid="3c6e796f-4ded-4100-859a-fbec76f7868b"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial" size="10"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0.00").format($F{amount_tendered})]]></textFieldExpression>
 			</textField>
@@ -56,21 +56,21 @@ GROUP BY b.bill_id, pm.name]]>
 			<textField pattern="#,##0">
 				<reportElement x="144" y="6" width="67" height="12" uuid="5f290662-d3d5-4249-9627-8a69a89724d9"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial"/>
+					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0.00").format($V{totalPayments})]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0">
 				<reportElement x="144" y="26" width="67" height="12" uuid="5f290662-d3d5-4249-9627-8a69a89724d9"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial"/>
+					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0.00").format($V{totalPayments}.subtract($P{totalCost}))]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="74" y="6" width="70" height="12" uuid="1e8beb63-73e7-4b46-9a7f-56e10587f782"/>
 				<textElement>
-					<font fontName="Arial"/>
+					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<text><![CDATA[Total Payment:]]></text>
 			</staticText>
@@ -79,7 +79,7 @@ GROUP BY b.bill_id, pm.name]]>
 					<printWhenExpression><![CDATA[$V{totalPayments}.subtract($P{totalCost}) >= 0]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial"/>
+					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<text><![CDATA[Change Due:]]></text>
 			</staticText>
@@ -94,7 +94,7 @@ GROUP BY b.bill_id, pm.name]]>
 					<printWhenExpression><![CDATA[$V{totalPayments}.subtract($P{totalCost}) < 0]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial"/>
+					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<text><![CDATA[Outstanding:]]></text>
 			</staticText>

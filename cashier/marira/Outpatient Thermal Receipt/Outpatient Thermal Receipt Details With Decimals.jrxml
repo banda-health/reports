@@ -48,21 +48,21 @@ ORDER BY
 			<staticText>
 				<reportElement x="7" y="0" width="22" height="12" uuid="87629929-d34f-4165-8c85-a041e765e0ba"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial" size="10"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<text><![CDATA[Qty]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="32" y="0" width="121" height="12" uuid="87629929-d34f-4165-8c85-a041e765e0ba"/>
 				<textElement>
-					<font fontName="Arial" size="10"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<text><![CDATA[Description]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="153" y="0" width="58" height="12" uuid="87629929-d34f-4165-8c85-a041e765e0ba"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial" size="10"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<text><![CDATA[Amount]]></text>
 			</staticText>
@@ -76,21 +76,21 @@ ORDER BY
 			<textField pattern="" isBlankWhenNull="true">
 				<reportElement x="7" y="0" width="22" height="12" uuid="b6129c2c-e785-4c69-a179-a135a786673c"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial" size="10"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="32" y="0" width="121" height="12" uuid="3c6e796f-4ded-4100-859a-fbec76f7868b"/>
 				<textElement>
-					<font fontName="Arial" size="10"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{item_name}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0">
 				<reportElement x="153" y="0" width="58" height="12" uuid="f27b9b2b-699c-4252-813c-e3a266b1c405"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial" size="10"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0.00").format($F{price}.multiply($F{quantity}))]]></textFieldExpression>
 			</textField>
@@ -101,14 +101,14 @@ ORDER BY
 			<textField>
 				<reportElement x="119" y="5" width="92" height="12" uuid="66809266-fd5e-4cc5-8a7e-9d9425131297"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial" size="10"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0.00").format($V{totalCost})]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="74" y="5" width="45" height="12" uuid="1e8beb63-73e7-4b46-9a7f-56e10587f782"/>
 				<textElement>
-					<font fontName="Arial"/>
+					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<text><![CDATA[Total:]]></text>
 			</staticText>
