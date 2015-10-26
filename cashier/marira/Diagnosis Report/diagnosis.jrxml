@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2015-10-26T18:04:12 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="diagnosis" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a1cf53c5-0b67-42ca-830b-404412731764">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -257,6 +259,8 @@
 		</conditionalStyle>
 	</style>
 	<subDataset name="Diagnosis" uuid="e0b0fd88-3764-4265-9bfd-78f46816cf57">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="OpenHMIS"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 		<parameter name="startDate" class="java.util.Date">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
@@ -272,10 +276,11 @@ person_name.middle_name,
 person_name.family_name,
 person.gender,
 visit_type.name as location,
-CASE WHEN obs.value_coded is null THEN obs.value_text
-	WHEN obs.value_coded IS NOT NULL and obs.value_text is not null then concept_name.name + ", "+ obs.value_text
-	ELSE concept_name.name
-    END as diag,
+group_concat(" ",
+	CASE 
+	WHEN obs.value_coded is null THEN obs.value_text
+	 WHEN obs.value_coded IS NOT NULL and obs.value_text is not null then concept_name.name + ", " + obs.value_text 
+	 ELSE concept_name.name END) as diag,
  CASE
         WHEN person.birthdate IS NOT NULL THEN person.birthdate
         WHEN person.birthdate_estimated = 0 THEN ""
@@ -303,7 +308,12 @@ obs.value_coded = concept_name.concept_id
 inner join concept on
 concept_name.concept_id = concept.concept_id
 
-WHERE (visit.date_created BETWEEN "2013-01-01" AND "2015-12-31" ) and  person_attribute.person_attribute_type_id = 9 and concept.class_id = 4 and concept_name.locale = "en" and concept_name.concept_name_type = "FULLY_SPECIFIED"
+WHERE (visit.date_created BETWEEN CONCAT($P{startDate},' ' ,'00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59') )
+	 and  person_attribute.person_attribute_type_id = 9
+	 and concept.class_id = 4 
+	 and concept_name.locale = "en" 
+	 and concept_name.concept_name_type = "FULLY_SPECIFIED"
+	 group by visit.date_started
 ORDER BY visit.date_started ASC]]>
 		</queryString>
 		<field name="date_started" class="java.sql.Timestamp">
@@ -344,6 +354,11 @@ person_name.given_name,
 person_name.middle_name,
 person_name.family_name,
 person.gender,
+group_concat(
+CASE 
+	WHEN obs.value_coded is null THEN obs.value_text 
+	WHEN obs.value_coded IS NOT NULL and obs.value_text is not null then concept_name.name + ", " + obs.value_text 
+	ELSE concept_name.name END) as diag,
  CASE
         WHEN person.birthdate IS NOT NULL THEN person.birthdate
         ELSE person.birthdate_estimated
@@ -369,8 +384,13 @@ obs.value_coded = concept_name.concept_id
 inner join concept on
 concept_name.concept_id = concept.concept_id
 
-WHERE (visit.date_created BETWEEN "2013-01-01" AND "2015-12-31" ) and  person_attribute.person_attribute_type_id = 9 and concept.class_id = 4 and concept_name.locale = "en" and concept_name.concept_name_type = "FULLY_SPECIFIED"
-ORDER BY visit.date_started ASC;]]>
+WHERE (visit.date_created BETWEEN CONCAT($P{startDate},' ' ,'00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59') )
+ and  person_attribute.person_attribute_type_id = 9 
+ and concept.class_id = 4 
+ and concept_name.locale = "en" 
+ and concept_name.concept_name_type = "FULLY_SPECIFIED"
+group by visit.date_started
+ORDER BY visit.date_started ASC]]>
 	</queryString>
 	<field name="date_started" class="java.sql.Timestamp">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -398,39 +418,33 @@ ORDER BY visit.date_started ASC;]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="120" splitType="Stretch">
+		<band height="32" splitType="Stretch">
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="802" height="120" uuid="64a07c22-a2e3-4b34-b1d8-1e10b33f6fba"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="800" height="30" uuid="64a07c22-a2e3-4b34-b1d8-1e10b33f6fba"/>
 				<textElement textAlignment="Center">
-					<font size="16" isBold="true"/>
+					<font size="24" isBold="true"/>
 				</textElement>
-				<text><![CDATA[AIC KIJABE HOSPITAL
-MARIRA CLINIC
-Address: 00220 20 KIJABE
-Tel: 020 324 6500
-Fax: 020 324 6355
-Email: info.kh@kijabe.net]]></text>
+				<text><![CDATA[AIC MARIRA CLINIC]]></text>
 			</staticText>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="56" splitType="Stretch">
-			<line>
-				<reportElement x="4" y="34" width="800" height="1" uuid="ee95c059-bc5d-41fe-a53b-0226179e0847"/>
-			</line>
+		<band height="42" splitType="Stretch">
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="2" y="0" width="802" height="35" uuid="8a0d9c02-90e2-4c65-a6f7-8b37484169b0"/>
+				<reportElement stretchType="RelativeToTallestObject" x="2" y="2" width="800" height="19" uuid="8a0d9c02-90e2-4c65-a6f7-8b37484169b0">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Center">
-					<font size="24" isBold="true"/>
+					<font size="14" isBold="false"/>
 				</textElement>
 				<text><![CDATA[ VISIT DIAGNOSIS REPORT]]></text>
 			</staticText>
 			<line>
-				<reportElement x="4" y="0" width="800" height="1" uuid="ee95c059-bc5d-41fe-a53b-0226179e0867"/>
+				<reportElement x="0" y="21" width="802" height="1" uuid="ee95c059-bc5d-41fe-a53b-0226179e0867"/>
 			</line>
 			<textField>
-				<reportElement x="580" y="34" width="222" height="20" isRemoveLineWhenBlank="true" uuid="4e447753-6920-4edb-bd5d-90c1d67360fe"/>
-				<textElement>
+				<reportElement x="577" y="22" width="227" height="18" isRemoveLineWhenBlank="true" uuid="4e447753-6920-4edb-bd5d-90c1d67360fe"/>
+				<textElement textAlignment="Right">
 					<font isBold="true"/>
 					<paragraph leftIndent="5" spacingBefore="5" spacingAfter="5"/>
 				</textElement>
@@ -439,14 +453,20 @@ Email: info.kh@kijabe.net]]></text>
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="60" splitType="Stretch">
+		<band height="48" splitType="Stretch">
 			<printWhenExpression><![CDATA[$V{REPORT_COUNT} == 1]]></printWhenExpression>
 			<componentElement>
-				<reportElement key="table 9" style="table 9" x="2" y="0" width="800" height="60" uuid="b00a67c8-a368-4a5c-a4a4-b87b0cc04584">
+				<reportElement key="table 9" style="table 9" x="2" y="0" width="800" height="48" uuid="b00a67c8-a368-4a5c-a4a4-b87b0cc04584">
 					<printWhenExpression><![CDATA[$V{REPORT_COUNT} == 1]]></printWhenExpression>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="Diagnosis" uuid="b301a803-016c-4bfe-b8e3-2d55b366f184">
+					<datasetRun subDataset="Diagnosis" uuid="a3c4cead-afa7-4b83-8952-08749b143a39">
+						<datasetParameter name="startDate">
+							<datasetParameterExpression><![CDATA[$P{startDate}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="endDate">
+							<datasetParameterExpression><![CDATA[$P{endDate}]]></datasetParameterExpression>
+						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
 					<jr:column width="113" uuid="da48327f-b8b3-42e6-8796-b3fbc0b835f0">
@@ -460,15 +480,15 @@ Email: info.kh@kijabe.net]]></text>
 								<text><![CDATA[Visit Date]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 9_TD" height="21" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="113" height="20" uuid="d4ef84c5-d846-4120-836b-36bbbad525e1"/>
+						<jr:detailCell style="table 9_TD" height="25" rowSpan="1">
+							<textField isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="113" height="25" uuid="d4ef84c5-d846-4120-836b-36bbbad525e1"/>
 								<textElement>
 									<font size="9"/>
 									<paragraph leftIndent="5" spacingBefore="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{date_started}]]></textFieldExpression>
-								<patternExpression><![CDATA["yyyy-MM-dd hh:mm a"]]></patternExpression>
+								<patternExpression><![CDATA["dd-MM-yyyy hh:mm a"]]></patternExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -483,9 +503,9 @@ Email: info.kh@kijabe.net]]></text>
 								<text><![CDATA[Patient Id]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 9_TD" height="21" rowSpan="1">
+						<jr:detailCell style="table 9_TD" height="25" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="58" height="20" uuid="a4d437fe-bb55-4f32-b9e3-2fbe682cce2a"/>
+								<reportElement x="0" y="0" width="58" height="25" uuid="a4d437fe-bb55-4f32-b9e3-2fbe682cce2a"/>
 								<textElement>
 									<font size="9"/>
 									<paragraph leftIndent="5" spacingBefore="5"/>
@@ -494,10 +514,10 @@ Email: info.kh@kijabe.net]]></text>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="157" uuid="1b448cd3-841d-494f-afd9-a4a25a1294ce">
+					<jr:column width="149" uuid="1b448cd3-841d-494f-afd9-a4a25a1294ce">
 						<jr:columnHeader style="table 9_CH" height="23" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="157" height="23" uuid="0c35129b-e658-4478-b240-24912c24a0a8"/>
+								<reportElement x="0" y="0" width="149" height="23" uuid="0c35129b-e658-4478-b240-24912c24a0a8"/>
 								<textElement>
 									<font isBold="true"/>
 									<paragraph leftIndent="5" spacingBefore="5"/>
@@ -505,10 +525,10 @@ Email: info.kh@kijabe.net]]></text>
 								<text><![CDATA[Names]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 9_TD" height="21" rowSpan="1">
-							<textField>
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="157" height="20" uuid="aac1a064-4815-4deb-aaac-72c06fbe5752"/>
-								<textElement>
+						<jr:detailCell style="table 9_TD" height="25" rowSpan="1">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="149" height="25" uuid="aac1a064-4815-4deb-aaac-72c06fbe5752"/>
+								<textElement textAlignment="Justified">
 									<font size="9"/>
 									<paragraph leftIndent="5" spacingBefore="5"/>
 								</textElement>
@@ -527,9 +547,9 @@ Email: info.kh@kijabe.net]]></text>
 								<text><![CDATA[Gender]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 9_TD" height="21" rowSpan="1">
+						<jr:detailCell style="table 9_TD" height="25" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="51" height="20" uuid="8a119f0e-5396-4a3c-824b-1b673c96e674"/>
+								<reportElement x="0" y="0" width="51" height="25" uuid="8a119f0e-5396-4a3c-824b-1b673c96e674"/>
 								<textElement textAlignment="Center">
 									<font size="9"/>
 									<paragraph spacingBefore="5"/>
@@ -549,9 +569,9 @@ Email: info.kh@kijabe.net]]></text>
 								<text><![CDATA[Clinic]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 9_TD" height="21" rowSpan="1">
+						<jr:detailCell style="table 9_TD" height="25" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="71" height="20" uuid="07bb4e60-a134-4c3f-9710-11a111971d65"/>
+								<reportElement x="0" y="0" width="71" height="25" uuid="07bb4e60-a134-4c3f-9710-11a111971d65"/>
 								<textElement>
 									<font size="9"/>
 									<paragraph leftIndent="5" spacingBefore="5"/>
@@ -560,10 +580,10 @@ Email: info.kh@kijabe.net]]></text>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="203" uuid="7f8330e1-7678-49d0-a969-163e4cdd5c83">
+					<jr:column width="218" uuid="7f8330e1-7678-49d0-a969-163e4cdd5c83">
 						<jr:columnHeader style="table 9_CH" height="23" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="203" height="23" uuid="37096f76-85cf-4b33-8902-3c571de73d7b"/>
+								<reportElement x="0" y="0" width="218" height="23" uuid="37096f76-85cf-4b33-8902-3c571de73d7b"/>
 								<textElement>
 									<font isBold="true"/>
 									<paragraph leftIndent="5" spacingBefore="5"/>
@@ -571,9 +591,9 @@ Email: info.kh@kijabe.net]]></text>
 								<text><![CDATA[Diagnosis]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 9_TD" height="21" rowSpan="1">
-							<textField>
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="203" height="20" uuid="b9e2ba3c-75c6-4994-8065-e870ebd758c7"/>
+						<jr:detailCell style="table 9_TD" height="25" rowSpan="1">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="218" height="25" uuid="b9e2ba3c-75c6-4994-8065-e870ebd758c7"/>
 								<textElement>
 									<font size="9"/>
 									<paragraph leftIndent="5" spacingBefore="5"/>
@@ -593,21 +613,22 @@ Email: info.kh@kijabe.net]]></text>
 								<text><![CDATA[D.O.B]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 9_TD" height="21" rowSpan="1">
+						<jr:detailCell style="table 9_TD" height="25" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="72" height="20" uuid="ec0cb91d-1b83-4243-ab4a-421dd7fbbc4f"/>
+								<reportElement x="0" y="0" width="72" height="25" uuid="ec0cb91d-1b83-4243-ab4a-421dd7fbbc4f"/>
 								<textElement>
 									<font size="9"/>
 									<paragraph leftIndent="5" spacingBefore="5"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{birth_date}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{birth_date}.equals("") ? ($F{birth_date}) : (new SimpleDateFormat("dd-MM-yyyy").format(new SimpleDateFormat("yyyy-MM-dd").parse($F{birth_date})))
+]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="72" uuid="f3e2f697-5172-43cb-9a02-a765f5710fb8">
 						<jr:columnHeader style="table 9_CH" height="23" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="70" height="23" uuid="b1a27ca3-6ad3-451c-97ef-64f7e4abf947"/>
+								<reportElement x="0" y="0" width="68" height="23" uuid="b1a27ca3-6ad3-451c-97ef-64f7e4abf947"/>
 								<textElement>
 									<font isBold="true"/>
 									<paragraph leftIndent="5" spacingBefore="5"/>
@@ -615,9 +636,9 @@ Email: info.kh@kijabe.net]]></text>
 								<text><![CDATA[Phone #]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 9_TD" height="21" rowSpan="1">
+						<jr:detailCell style="table 9_TD" height="25" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="72" height="20" uuid="81d21194-afac-4a03-a602-1ae6b80ce7e6"/>
+								<reportElement x="0" y="0" width="68" height="25" uuid="81d21194-afac-4a03-a602-1ae6b80ce7e6"/>
 								<textElement>
 									<font size="9"/>
 									<paragraph leftIndent="5" spacingBefore="5"/>
@@ -631,23 +652,23 @@ Email: info.kh@kijabe.net]]></text>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="17" splitType="Stretch">
+		<band height="24" splitType="Stretch">
 			<textField>
-				<reportElement x="723" y="0" width="64" height="16" uuid="a39a1876-f0b2-413d-a967-5491aae14611"/>
-				<textElement textAlignment="Right">
+				<reportElement x="720" y="5" width="64" height="16" uuid="a39a1876-f0b2-413d-a967-5491aae14611"/>
+				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="787" y="0" width="15" height="16" uuid="b9e1471d-28d7-44b5-be2f-31b889532911"/>
-				<textElement>
+				<reportElement x="784" y="5" width="15" height="16" uuid="b9e1471d-28d7-44b5-be2f-31b889532911"/>
+				<textElement textAlignment="Justified">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="0" width="369" height="16" uuid="9c714af5-1497-433d-a983-fa52281eb5ad"/>
+				<reportElement x="0" y="5" width="369" height="16" uuid="9c714af5-1497-433d-a983-fa52281eb5ad"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
