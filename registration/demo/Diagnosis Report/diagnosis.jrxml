@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2015-10-26T21:17:18 -->
+<!-- 2015-10-27T09:43:48 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="diagnosis" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a1cf53c5-0b67-42ca-830b-404412731764">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -347,73 +347,8 @@ ORDER BY visit.date_started ASC]]>
 	<parameter name="startDate" class="java.util.Date"/>
 	<parameter name="endDate" class="java.util.Date"/>
 	<queryString>
-		<![CDATA[select
-visit.date_started,
-patient.patient_id,
-person_name.given_name,
-person_name.middle_name,
-person_name.family_name,
-person.gender,
-group_concat(
-CASE 
-	WHEN obs.value_coded is null THEN obs.value_text 
-	WHEN obs.value_coded IS NOT NULL and obs.value_text is not null then concept_name.name + ", " + obs.value_text 
-	ELSE concept_name.name END) as diag,
- CASE
-        WHEN person.birthdate IS NOT NULL THEN person.birthdate
-        ELSE person.birthdate_estimated
-    END as birth_date,
-person_attribute.value
-
-from visit inner join patient on
-visit.patient_id = patient.patient_id
-inner join person on
-patient.patient_id = person.person_id
-inner join person_name on
-person.person_id = person_name.person_id
-inner join person_attribute on
-person.person_id = person_attribute.person_id
-inner join visit_type on
-visit.visit_type_id = visit_type.visit_type_id
-inner join location on
-visit.location_id = location.location_id
-inner join obs on
-person.person_id = obs.person_id
-inner join concept_name on
-obs.value_coded = concept_name.concept_id
-inner join concept on
-concept_name.concept_id = concept.concept_id
-
-WHERE (visit.date_created BETWEEN CONCAT($P{startDate},' ' ,'00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59') )
- and  person_attribute.person_attribute_type_id = 9 
- and concept.class_id = 4 
- and concept_name.locale = "en" 
- and concept_name.concept_name_type = "FULLY_SPECIFIED"
-group by visit.date_started
-ORDER BY visit.date_started ASC]]>
+		<![CDATA[SELECT 1]]>
 	</queryString>
-	<field name="date_started" class="java.sql.Timestamp">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="patient_id" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="given_name" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="middle_name" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="family_name" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="gender" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="birth_date" class="java.lang.String"/>
-	<field name="value" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -488,7 +423,7 @@ ORDER BY visit.date_started ASC]]>
 									<paragraph leftIndent="5" spacingBefore="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{date_started}]]></textFieldExpression>
-								<patternExpression><![CDATA["dd-MM-yyyy hh:mm a"]]></patternExpression>
+								<patternExpression><![CDATA["dd-MMM-yy hh:mm a"]]></patternExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -620,7 +555,7 @@ ORDER BY visit.date_started ASC]]>
 									<font size="9"/>
 									<paragraph leftIndent="5" spacingBefore="5"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{birth_date}.equals("") ? ($F{birth_date}) : (new SimpleDateFormat("dd-MM-yyyy").format(new SimpleDateFormat("yyyy-MM-dd").parse($F{birth_date})))]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{birth_date}.equals("") ? ($F{birth_date}) : (new SimpleDateFormat("dd-MMM-yy").format(new SimpleDateFormat("yyyy-MM-dd").parse($F{birth_date})))]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -653,15 +588,15 @@ ORDER BY visit.date_started ASC]]>
 	<pageFooter>
 		<band height="24" splitType="Stretch">
 			<textField>
-				<reportElement x="720" y="5" width="64" height="16" uuid="a39a1876-f0b2-413d-a967-5491aae14611"/>
-				<textElement>
+				<reportElement x="723" y="4" width="64" height="16" uuid="a39a1876-f0b2-413d-a967-5491aae14611"/>
+				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="784" y="5" width="15" height="16" uuid="b9e1471d-28d7-44b5-be2f-31b889532911"/>
-				<textElement textAlignment="Justified">
+				<reportElement x="784" y="4" width="14" height="16" uuid="b9e1471d-28d7-44b5-be2f-31b889532911"/>
+				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
