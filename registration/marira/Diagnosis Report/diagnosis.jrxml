@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2015-10-27T10:05:19 -->
+<!-- 2015-10-27T10:33:52 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="diagnosis" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a1cf53c5-0b67-42ca-830b-404412731764">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -261,7 +261,8 @@
 	<subDataset name="Diagnosis" uuid="e0b0fd88-3764-4265-9bfd-78f46816cf57">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="OpenHMIS"/>
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<parameter name="startDate" class="java.util.Date">
+		<parameter name="beginDate" class="java.util.Date">
+			<parameterDescription><![CDATA[]]></parameterDescription>
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
 		<parameter name="endDate" class="java.util.Date">
@@ -308,7 +309,7 @@ obs.value_coded = concept_name.concept_id
 inner join concept on
 concept_name.concept_id = concept.concept_id
 
-WHERE (visit.date_created BETWEEN CONCAT($P{startDate},' ' ,'00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59') )
+WHERE (visit.date_created BETWEEN CONCAT($P{beginDate},' ' ,'00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59') )
 	 and  person_attribute.person_attribute_type_id = 9
 	 and concept.class_id = 4 
 	 and concept_name.locale = "en" 
@@ -344,7 +345,9 @@ ORDER BY visit.date_started ASC]]>
 			<groupExpression><![CDATA[$F{date_started}]]></groupExpression>
 		</group>
 	</subDataset>
-	<parameter name="startDate" class="java.util.Date"/>
+	<parameter name="beginDate" class="java.util.Date">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
 	<parameter name="endDate" class="java.util.Date"/>
 	<queryString>
 		<![CDATA[SELECT 1]]>
@@ -383,7 +386,7 @@ ORDER BY visit.date_started ASC]]>
 					<font isBold="true"/>
 					<paragraph leftIndent="5" spacingBefore="5" spacingAfter="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Visits from " + new SimpleDateFormat("yyyy-MMM-dd").format($P{startDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Visits from " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -395,12 +398,12 @@ ORDER BY visit.date_started ASC]]>
 					<printWhenExpression><![CDATA[$V{REPORT_COUNT} == 1]]></printWhenExpression>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="Diagnosis" uuid="a3c4cead-afa7-4b83-8952-08749b143a39">
-						<datasetParameter name="startDate">
-							<datasetParameterExpression><![CDATA[$P{startDate}]]></datasetParameterExpression>
-						</datasetParameter>
+					<datasetRun subDataset="Diagnosis" uuid="0b30a102-4516-4290-8019-4d623b506ab7">
 						<datasetParameter name="endDate">
 							<datasetParameterExpression><![CDATA[$P{endDate}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="beginDate">
+							<datasetParameterExpression><![CDATA[$P{beginDate}]]></datasetParameterExpression>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
