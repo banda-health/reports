@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2015-10-27T10:34:49 -->
+<!-- 2015-10-27T11:53:50 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="diagnosis" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a1cf53c5-0b67-42ca-830b-404412731764">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -262,6 +262,7 @@
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="OpenHMIS"/>
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 		<parameter name="beginDate" class="java.util.Date">
+			<parameterDescription><![CDATA[]]></parameterDescription>
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
 		<parameter name="endDate" class="java.util.Date">
@@ -344,7 +345,9 @@ ORDER BY visit.date_started ASC]]>
 			<groupExpression><![CDATA[$F{date_started}]]></groupExpression>
 		</group>
 	</subDataset>
-	<parameter name="beginDate" class="java.util.Date"/>
+	<parameter name="beginDate" class="java.util.Date">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
 	<parameter name="endDate" class="java.util.Date"/>
 	<queryString>
 		<![CDATA[SELECT 1]]>
@@ -374,9 +377,6 @@ ORDER BY visit.date_started ASC]]>
 				</textElement>
 				<text><![CDATA[ VISIT DIAGNOSIS REPORT]]></text>
 			</staticText>
-			<line>
-				<reportElement x="0" y="21" width="802" height="1" uuid="ee95c059-bc5d-41fe-a53b-0226179e0867"/>
-			</line>
 			<textField>
 				<reportElement x="577" y="22" width="227" height="18" isRemoveLineWhenBlank="true" uuid="4e447753-6920-4edb-bd5d-90c1d67360fe"/>
 				<textElement textAlignment="Right">
@@ -392,10 +392,11 @@ ORDER BY visit.date_started ASC]]>
 			<printWhenExpression><![CDATA[$V{REPORT_COUNT} == 1]]></printWhenExpression>
 			<componentElement>
 				<reportElement key="table 9" style="table 9" x="2" y="0" width="800" height="48" uuid="b00a67c8-a368-4a5c-a4a4-b87b0cc04584">
+					<property name="net.sf.jasperreports.export.headertoolbar.table.name" value="diagnosis"/>
 					<printWhenExpression><![CDATA[$V{REPORT_COUNT} == 1]]></printWhenExpression>
 				</reportElement>
-				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="Diagnosis" uuid="a3c4cead-afa7-4b83-8952-08749b143a39">
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
+					<datasetRun subDataset="Diagnosis" uuid="0b30a102-4516-4290-8019-4d623b506ab7">
 						<datasetParameter name="endDate">
 							<datasetParameterExpression><![CDATA[$P{endDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -515,10 +516,10 @@ ORDER BY visit.date_started ASC]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="218" uuid="7f8330e1-7678-49d0-a969-163e4cdd5c83">
+					<jr:column width="228" uuid="7f8330e1-7678-49d0-a969-163e4cdd5c83">
 						<jr:columnHeader style="table 9_CH" height="23" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="218" height="23" uuid="37096f76-85cf-4b33-8902-3c571de73d7b"/>
+								<reportElement x="0" y="0" width="228" height="23" uuid="37096f76-85cf-4b33-8902-3c571de73d7b"/>
 								<textElement>
 									<font isBold="true"/>
 									<paragraph leftIndent="5" spacingBefore="5"/>
@@ -528,19 +529,19 @@ ORDER BY visit.date_started ASC]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 9_TD" height="25" rowSpan="1">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="218" height="25" uuid="b9e2ba3c-75c6-4994-8065-e870ebd758c7"/>
-								<textElement>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="228" height="25" uuid="b9e2ba3c-75c6-4994-8065-e870ebd758c7"/>
+								<textElement textAlignment="Left">
 									<font size="9"/>
-									<paragraph leftIndent="5" spacingBefore="5"/>
+									<paragraph lineSpacing="1_1_2" leftIndent="5" rightIndent="5" spacingBefore="5" spacingAfter="3"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{diag}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="72" uuid="5288b54b-db67-4f43-9159-0ae7ec787f78">
+					<jr:column width="60" uuid="5288b54b-db67-4f43-9159-0ae7ec787f78">
 						<jr:columnHeader style="table 9_CH" height="23" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="72" height="23" uuid="88c602d4-ee5b-48f3-9b10-5d14ab12e941"/>
+								<reportElement x="0" y="0" width="60" height="23" uuid="88c602d4-ee5b-48f3-9b10-5d14ab12e941"/>
 								<textElement>
 									<font isBold="true"/>
 									<paragraph leftIndent="5" spacingBefore="5"/>
@@ -550,7 +551,7 @@ ORDER BY visit.date_started ASC]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 9_TD" height="25" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="72" height="25" uuid="ec0cb91d-1b83-4243-ab4a-421dd7fbbc4f"/>
+								<reportElement x="0" y="0" width="60" height="25" uuid="ec0cb91d-1b83-4243-ab4a-421dd7fbbc4f"/>
 								<textElement>
 									<font size="9"/>
 									<paragraph leftIndent="5" spacingBefore="5"/>
@@ -602,7 +603,7 @@ ORDER BY visit.date_started ASC]]>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="5" width="369" height="16" uuid="9c714af5-1497-433d-a983-fa52281eb5ad"/>
+				<reportElement x="0" y="4" width="369" height="16" uuid="9c714af5-1497-433d-a983-fa52281eb5ad"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
