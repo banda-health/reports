@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2015-12-08T12:04:01 -->
+<!-- 2015-12-09T15:16:00 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AggregateVisitDiagnosis_Children" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="67dbb5ab-b7c6-43a5-b28b-902e76407590">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
@@ -157,7 +157,7 @@ WHERE
 	<queryString>
 		<![CDATA[SELECT 
     obs.obs_datetime,
-    replace(concept_name.name ,'  ',' ') as name,
+    REPLACE(REPLACE(concept_name.name, '\r', ''), '\n', '') as name,
     obs.value_coded
 FROM
     obs
@@ -168,7 +168,7 @@ FROM
 		INNER JOIN
 	person ON person.person_id = obs.person_id
 WHERE
-    (date_format(obs.obs_datetime, '%Y-%m') = "2015-11" )
+    (date_format(obs.obs_datetime, '%Y-%m') = "2015-08"  )
 	AND (timestampdiff(year, person.birthdate,obs.obs_datetime) <= 5
 	OR timestampdiff(year, person.birthdate_estimated,obs.obs_datetime) <= 5)
 	AND concept.class_id = 4
@@ -208,17 +208,17 @@ WHERE
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="52">
+		<band height="79">
 			<printWhenExpression><![CDATA[$V{REPORT_COUNT} == 1]]></printWhenExpression>
 			<crosstab>
-				<reportElement x="0" y="0" width="802" height="50" uuid="99e21d2f-6d10-4b23-92ad-f22f76521c82">
+				<reportElement x="0" y="0" width="802" height="79" uuid="99e21d2f-6d10-4b23-92ad-f22f76521c82">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="net.sf.jasperreports.export.headertoolbar.table.name" value=""/>
 					<printWhenExpression><![CDATA[$V{REPORT_COUNT} == 1]]></printWhenExpression>
 				</reportElement>
 				<crosstabDataset>
 					<dataset>
-						<datasetRun subDataset="CummDiagnosis" uuid="5d271275-1441-4a0e-8da1-f67bb7afbdce">
+						<datasetRun subDataset="CummDiagnosis" uuid="e715aef1-7626-4770-b7d9-0d3079476da9">
 							<datasetParameter name="runDate">
 								<datasetParameterExpression><![CDATA[new Date()]]></datasetParameterExpression>
 							</datasetParameter>
@@ -228,7 +228,7 @@ WHERE
 						</datasetRun>
 					</dataset>
 				</crosstabDataset>
-				<rowGroup name="name1" width="92" headerPosition="Stretch">
+				<rowGroup name="name1" width="92" totalPosition="End" headerPosition="Stretch">
 					<bucket class="java.lang.String">
 						<bucketExpression><![CDATA[$F{name}]]></bucketExpression>
 					</bucket>
@@ -249,13 +249,25 @@ WHERE
 					<crosstabTotalRowHeader>
 						<cellContents>
 							<staticText>
-								<reportElement x="0" y="0" width="-2147483648" height="-2147483648" uuid="6402fe50-29bd-4934-9cdb-40541143d1e0"/>
-								<text><![CDATA[Total name1]]></text>
+								<reportElement x="0" y="0" width="92" height="20" uuid="6402fe50-29bd-4934-9cdb-40541143d1e0">
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+								</reportElement>
+								<box>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Total]]></text>
 							</staticText>
 						</cellContents>
 					</crosstabTotalRowHeader>
 				</rowGroup>
-				<columnGroup name="obs_datetime1" height="30">
+				<columnGroup name="obs_datetime1" height="30" totalPosition="End">
 					<bucket class="java.lang.String">
 						<bucketExpression><![CDATA[new SimpleDateFormat("dd").format($F{obs_datetime})]]></bucketExpression>
 					</bucket>
@@ -275,8 +287,20 @@ WHERE
 					<crosstabTotalColumnHeader>
 						<cellContents>
 							<staticText>
-								<reportElement x="0" y="0" width="-2147483648" height="-2147483648" uuid="1082626e-fbdc-4099-95c2-f7479aec8b6d"/>
-								<text><![CDATA[Total obs_datetime1]]></text>
+								<reportElement x="0" y="0" width="30" height="30" uuid="1082626e-fbdc-4099-95c2-f7479aec8b6d">
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+								</reportElement>
+								<box>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Total]]></text>
 							</staticText>
 						</cellContents>
 					</crosstabTotalColumnHeader>
@@ -287,34 +311,37 @@ WHERE
 				<crosstabCell width="22" height="20">
 					<cellContents mode="Opaque" style="Crosstab 2_CD">
 						<textField isStretchWithOverflow="true">
-							<reportElement key="" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="22" height="20" uuid="61565d36-4a07-467c-810d-6e7e8f89e6f8">
-								<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+							<reportElement key="" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="22" height="20" uuid="61565d36-4a07-467c-810d-6e7e8f89e6f8"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle"/>
+							<textFieldExpression><![CDATA[$V{value_coded_MEASURE1}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="30" height="20" columnTotalGroup="obs_datetime1">
+					<cellContents mode="Opaque" style="Crosstab 2_CT">
+						<textField>
+							<reportElement x="0" y="0" width="30" height="20" forecolor="#FFFFFF" uuid="a83ba6b0-f17c-471a-9038-5a0d01605250">
+								<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 							</reportElement>
 							<textElement textAlignment="Center" verticalAlignment="Middle"/>
 							<textFieldExpression><![CDATA[$V{value_coded_MEASURE1}]]></textFieldExpression>
 						</textField>
 					</cellContents>
 				</crosstabCell>
-				<crosstabCell width="60" height="20" columnTotalGroup="obs_datetime1">
+				<crosstabCell width="22" height="20" rowTotalGroup="name1">
 					<cellContents mode="Opaque" style="Crosstab 2_CT">
 						<textField>
-							<reportElement x="0" y="0" width="60" height="20" forecolor="#FFFFFF" uuid="a83ba6b0-f17c-471a-9038-5a0d01605250"/>
+							<reportElement x="0" y="0" width="22" height="20" forecolor="#FFFFFF" uuid="7b3a1115-6de4-4fb5-aebf-2c879861cd62"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle"/>
 							<textFieldExpression><![CDATA[$V{value_coded_MEASURE1}]]></textFieldExpression>
 						</textField>
 					</cellContents>
 				</crosstabCell>
-				<crosstabCell width="60" height="20" rowTotalGroup="name1">
+				<crosstabCell width="30" height="20" rowTotalGroup="name1" columnTotalGroup="obs_datetime1">
 					<cellContents mode="Opaque" style="Crosstab 2_CT">
 						<textField>
-							<reportElement x="0" y="0" width="60" height="20" forecolor="#FFFFFF" uuid="7b3a1115-6de4-4fb5-aebf-2c879861cd62"/>
-							<textFieldExpression><![CDATA[$V{value_coded_MEASURE1}]]></textFieldExpression>
-						</textField>
-					</cellContents>
-				</crosstabCell>
-				<crosstabCell width="60" height="20" rowTotalGroup="name1" columnTotalGroup="obs_datetime1">
-					<cellContents mode="Opaque" style="Crosstab 2_CT">
-						<textField>
-							<reportElement x="0" y="0" width="60" height="20" forecolor="#FFFFFF" uuid="4a4eb021-84d5-4cd3-a430-c74a894d2d0b"/>
+							<reportElement x="0" y="0" width="30" height="20" forecolor="#FFFFFF" uuid="4a4eb021-84d5-4cd3-a430-c74a894d2d0b"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle"/>
 							<textFieldExpression><![CDATA[$V{value_coded_MEASURE1}]]></textFieldExpression>
 						</textField>
 					</cellContents>
