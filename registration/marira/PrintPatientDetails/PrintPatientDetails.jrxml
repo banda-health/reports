@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-01-14T08:41:42 -->
+<!-- 2016-01-14T16:01:42 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PrintPatientDetails" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a3b4907c-bc1c-4c75-931a-3ad16891c21b">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="background.image.path" value="/home/specialist/Documents/wip/scan for Jeremy.jpeg"/>
@@ -65,7 +65,7 @@ LIMIT 1;]]>
 	<detail>
 		<band height="350" splitType="Stretch">
 			<frame>
-				<reportElement x="290" y="-20" width="285" height="80" uuid="ff146b0e-fb20-42db-b864-9a7c0c4b4629"/>
+				<reportElement x="290" y="-20" width="285" height="90" uuid="ff146b0e-fb20-42db-b864-9a7c0c4b4629"/>
 				<box>
 					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
@@ -117,7 +117,7 @@ LIMIT 1;]]>
 				<textFieldExpression><![CDATA[$F{Sex}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="483" y="89" width="95" height="17" uuid="9e9b0c0f-8671-4bc7-abf1-06da0ba9024e"/>
+				<reportElement x="483" y="89" width="92" height="17" uuid="9e9b0c0f-8671-4bc7-abf1-06da0ba9024e"/>
 				<box>
 					<bottomPen lineWidth="0.0"/>
 				</box>
