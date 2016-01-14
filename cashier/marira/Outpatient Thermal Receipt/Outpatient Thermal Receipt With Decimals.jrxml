@@ -25,10 +25,15 @@
     patient_person_name.given_name patient_given_name,
     patient_person_name.family_name patient_family_name
 FROM
-    cashier_bill b INNER JOIN provider ON
-        provider.provider_id = b.provider_id
-    INNER JOIN users u ON
-        provider.person_id = u.person_id
+    cashier_bill b INNER JOIN users u ON
+      CASE
+	WHEN b.changed_by IS NULL THEN
+        b.creator = u.user_id
+       WHEN b.changed_by IS NOT NULL AND b.creator IS NOT NULL THEN
+        b.changed_by = u.user_id
+        ELSE
+        b.changed_by = u.user_id
+        END
     INNER JOIN patient ON
         b.patient_id = patient.patient_id
     INNER JOIN person patient_person ON

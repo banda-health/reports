@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Outpatient Thermal Receipt" language="groovy" pageWidth="216" pageHeight="297" columnWidth="216" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="b0650e21-f6cf-4aad-acec-9e81aea4c41f">
 	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="210"/>
+	<property name="ireport.y" value="0"/>
 	<style name="style1" fontName="Courier New" fontSize="12"/>
 	<parameter name="billId" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[4]]></defaultValueExpression>
@@ -25,10 +25,15 @@
     patient_person_name.given_name patient_given_name,
     patient_person_name.family_name patient_family_name
 FROM
-    cashier_bill b INNER JOIN provider ON
-        provider.provider_id = b.provider_id
-    INNER JOIN users u ON
-        provider.person_id = u.person_id
+    cashier_bill b INNER JOIN users u ON
+      CASE
+	WHEN b.changed_by IS NULL THEN
+        b.creator = u.user_id
+       WHEN b.changed_by IS NOT NULL AND b.creator IS NOT NULL THEN
+        b.changed_by = u.user_id
+        ELSE
+        b.changed_by = u.user_id
+        END
     INNER JOIN patient ON
         b.patient_id = patient.patient_id
     INNER JOIN person patient_person ON
