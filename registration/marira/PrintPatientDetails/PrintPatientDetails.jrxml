@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-01-14T16:01:42 -->
+<!-- 2016-01-15T09:01:47 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PrintPatientDetails" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a3b4907c-bc1c-4c75-931a-3ad16891c21b">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="background.image.path" value="/home/specialist/Documents/wip/scan for Jeremy.jpeg"/>
@@ -30,13 +30,13 @@
     
 FROM
     person p 
-		INNER JOIN person_name pn ON
+		LEFT OUTER JOIN person_name pn ON
         pn.person_id = p.person_id
-		INNER JOIN person_address a ON
+		LEFT OUTER JOIN person_address a ON
         p.person_id = a.person_id
-		INNER JOIN person_attribute pa ON
+		LEFT OUTER JOIN person_attribute pa ON
         p.person_id = pa.person_id
-        INNER JOIN patient_identifier pi ON
+        LEFT OUTER JOIN patient_identifier pi ON
         p.person_id = pi.patient_id
 		AND
         pi.identifier_type = 3
@@ -73,7 +73,7 @@ LIMIT 1;]]>
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textField>
-					<reportElement x="125" y="20" width="103" height="18" uuid="754ce42a-abee-473a-8dff-15c73eed48dd"/>
+					<reportElement x="125" y="21" width="103" height="18" uuid="754ce42a-abee-473a-8dff-15c73eed48dd"/>
 					<box bottomPadding="0">
 						<bottomPen lineWidth="0.0"/>
 					</box>
@@ -83,7 +83,7 @@ LIMIT 1;]]>
 					<textFieldExpression><![CDATA[$F{FileNumber}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="70" y="40" width="163" height="26" uuid="557c6997-ac9b-4848-8482-97adc1199d25"/>
+					<reportElement x="70" y="38" width="163" height="26" uuid="557c6997-ac9b-4848-8482-97adc1199d25"/>
 					<box>
 						<bottomPen lineWidth="0.0"/>
 					</box>
