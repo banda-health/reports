@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2015-12-10T11:36:08 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AggregateVisitDiagnosisAdults" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="23610c93-524e-4820-b228-49e909c56745">
+<!-- 2016-02-03T14:27:53 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AggregateVisitDiagnosisAdults" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="23610c93-524e-4820-b228-49e909c56745">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Crosstab_CH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
@@ -100,52 +100,40 @@ WHERE
 	<title>
 		<band height="32" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="802" height="32" uuid="a387d906-fb97-4816-822e-cbad1bd4bf14"/>
+				<reportElement x="0" y="0" width="802" height="30" uuid="a387d906-fb97-4816-822e-cbad1bd4bf14"/>
 				<textElement textAlignment="Center">
-					<font size="24"/>
+					<font size="20"/>
 				</textElement>
 				<text><![CDATA[AIC Marira Clinic]]></text>
 			</staticText>
 		</band>
 	</title>
-	<pageHeader>
-		<band height="29" splitType="Stretch">
+	<columnHeader>
+		<band height="21">
 			<textField>
-				<reportElement x="0" y="0" width="802" height="25" uuid="3816f392-7c36-4408-8022-e37469cb7b80"/>
+				<reportElement x="0" y="0" width="802" height="20" uuid="d913b86b-3fea-4b97-8e30-59da0143e2da"/>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Aggregate Visit Diagnosis Report (Adults) for " + new SimpleDateFormat("yyyy-MMM").format($P{runDate})]]></textFieldExpression>
 			</textField>
 		</band>
-	</pageHeader>
-	<pageFooter>
-		<band height="30" splitType="Stretch">
+	</columnHeader>
+	<columnFooter>
+		<band height="20">
 			<textField>
-				<reportElement x="0" y="6" width="369" height="16" uuid="dc2a03bc-413b-414a-86f8-2a28856bf9c7"/>
+				<reportElement x="0" y="2" width="369" height="16" uuid="8da1a2ec-6da3-4125-a1ef-6559b1450465"/>
 				<textElement textAlignment="Left">
 					<font isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-dd-MM HH:mm").format(new Date())]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="690" y="5" width="61" height="20" uuid="dd61532a-f637-44f0-aaaa-92ac6d6e1595"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Report">
-				<reportElement x="727" y="5" width="36" height="16" uuid="906ce1e0-d4e6-4129-9cc3-1fa126f0f659"/>
-				<textElement textAlignment="Right">
-					<font isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
 		</band>
-	</pageFooter>
+	</columnFooter>
 	<summary>
 		<band height="83" splitType="Stretch">
 			<crosstab>
-				<reportElement x="0" y="0" width="800" height="79" uuid="88e4f6ad-f0ec-4cef-8b13-05b0e134525e">
+				<reportElement x="0" y="0" width="800" height="70" uuid="88e4f6ad-f0ec-4cef-8b13-05b0e134525e">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
@@ -281,9 +269,9 @@ WHERE
 		</band>
 	</summary>
 	<noData>
-		<band height="27">
+		<band height="8">
 			<staticText>
-				<reportElement x="0" y="5" width="306" height="16" uuid="24f02410-7637-43fc-97a2-7d695d9d3755"/>
+				<reportElement x="0" y="-10" width="306" height="16" uuid="24f02410-7637-43fc-97a2-7d695d9d3755"/>
 				<textElement textAlignment="Left">
 					<font isBold="false" isItalic="true"/>
 				</textElement>
