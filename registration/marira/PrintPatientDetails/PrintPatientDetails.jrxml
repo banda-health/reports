@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-01-14T16:01:42 -->
+<!-- 2016-01-19T09:32:15 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PrintPatientDetails" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a3b4907c-bc1c-4c75-931a-3ad16891c21b">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="background.image.path" value="/home/specialist/Documents/wip/scan for Jeremy.jpeg"/>
 	<property name="background.image.keep_ratio" value="true"/>
 	<property name="background.image.widht" value="596"/>
 	<property name="background.image.height" value="1167"/>
-	<parameter name="PersonID" class="java.lang.Integer">
+	<parameter name="personId" class="java.lang.Integer">
 		<parameterDescription><![CDATA[ID of Patient to Print]]></parameterDescription>
 	</parameter>
 	<queryString>
@@ -22,26 +22,26 @@
     a.county_district as District,
     p.birthdate as DateBirth,
     p.gender as Sex,
-    (select value from person_attribute where person_attribute_type_id = 4 and person_id=$P{PersonID}) as KinName,
-    (select cn.name from concept_name cn inner join person_attribute pa on cn.concept_id = pa.value AND pa.person_attribute_type_id = 5 where person_id= $P{PersonID}  limit 1) as MaritalStatus,
-    (select value from person_attribute where person_attribute_type_id = 9 and person_id=$P{PersonID}) as PhoneNumber,
-    (select cn.name from concept_name cn inner join person_attribute pa on cn.concept_id = pa.value AND pa.person_attribute_type_id = 12 where person_id=$P{PersonID} limit 1) as KinRelationship,
-    (select value from person_attribute where person_attribute_type_id = 13 and person_id=$P{PersonID}) as KinAddress
+    (select value from person_attribute where person_attribute_type_id = 4 and person_id=$P{personId}) as KinName,
+    (select cn.name from concept_name cn inner join person_attribute pa on cn.concept_id = pa.value AND pa.person_attribute_type_id = 5 where person_id= $P{personId}  limit 1) as MaritalStatus,
+    (select value from person_attribute where person_attribute_type_id = 9 and person_id=$P{personId}) as PhoneNumber,
+    (select cn.name from concept_name cn inner join person_attribute pa on cn.concept_id = pa.value AND pa.person_attribute_type_id = 12 where person_id=$P{personId} limit 1) as KinRelationship,
+    (select value from person_attribute where person_attribute_type_id = 13 and person_id=$P{personId}) as KinAddress
     
 FROM
     person p 
-		INNER JOIN person_name pn ON
+		LEFT OUTER JOIN person_name pn ON
         pn.person_id = p.person_id
-		INNER JOIN person_address a ON
+		LEFT OUTER JOIN person_address a ON
         p.person_id = a.person_id
-		INNER JOIN person_attribute pa ON
+		LEFT OUTER JOIN person_attribute pa ON
         p.person_id = pa.person_id
-        INNER JOIN patient_identifier pi ON
+        LEFT OUTER JOIN patient_identifier pi ON
         p.person_id = pi.patient_id
 		AND
         pi.identifier_type = 3
 WHERE
-        p.person_id = $P{PersonID}
+        p.person_id = $P{personId}
 LIMIT 1;]]>
 	</queryString>
 	<field name="FileNumber" class="java.lang.String"/>
@@ -73,7 +73,7 @@ LIMIT 1;]]>
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textField>
-					<reportElement x="125" y="20" width="103" height="18" uuid="754ce42a-abee-473a-8dff-15c73eed48dd"/>
+					<reportElement x="125" y="21" width="103" height="18" uuid="754ce42a-abee-473a-8dff-15c73eed48dd"/>
 					<box bottomPadding="0">
 						<bottomPen lineWidth="0.0"/>
 					</box>
@@ -83,7 +83,7 @@ LIMIT 1;]]>
 					<textFieldExpression><![CDATA[$F{FileNumber}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="70" y="40" width="163" height="26" uuid="557c6997-ac9b-4848-8482-97adc1199d25"/>
+					<reportElement x="70" y="35" width="163" height="26" uuid="557c6997-ac9b-4848-8482-97adc1199d25"/>
 					<box>
 						<bottomPen lineWidth="0.0"/>
 					</box>
@@ -117,11 +117,11 @@ LIMIT 1;]]>
 				<textFieldExpression><![CDATA[$F{Sex}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="483" y="89" width="92" height="17" uuid="9e9b0c0f-8671-4bc7-abf1-06da0ba9024e"/>
+				<reportElement x="483" y="87" width="92" height="17" uuid="9e9b0c0f-8671-4bc7-abf1-06da0ba9024e"/>
 				<box>
 					<bottomPen lineWidth="0.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{MaritalStatus}]]></textFieldExpression>
@@ -138,7 +138,7 @@ LIMIT 1;]]>
 					</box>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="109" y="47" width="122" height="13" uuid="b04e8834-7ea9-407b-b097-f70eab7fe73b"/>
+					<reportElement x="109" y="45" width="122" height="13" uuid="b04e8834-7ea9-407b-b097-f70eab7fe73b"/>
 					<box>
 						<topPen lineWidth="0.0"/>
 						<leftPen lineWidth="0.0"/>
@@ -151,7 +151,7 @@ LIMIT 1;]]>
 					<textFieldExpression><![CDATA[$F{Province}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="108" y="119" width="125" height="14" uuid="4e2b85a0-e5f7-4e36-892f-37f242e27228">
+					<reportElement x="108" y="115" width="125" height="14" uuid="4e2b85a0-e5f7-4e36-892f-37f242e27228">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
 					<box>
@@ -166,7 +166,7 @@ LIMIT 1;]]>
 					<textFieldExpression><![CDATA[$F{Address}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="108" y="89" width="125" height="13" uuid="60f68fea-85e8-416d-8718-cfab5b45ab5c">
+					<reportElement x="108" y="86" width="125" height="13" uuid="60f68fea-85e8-416d-8718-cfab5b45ab5c">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
 					<box>
@@ -181,7 +181,7 @@ LIMIT 1;]]>
 					<textFieldExpression><![CDATA[$F{City}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="108" y="134" width="125" height="14" uuid="15696bfc-b96b-4bcb-a874-1ad8321ed8de">
+					<reportElement x="108" y="129" width="125" height="14" uuid="15696bfc-b96b-4bcb-a874-1ad8321ed8de">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
 					<box>
@@ -196,7 +196,7 @@ LIMIT 1;]]>
 					<textFieldExpression><![CDATA[$F{PhoneNumber}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="105" y="33" width="123" height="14" uuid="a97dec1d-5f73-4dd6-be2d-abf8d7de8bf1"/>
+					<reportElement x="105" y="32" width="123" height="14" uuid="a97dec1d-5f73-4dd6-be2d-abf8d7de8bf1"/>
 					<box>
 						<topPen lineWidth="0.0"/>
 						<leftPen lineWidth="0.0"/>
@@ -226,7 +226,7 @@ LIMIT 1;]]>
 			<frame>
 				<reportElement x="290" y="110" width="255" height="122" uuid="b3b61eca-4f11-4b28-88ab-c2e23738bd72"/>
 				<textField isBlankWhenNull="true">
-					<reportElement x="136" y="27" width="115" height="14" uuid="5944f60e-f6dc-47e9-8490-b79a3bebc74d">
+					<reportElement x="132" y="23" width="115" height="14" uuid="5944f60e-f6dc-47e9-8490-b79a3bebc74d">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
 					<box>
@@ -235,20 +235,20 @@ LIMIT 1;]]>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
+					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="10"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{KinRelationship}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="135" y="69" width="119" height="14" uuid="6c8d9568-7825-4e63-9c02-2f277dab87f8"/>
+					<reportElement x="135" y="65" width="119" height="14" uuid="6c8d9568-7825-4e63-9c02-2f277dab87f8"/>
 					<box>
 						<topPen lineWidth="0.0"/>
 						<leftPen lineWidth="0.0"/>
 						<bottomPen lineWidth="0.0"/>
 						<rightPen lineWidth="0.0"/>
 					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
+					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="10"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{KinAddress}]]></textFieldExpression>
@@ -265,7 +265,7 @@ LIMIT 1;]]>
 					</box>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="135" y="41" width="118" height="14" uuid="825572a1-a72f-44a8-a651-01802aae95b4">
+					<reportElement x="131" y="37" width="118" height="14" uuid="825572a1-a72f-44a8-a651-01802aae95b4">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
 					<box>
@@ -274,7 +274,7 @@ LIMIT 1;]]>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
+					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="10"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{KinName}]]></textFieldExpression>
