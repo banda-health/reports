@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-02-03T14:27:53 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AggregateVisitDiagnosisAdults" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="23610c93-524e-4820-b228-49e909c56745">
+<!-- 2016-02-16T15:43:56 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AggregateVisitDiagnosisAdults" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="e293a027-b4d7-4ac1-b14b-b8c14891648b">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Crosstab_CH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
@@ -43,56 +43,60 @@
 			<style mode="Opaque" backcolor="#E3DEDE"/>
 		</conditionalStyle>
 	</style>
-	<subDataset name="DiagnosisDataset" uuid="e5a66345-ad70-43c1-b8df-553669a9a20b">
+	<subDataset name="DiagnosisDataSet" uuid="6a0b694b-0571-4e14-8c3b-c8376e0cc107">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
-		<parameter name="runDate" class="java.util.Date">
-			<parameterDescription><![CDATA[]]></parameterDescription>
+		<parameter name="beginDate" class="java.util.Date">
 			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 		</parameter>
-		<parameter name="PatternDate" class="java.lang.String" isForPrompting="false">
-			<parameterDescription><![CDATA[]]></parameterDescription>
-			<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM").format($P{runDate})]]></defaultValueExpression>
+		<parameter name="endDate" class="java.util.Date">
+			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+		</parameter>
+		<parameter name="beginDatePattern" class="java.lang.String" isForPrompting="false">
+			<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{beginDate})]]></defaultValueExpression>
+		</parameter>
+		<parameter name="endDatePattern" class="java.lang.String" isForPrompting="false">
+			<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{endDate})]]></defaultValueExpression>
 		</parameter>
 		<queryString>
 			<![CDATA[SELECT 
-    obs.obs_datetime,
-    REPLACE(REPLACE(concept_name.name, '\r', ''), '\n', '') as name,
-    obs.value_coded
+    calendar.datefield as calendar,
+    coalesce(concept_name.name,'No Diagnosis') as diagnosis,
+    coalesce(obs.value_coded,NULL) AS NoOfDiagnosis
 FROM
-    obs
-        INNER JOIN
-    concept_name ON obs.value_coded = concept_name.concept_id
-        INNER JOIN
-    concept ON concept_name.concept_id = concept.concept_id
-		INNER JOIN
-	person ON person.person_id = obs.person_id
-WHERE
-    (date_format(obs.obs_datetime, '%Y-%m') = $P{PatternDate}  )
+    calendar
+    LEFT JOIN obs on DATE(obs.obs_datetime) = calendar.datefield 
+	AND obs.value_coded NOT IN (159393,159943,159944,159392)
+	LEFT JOIN concept_name ON obs.value_coded = concept_name.concept_id
+	AND (concept_name.concept_name_type = "FULLY_SPECIFIED"
+	AND concept_name.locale = "en")
+	LEFT JOIN concept ON concept_name.concept_id = concept.concept_id
+	AND concept.class_id = 4
+	LEFT JOIN person on person.person_id = obs.person_id
 	AND (timestampdiff(year, person.birthdate,obs.obs_datetime) > 5
 	OR timestampdiff(year, person.birthdate_estimated,obs.obs_datetime) > 5)
-	AND concept.class_id = 4
-	AND concept_name.locale = "en"
-	AND concept_name.concept_name_type = "FULLY_SPECIFIED"]]>
+    
+WHERE
+    (calendar.datefield BETWEEN $P{beginDatePattern}  AND  $P{endDatePattern} )]]>
 		</queryString>
-		<field name="obs_datetime" class="java.sql.Timestamp">
-			<fieldDescription><![CDATA[]]></fieldDescription>
-		</field>
-		<field name="name" class="java.lang.String"/>
-		<field name="value_coded" class="java.lang.Integer">
-			<fieldDescription><![CDATA[]]></fieldDescription>
-		</field>
+		<field name="calendar" class="java.sql.Date"/>
+		<field name="diagnosis" class="java.lang.String"/>
+		<field name="NoOfDiagnosis" class="java.lang.Integer"/>
 	</subDataset>
-	<parameter name="runDate" class="java.util.Date">
-		<parameterDescription><![CDATA[]]></parameterDescription>
+	<parameter name="beginDate" class="java.util.Date">
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
-	<parameter name="PatternDate" class="java.lang.String" isForPrompting="false">
-		<parameterDescription><![CDATA[]]></parameterDescription>
-		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM").format($P{runDate})]]></defaultValueExpression>
+	<parameter name="endDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="beginDatePattern" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{beginDate})]]></defaultValueExpression>
+	</parameter>
+	<parameter name="endDatePattern" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{endDate})]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select 1]]>
+		<![CDATA[SELECT 1 as One]]>
 	</queryString>
 	<background>
 		<band splitType="Stretch"/>
@@ -100,7 +104,7 @@ WHERE
 	<title>
 		<band height="32" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="802" height="30" uuid="a387d906-fb97-4816-822e-cbad1bd4bf14"/>
+				<reportElement x="0" y="0" width="802" height="30" uuid="89428502-5e87-4f6e-9150-b06858ffea92"/>
 				<textElement textAlignment="Center">
 					<font size="20"/>
 				</textElement>
@@ -111,18 +115,18 @@ WHERE
 	<columnHeader>
 		<band height="21">
 			<textField>
-				<reportElement x="0" y="0" width="802" height="20" uuid="d913b86b-3fea-4b97-8e30-59da0143e2da"/>
+				<reportElement x="0" y="0" width="802" height="20" uuid="abfe5881-5c19-437f-b246-5f679672a668"/>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Aggregate Visit Diagnosis Report (Adults) for " + new SimpleDateFormat("yyyy-MMM").format($P{runDate})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Aggregate Visit Diagnosis Report (Adults) for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
 	<columnFooter>
 		<band height="20">
 			<textField>
-				<reportElement x="0" y="2" width="369" height="16" uuid="8da1a2ec-6da3-4125-a1ef-6559b1450465"/>
+				<reportElement x="0" y="2" width="369" height="16" uuid="e3e3b2c9-6879-49ed-949c-bd091fdee4fb"/>
 				<textElement textAlignment="Left">
 					<font isBold="false"/>
 				</textElement>
@@ -133,135 +137,124 @@ WHERE
 	<summary>
 		<band height="83" splitType="Stretch">
 			<crosstab>
-				<reportElement x="0" y="0" width="800" height="70" uuid="88e4f6ad-f0ec-4cef-8b13-05b0e134525e">
+				<reportElement x="0" y="0" width="800" height="70" uuid="14680491-3ff5-4691-a600-420b19af3fa7">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<crosstabDataset>
 					<dataset>
-						<datasetRun subDataset="DiagnosisDataset" uuid="13a3177e-6a4f-483b-95d4-bfd256c403eb">
-							<datasetParameter name="runDate">
+						<datasetRun subDataset="DiagnosisDataSet" uuid="15eeb58c-d432-4746-bfb4-a43687bcecbc">
+							<datasetParameter name="beginDate">
 								<datasetParameterExpression><![CDATA[new Date()]]></datasetParameterExpression>
 							</datasetParameter>
-							<datasetParameter name="PatternDate">
-								<datasetParameterExpression><![CDATA[new SimpleDateFormat("yyyy-MM").format($P{runDate})]]></datasetParameterExpression>
+							<datasetParameter name="endDate">
+								<datasetParameterExpression><![CDATA[new Date()]]></datasetParameterExpression>
+							</datasetParameter>
+							<datasetParameter name="beginDatePattern">
+								<datasetParameterExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{beginDate})]]></datasetParameterExpression>
+							</datasetParameter>
+							<datasetParameter name="endDatePattern">
+								<datasetParameterExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{endDate})]]></datasetParameterExpression>
 							</datasetParameter>
 							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 						</datasetRun>
 					</dataset>
 				</crosstabDataset>
-				<rowGroup name="name1" width="92" totalPosition="End">
+				<rowGroup name="diagnosis1" width="92" totalPosition="End">
 					<bucket class="java.lang.String">
-						<bucketExpression><![CDATA[$F{name}]]></bucketExpression>
+						<bucketExpression><![CDATA[$F{diagnosis}]]></bucketExpression>
 					</bucket>
 					<crosstabRowHeader>
 						<cellContents mode="Opaque" style="Crosstab_CD">
 							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="92" height="20" uuid="e339c260-3e87-4d5b-b03c-54caca873432">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="92" height="20" uuid="b2359e1f-a345-44c5-ae2b-610b630cd1db">
 									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 								</reportElement>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$V{name1}]]></textFieldExpression>
+								<textElement textAlignment="Left" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$V{diagnosis1}]]></textFieldExpression>
 							</textField>
 						</cellContents>
 					</crosstabRowHeader>
 					<crosstabTotalRowHeader>
 						<cellContents mode="Opaque" style="Crosstab_CT">
 							<staticText>
-								<reportElement x="0" y="0" width="92" height="20" forecolor="#FFFFFF" uuid="29fe6a27-a4c0-46bb-9507-a865b8498fb3">
+								<reportElement x="0" y="0" width="92" height="20" forecolor="#FFFFFF" uuid="b01a8b49-5142-4570-a614-139229a96b19">
 									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 								</reportElement>
-								<box>
-									<topPen lineWidth="0.5"/>
-									<leftPen lineWidth="0.5"/>
-									<bottomPen lineWidth="0.5"/>
-									<rightPen lineWidth="0.5"/>
-								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font isBold="true"/>
-								</textElement>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[Total]]></text>
 							</staticText>
 						</cellContents>
 					</crosstabTotalRowHeader>
 				</rowGroup>
-				<columnGroup name="obs_datetime1" height="30" totalPosition="End">
+				<columnGroup name="calendar1" height="30" totalPosition="End">
 					<bucket class="java.lang.String">
-						<bucketExpression><![CDATA[new SimpleDateFormat("dd").format($F{obs_datetime})]]></bucketExpression>
+						<bucketExpression><![CDATA[new SimpleDateFormat("dd").format($F{calendar})]]></bucketExpression>
 					</bucket>
 					<crosstabColumnHeader>
 						<cellContents mode="Opaque" style="Crosstab_CH">
 							<textField>
-								<reportElement x="0" y="0" width="22" height="30" uuid="70d66370-f64f-4719-9b29-471b70f34e90"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font isBold="true"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$V{obs_datetime1}]]></textFieldExpression>
+								<reportElement x="0" y="0" width="22" height="30" uuid="1613907a-6dcc-4eb8-95c6-ca727c7df6df"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$V{calendar1}]]></textFieldExpression>
 							</textField>
 						</cellContents>
 					</crosstabColumnHeader>
 					<crosstabTotalColumnHeader>
 						<cellContents mode="Opaque" style="Crosstab_CT">
 							<staticText>
-								<reportElement x="0" y="0" width="30" height="30" forecolor="#FFFFFF" uuid="3c2413f8-4066-4acf-98fe-3f0650e6e2d9"/>
-								<box>
-									<topPen lineWidth="0.5"/>
-									<leftPen lineWidth="0.5"/>
-									<bottomPen lineWidth="0.5"/>
-									<rightPen lineWidth="0.5"/>
-								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font isBold="true"/>
-								</textElement>
+								<reportElement x="0" y="0" width="30" height="30" forecolor="#FFFFFF" uuid="88e589f2-ea74-4984-b3a6-25da67c9cffa"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[Total]]></text>
 							</staticText>
 						</cellContents>
 					</crosstabTotalColumnHeader>
 				</columnGroup>
-				<measure name="value_coded_MEASURE1" class="java.lang.Integer" calculation="Count">
-					<measureExpression><![CDATA[$F{value_coded}]]></measureExpression>
+				<measure name="NoOfDiagnosis_MEASURE1" class="java.lang.Integer" calculation="Count">
+					<measureExpression><![CDATA[$F{NoOfDiagnosis}]]></measureExpression>
 				</measure>
 				<crosstabCell width="22" height="20">
 					<cellContents mode="Opaque" style="Crosstab_CD">
 						<textField isStretchWithOverflow="true">
-							<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="22" height="20" uuid="e884b331-9560-4d10-8bf5-e2d17037fab6">
+							<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="22" height="20" uuid="4c6ef2ae-e392-44cf-a480-c66435f2c28c">
 								<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 							</reportElement>
 							<textElement textAlignment="Center" verticalAlignment="Middle"/>
-							<textFieldExpression><![CDATA[$V{value_coded_MEASURE1}]]></textFieldExpression>
+							<textFieldExpression><![CDATA[$V{NoOfDiagnosis_MEASURE1}]]></textFieldExpression>
 						</textField>
 					</cellContents>
 				</crosstabCell>
-				<crosstabCell width="30" height="20" columnTotalGroup="obs_datetime1">
+				<crosstabCell width="30" height="20" columnTotalGroup="calendar1">
 					<cellContents mode="Opaque" style="Crosstab_CT">
-						<textField>
-							<reportElement x="0" y="0" width="30" height="20" forecolor="#FFFFFF" uuid="eb99e38b-e289-4683-b31b-2e2e945034c1">
+						<textField isStretchWithOverflow="true">
+							<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="30" height="20" forecolor="#FFFFFF" uuid="439d09ad-b53d-4ab0-a186-fc873493a860">
 								<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 							</reportElement>
 							<textElement textAlignment="Center" verticalAlignment="Middle"/>
-							<textFieldExpression><![CDATA[$V{value_coded_MEASURE1}]]></textFieldExpression>
+							<textFieldExpression><![CDATA[$V{NoOfDiagnosis_MEASURE1}]]></textFieldExpression>
 						</textField>
 					</cellContents>
 				</crosstabCell>
-				<crosstabCell width="22" height="20" rowTotalGroup="name1">
+				<crosstabCell width="22" height="20" rowTotalGroup="diagnosis1">
 					<cellContents mode="Opaque" style="Crosstab_CT">
 						<textField>
-							<reportElement x="0" y="0" width="22" height="20" forecolor="#FFFFFF" uuid="6e1e050e-223d-42a1-8b1d-5104fb75d68d">
+							<reportElement x="0" y="0" width="22" height="20" forecolor="#FFFFFF" uuid="77a57b2b-08ae-452a-a25e-beacca0dd75b">
 								<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 							</reportElement>
 							<textElement textAlignment="Center" verticalAlignment="Middle"/>
-							<textFieldExpression><![CDATA[$V{value_coded_MEASURE1}]]></textFieldExpression>
+							<textFieldExpression><![CDATA[$V{NoOfDiagnosis_MEASURE1}]]></textFieldExpression>
 						</textField>
 					</cellContents>
 				</crosstabCell>
-				<crosstabCell width="30" height="20" rowTotalGroup="name1" columnTotalGroup="obs_datetime1">
+				<crosstabCell width="30" height="20" rowTotalGroup="diagnosis1" columnTotalGroup="calendar1">
 					<cellContents mode="Opaque" style="Crosstab_CT">
 						<textField>
-							<reportElement x="0" y="0" width="30" height="20" forecolor="#FFFFFF" uuid="0686c7be-1652-4c1a-9b2e-b8073a69e8a3">
+							<reportElement x="0" y="0" width="30" height="20" forecolor="#FFFFFF" uuid="3a11ec7b-8f73-40ad-b68c-522f404e71b7">
 								<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 							</reportElement>
 							<textElement textAlignment="Center" verticalAlignment="Middle"/>
-							<textFieldExpression><![CDATA[$V{value_coded_MEASURE1}]]></textFieldExpression>
+							<textFieldExpression><![CDATA[$V{NoOfDiagnosis_MEASURE1}]]></textFieldExpression>
 						</textField>
 					</cellContents>
 				</crosstabCell>
@@ -271,7 +264,7 @@ WHERE
 	<noData>
 		<band height="8">
 			<staticText>
-				<reportElement x="0" y="-10" width="306" height="16" uuid="24f02410-7637-43fc-97a2-7d695d9d3755"/>
+				<reportElement x="0" y="-10" width="306" height="16" uuid="cee93f6c-feb5-4793-8eab-eef51b8dc5b2"/>
 				<textElement textAlignment="Left">
 					<font isBold="false" isItalic="true"/>
 				</textElement>
