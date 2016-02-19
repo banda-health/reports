@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-02-16T15:43:56 -->
+<!-- 2016-02-18T12:48:35 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AggregateVisitDiagnosisChildren" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="e293a027-b4d7-4ac1-b14b-b8c14891648b">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Crosstab_CH" mode="Opaque" backcolor="#F0F8FF">
@@ -60,24 +60,39 @@
 		</parameter>
 		<queryString>
 			<![CDATA[SELECT 
-    calendar.datefield as calendar,
-    coalesce(concept_name.name,'No Diagnosis') as diagnosis,
-    coalesce(obs.value_coded,NULL) AS NoOfDiagnosis
+    coalesce(obsdate, cal_table.datefield) as calendar,
+    coalesce(diag.name,'No Diagnosis') as diagnosis,
+    coalesce(diag.value_coded,NULL) AS NoOfDiagnosis
+
 FROM
-    calendar
-    LEFT JOIN obs on DATE(obs.obs_datetime) = calendar.datefield 
-	AND obs.value_coded NOT IN (159393,159943,159944,159392)
-	LEFT JOIN concept_name ON obs.value_coded = concept_name.concept_id
-	AND (concept_name.concept_name_type = "FULLY_SPECIFIED"
-	AND concept_name.locale = "en")
-	LEFT JOIN concept ON concept_name.concept_id = concept.concept_id
-	AND concept.class_id = 4
-	LEFT JOIN person on person.person_id = obs.person_id
-	AND (timestampdiff(year, person.birthdate,obs.obs_datetime) <= 5
-	OR timestampdiff(year, person.birthdate_estimated,obs.obs_datetime) <= 5)
-    
-WHERE
-    (calendar.datefield BETWEEN $P{beginDatePattern}  AND  $P{endDatePattern} )]]>
+	(
+    SELECT
+	distinct(per_table.person_id)
+	FROM 
+	person as per_table
+	LEFT JOIN obs as obs_table on per_table.person_id = obs_table.person_id
+	where (timestampdiff(year, per_table.birthdate,obs_table.obs_datetime) <=5) 
+    AND (date(obs_table.obs_datetime) BETWEEN  $P{beginDatePattern}  AND $P{endDatePattern}  )
+    ) as bday
+    INNER JOIN
+    (
+    SELECT
+    date(obs_table.obs_datetime) as obsdate, cname.name, obs_table.value_coded, obs_table.person_id
+    FROM
+    obs as obs_table
+	LEFT JOIN concept_name as cname ON obs_table.value_coded = cname.concept_id
+	AND (cname.concept_name_type = "FULLY_SPECIFIED"
+	AND cname.locale = "en")
+	LEFT JOIN concept as concpt ON cname.concept_id = concpt.concept_id
+	AND concpt.class_id = 4
+    where (date(obs_table.obs_datetime) BETWEEN  $P{beginDatePattern}  AND $P{endDatePattern}) AND 
+    obs_table.value_coded NOT IN (159393,159943,159944,159392)
+    ) as diag on diag.person_id=bday.person_id 
+    RIGHT JOIN
+    calendar as cal_table ON diag.obsdate = cal_table.datefield
+	 
+where (cal_table.datefield BETWEEN  $P{beginDatePattern}  AND $P{endDatePattern})
+]]>
 		</queryString>
 		<field name="calendar" class="java.sql.Date"/>
 		<field name="diagnosis" class="java.lang.String"/>
