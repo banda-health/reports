@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PatientVisitList" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="startDate" class="java.util.Date"/>
+	<parameter name="endDate" class="java.util.Date"/>
+	<queryString>
+		<![CDATA[SELECT
+    v.date_started VisitStarted,
+    v.date_stopped VisitEnded,
+    v.name VisitType,
+    pi.identifier FileNumber,
+    pn.given_name GivenName,
+    pn.family_name FamilyName,
+    pa.value PhoneNumber,
+    a.address1 Address,
+    a.city_village City,
+    a.state_province Province,
+    a.county_district District
+FROM
+    patient pt INNER JOIN person p ON
+        pt.patient_id = p.person_id
+    INNER JOIN person_name pn ON
+        pn.person_id = p.person_id
+    LEFT OUTER JOIN person_address a ON
+        p.person_id = a.person_id
+    LEFT OUTER JOIN person_attribute pa ON
+        p.person_id = pa.person_id
+            AND
+        pa.person_attribute_type_id = 9
+    LEFT OUTER JOIN patient_identifier pi ON
+        pt.patient_id = pi.patient_id
+            AND
+        pi.identifier_type = 3
+    INNER JOIN (
+        SELECT visit_id, date_started, date_stopped,patient_id, visit_type.name
+        FROM visit INNER JOIN visit_type ON
+            visit.visit_type_id = visit_type.visit_type_id
+        WHERE
+            (date_started BETWEEN $P{startDate} AND $P{endDate}
+            OR
+             date_stopped BETWEEN $P{startDate} AND $P{endDate})
+        OR
+            (date_started <= $P{startDate}
+                AND
+            (date_stopped IS NULL OR date_stopped >= $P{endDate}))
+        ) v ON
+        v.patient_id = pt.patient_id
+ORDER BY v.date_started, pn.family_name]]>
+	</queryString>
+	<field name="VisitStarted" class="java.sql.Timestamp"/>
+	<field name="VisitEnded" class="java.sql.Timestamp"/>
+	<field name="VisitType" class="java.lang.String"/>
+	<field name="FileNumber" class="java.lang.String"/>
+	<field name="GivenName" class="java.lang.String"/>
+	<field name="FamilyName" class="java.lang.String"/>
+	<field name="PhoneNumber" class="java.lang.String"/>
+	<field name="Address" class="java.lang.String"/>
+	<field name="City" class="java.lang.String"/>
+	<field name="Province" class="java.lang.String"/>
+	<field name="District" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="a334a322-2426-4915-ac87-2fc6a0d5d573" x="0" y="0" width="555" height="32"/>
+				<textElement textAlignment="Center">
+					<font size="24"/>
+				</textElement>
+				<text><![CDATA[AIC Kapsowar Hospital]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="27" splitType="Stretch">
+			<textField>
+				<reportElement uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf" x="0" y="0" width="555" height="25"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Visit List for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{startDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="18" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="de140269-bbf7-4026-a3ea-6c1254aaaf56" x="0" y="0" width="99" height="16"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Visit Started]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="47474ccf-9801-42d2-b3c8-0e9dd5805389" x="99" y="0" width="75" height="16"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Visit Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3353f64b-8d84-48c0-9700-8384cc14c569" x="174" y="0" width="57" height="16"/>
+				<textElement textAlignment="Left">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[File #]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="08138a37-96d1-4fca-86d2-017b6d54dc6c" x="231" y="0" width="110" height="16"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Given Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3416f17b-2346-4043-b1ba-336a08d4485b" x="341" y="0" width="119" height="16"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Family Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="379c24be-72e1-4d37-9c94-f2967933b03b" x="460" y="0" width="70" height="16"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Phone #]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="e9ae85de-7d27-47b6-9abb-dfd5c972ef8d" x="0" y="13" width="530" height="1"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="17">
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement uuid="089ae30e-2a51-4419-ab4a-99216852769d" x="0" y="0" width="99" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{VisitStarted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e562d461-d810-4383-a579-885fa2ae3251" x="99" y="0" width="75" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{VisitType}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="55e65eeb-2bd6-4d0a-839b-215119463781" x="174" y="0" width="57" height="16"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{FileNumber}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b112dbde-59e8-4a99-ba20-0b1b16c22f2a" x="231" y="0" width="110" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{GivenName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="29817303-1a87-45f4-9cb5-3927a9925476" x="341" y="0" width="119" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{FamilyName}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f7b8808e-6fa4-4c15-8e58-98c633e16435" x="460" y="0" width="70" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{PhoneNumber}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="6c430987-cd11-40be-bd9d-2077e233745f" x="0" y="3" width="379" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-MMM-dd HH:mm").format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="7a9813a0-b37a-4dcb-a749-b1725b610579" x="522" y="3" width="33" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f96d7780-6357-4924-b519-27f72a508d29" x="431" y="3" width="87" height="16"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="21" splitType="Stretch">
+			<textField pattern="#,##0">
+				<reportElement uuid="a2509bd4-a44c-413d-94ea-4b5738900864" x="455" y="5" width="75" height="16"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="de140269-bbf7-4026-a3ea-6c1254aaaf56" x="356" y="5" width="99" height="16"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Visit Count:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="0e6fac0c-085f-45c3-93f3-37c2a067f3af" x="0" y="1" width="530" height="1"/>
+			</line>
+		</band>
+	</summary>
+	<noData>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="e8da193c-2a64-44be-96ca-7416132f7400" x="0" y="0" width="306" height="16"/>
+				<textElement textAlignment="Left">
+					<font isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[No data was found to display on the report.]]></text>
+			</staticText>
+		</band>
+	</noData>
+</jasperReport>

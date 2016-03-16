@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2016-02-24T11:45:26 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Outpatient Thermal Receipt" language="groovy" pageWidth="216" pageHeight="297" columnWidth="216" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="b0650e21-f6cf-4aad-acec-9e81aea4c41f">
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="252"/>
+	<style name="style1" fontName="Courier New" fontSize="12"/>
+	<parameter name="billId" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[4]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+    b.bill_id,
+    b.receipt_number,
+    CASE
+        WHEN bill_date.bill_date IS NOT NULL THEN bill_date.bill_date
+        ELSE b.date_created
+    END as bill_date,
+    cp.name cash_point,
+    u.username cashier,
+    upn.given_name cashier_given_name,
+    upn.family_name cashier_family_name,
+    patient_person_name.given_name patient_given_name,
+    patient_person_name.family_name patient_family_name
+FROM
+    cashier_bill b INNER JOIN users u ON
+      CASE
+	WHEN b.changed_by IS NULL THEN
+        b.creator = u.user_id
+       WHEN b.changed_by IS NOT NULL AND b.creator IS NOT NULL THEN
+        b.changed_by = u.user_id
+        ELSE
+        b.changed_by = u.user_id
+        END
+    INNER JOIN patient ON
+        b.patient_id = patient.patient_id
+    INNER JOIN person patient_person ON
+        patient.patient_id = patient_person.person_id
+    LEFT OUTER JOIN person_name patient_person_name ON
+        patient_person.person_id = patient_person_name.person_id AND
+        patient_person_name.preferred = 1
+    LEFT OUTER JOIN cashier_cash_point cp ON
+        b.cash_point_id = cp.cash_point_id
+    LEFT OUTER JOIN (
+        SELECT $P{billId} bill_id, MAX(bp.date_created) bill_date FROM cashier_bill_payment bp WHERE bp.bill_id = $P{billId}
+    ) bill_date ON
+        b.bill_id = bill_date.bill_id
+    LEFT OUTER JOIN person_name upn ON
+        u.person_id = upn.person_id AND
+        upn.preferred = 1
+WHERE
+    b.bill_id = $P{billId}]]>
+	</queryString>
+	<field name="bill_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="receipt_number" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="bill_date" class="java.sql.Timestamp"/>
+	<field name="cash_point" class="java.lang.String"/>
+	<field name="cashier" class="java.lang.String"/>
+	<field name="cashier_given_name" class="java.lang.String"/>
+	<field name="cashier_family_name" class="java.lang.String"/>
+	<field name="patient_given_name" class="java.lang.String"/>
+	<field name="patient_family_name" class="java.lang.String"/>
+	<variable name="totalCost" class="java.math.BigDecimal">
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="170" splitType="Stretch">
+			<staticText>
+				<reportElement style="style1" mode="Transparent" x="0" y="0" width="216" height="70" uuid="e49ce628-bd2d-4cb0-b1c7-1ae5d963e2c3"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<text><![CDATA[AIC KAPSOWAR HOSPITAL
+Address: Box 68 KAPSOWAR
+Tel: 0720833865]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="style1" x="69" y="117" width="141" height="17" uuid="0d6439ca-7f1c-489d-944a-c648c6a72d21"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{receipt_number}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="69" y="100" width="141" height="17" uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-dd-MM HH:mm").format($F{bill_date})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="69" y="151" width="141" height="16" uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{patient_family_name} + ", " + $F{patient_given_name}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="77" width="216" height="17" uuid="c583cfb7-4b4a-4320-a203-d61ae2e3311f"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Receipt]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="13" y="117" width="56" height="17" uuid="11372256-903a-4f4c-9d38-a588c5f39958"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Receipt #:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="13" y="100" width="56" height="17" uuid="11372256-903a-4f4c-9d38-a588c5f39958"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="13" y="134" width="56" height="17" uuid="11372256-903a-4f4c-9d38-a588c5f39958"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Cashier:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="72" width="216" height="1" uuid="3da84233-25c2-471f-be29-1e9532a22240"/>
+			</line>
+			<line>
+				<reportElement x="0" y="94" width="216" height="1" uuid="3da84233-25c2-471f-be29-1e9532a22240"/>
+			</line>
+			<line>
+				<reportElement x="0" y="167" width="216" height="1" uuid="3da84233-25c2-471f-be29-1e9532a22240"/>
+			</line>
+			<staticText>
+				<reportElement x="13" y="151" width="56" height="16" uuid="11372256-903a-4f4c-9d38-a588c5f39958"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Patient:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="69" y="134" width="141" height="17" uuid="a7732435-dc8b-4660-a88b-2aa12830e7b5"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cashier_family_name} + ", " + $F{cashier_given_name}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="31" splitType="Stretch">
+			<subreport>
+				<reportElement x="0" y="5" width="216" height="18" uuid="43fd8c34-ad1b-4f84-a082-d22f749fe009"/>
+				<subreportParameter name="billId">
+					<subreportParameterExpression><![CDATA[$P{billId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<returnValue subreportVariable="totalCost" toVariable="totalCost"/>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Outpatient Thermal Receipt Details.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="25">
+			<subreport>
+				<reportElement x="0" y="0" width="216" height="21" uuid="1e6ea689-e420-4b4e-b7a9-fe9cf5da9b91"/>
+				<subreportParameter name="totalCost">
+					<subreportParameterExpression><![CDATA[$V{totalCost}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="billId">
+					<subreportParameterExpression><![CDATA[$P{billId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Outpatient Thermal Receipt Payments.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<summary>
+		<band height="21">
+			<textField>
+				<reportElement x="13" y="6" width="96" height="12" uuid="7e44d78c-4b3c-4a07-89af-fd0a08995dbe"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Cashier: " + $F{cashier}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="109" y="6" width="101" height="12" uuid="6c430987-cd11-40be-bd9d-2077e233745f"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-dd-MM HH:mm").format(new Date())]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

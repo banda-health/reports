@@ -45,7 +45,7 @@
 	</style>
 	<subDataset name="DiagnosisDataSet" uuid="6a0b694b-0571-4e14-8c3b-c8376e0cc107">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kapsowar"/>
 		<parameter name="beginDate" class="java.util.Date">
 			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 		</parameter>
@@ -123,7 +123,7 @@ where (cal_table.datefield BETWEEN  $P{beginDatePattern}  AND $P{endDatePattern}
 				<textElement textAlignment="Center">
 					<font size="20"/>
 				</textElement>
-				<text><![CDATA[OpenHMIS Demo Clinic]]></text>
+				<text><![CDATA[Kapsowar Hospital]]></text>
 			</staticText>
 		</band>
 	</title>

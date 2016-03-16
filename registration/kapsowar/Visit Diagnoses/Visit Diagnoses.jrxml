@@ -32,7 +32,7 @@
 	</style>
 	<subDataset name="VisitDiagnosis" uuid="619eba94-45ff-42c0-9d42-97603735bba0">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kapsowar"/>
 		<parameter name="runDate" class="java.util.Date">
 			<parameterDescription><![CDATA[]]></parameterDescription>
 		</parameter>
@@ -156,7 +156,7 @@ ORDER BY visit.date_started ASC]]>
 				<textElement textAlignment="Center">
 					<font size="20"/>
 				</textElement>
-				<text><![CDATA[OpenHMIS Demo Clinic]]></text>
+				<text><![CDATA[Kapsowar Hospital]]></text>
 			</staticText>
 		</band>
 	</title>

@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Stockroom" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Stockroom Item Stock" uuid="4ddff745-c801-490f-9e16-520912866ea0">
+		<parameter name="beginDate" class="java.util.Date">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="endDate" class="java.util.Date">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="stockroomId" class="java.lang.Integer">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<queryString>
+			<![CDATA[SELECT
+	i.name item_name,
+	IFNULL(begin_stock.qty, 0) beginning,
+	IFNULL(incoming_stock.qty, 0) incoming,
+	IFNULL(outgoing_stock.qty, 0) outgoing,
+	IFNULL(end_stock.qty, 0) ending
+FROM
+	inv_stockroom sr INNER JOIN
+		(SELECT stockroom_id, item_id, SUM(trans.quantity) AS qty
+		 FROM inv_transaction trans INNER JOIN inv_stock_operation op1 ON
+			trans.operation_id = op1.stock_operation_id
+		 WHERE stockroom_id = $P{stockroomId} AND op1.operation_date <= CONCAT($P{endDate} ,' ' ,'23:59:59')
+		 GROUP BY stockroom_id, item_id) end_stock ON
+			sr.stockroom_id = end_stock.stockroom_id
+	LEFT OUTER JOIN
+		(SELECT stockroom_id, item_id, SUM(trans.quantity) AS qty
+		 FROM inv_transaction trans INNER JOIN inv_stock_operation op2 ON
+			trans.operation_id = op2.stock_operation_id
+		 WHERE stockroom_id = $P{stockroomId} AND op2.operation_date  <= $P{beginDate}
+		 GROUP BY stockroom_id, item_id) begin_stock ON
+			sr.stockroom_id = begin_stock.stockroom_id AND
+			end_stock.item_id = begin_stock.item_id
+	LEFT OUTER JOIN
+		(SELECT stockroom_id, item_id, SUM(trans.quantity) AS qty
+		 FROM inv_transaction trans INNER JOIN inv_stock_operation op3 ON
+			trans.operation_id = op3.stock_operation_id
+		 WHERE stockroom_id = $P{stockroomId} AND op3.operation_date > $P{beginDate} AND op3.operation_date <= CONCAT($P{endDate} ,' ' ,'23:59:59') AND quantity > 0
+		 GROUP BY stockroom_id, item_id) incoming_stock ON
+			sr.stockroom_id = incoming_stock.stockroom_id AND
+			end_stock.item_id = incoming_stock.item_id
+	LEFT OUTER JOIN
+		(SELECT stockroom_id, item_id, SUM(trans.quantity) AS qty
+		 FROM inv_transaction trans INNER JOIN inv_stock_operation op4 ON
+			trans.operation_id = op4.stock_operation_id
+		 WHERE stockroom_id = $P{stockroomId} AND op4.operation_date > $P{beginDate} AND op4.operation_date <= CONCAT($P{endDate} ,' ' ,'23:59:59') AND quantity <= 0
+		 GROUP BY stockroom_id, item_id) outgoing_stock ON
+			sr.stockroom_id = outgoing_stock.stockroom_id AND
+			end_stock.item_id = outgoing_stock.item_id
+	INNER JOIN inv_item i ON
+		end_stock.item_id = i.item_id
+WHERE
+	sr.stockroom_id = $P{stockroomId}
+ORDER BY i.name ASC;]]>
+		</queryString>
+		<field name="item_name" class="java.lang.String"/>
+		<field name="beginning" class="java.math.BigDecimal"/>
+		<field name="incoming" class="java.math.BigDecimal"/>
+		<field name="outgoing" class="java.math.BigDecimal"/>
+		<field name="ending" class="java.math.BigDecimal"/>
+	</subDataset>
+	<parameter name="beginDate" class="java.util.Date"/>
+	<parameter name="endDate" class="java.util.Date"/>
+	<parameter name="stockroomId" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT name from inv_stockroom where stockroom_id = $P{stockroomId}]]>
+	</queryString>
+	<field name="name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="a334a322-2426-4915-ac87-2fc6a0d5d573" x="0" y="0" width="555" height="32"/>
+				<textElement textAlignment="Center">
+					<font size="24"/>
+				</textElement>
+				<text><![CDATA[AIC Kapsowar Hospital]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="27" splitType="Stretch">
+			<textField>
+				<reportElement uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf" x="0" y="0" width="555" height="25"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Stockroom Report for " + $F{name} + " from " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="50">
+			<componentElement>
+				<reportElement uuid="f7c68e6d-0720-43f6-8820-6b8549999ed1" key="table 1" style="table 1" x="0" y="0" width="555" height="50"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
+					<datasetRun subDataset="Stockroom Item Stock" uuid="a0054c7b-98c5-4457-969f-24732885f3ec">
+						<datasetParameter name="beginDate">
+							<datasetParameterExpression><![CDATA[$P{beginDate}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="endDate">
+							<datasetParameterExpression><![CDATA[$P{endDate}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="stockroomId">
+							<datasetParameterExpression><![CDATA[$P{stockroomId}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="248" uuid="b58cb061-182d-4902-848e-c1f76933c76c">
+						<jr:columnHeader style="table 1_CH" height="17" rowSpan="1">
+							<staticText>
+								<reportElement uuid="aaa1b9e9-0f6d-448e-a6be-eb96b5581819" x="0" y="0" width="90" height="17"/>
+								<textElement verticalAlignment="Middle">
+									<font isBold="true"/>
+									<paragraph leftIndent="2"/>
+								</textElement>
+								<text><![CDATA[Name]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement uuid="5787820a-0aaf-40bf-bd59-0afac03294e6" x="0" y="0" width="248" height="15"/>
+								<textElement verticalAlignment="Middle">
+									<paragraph leftIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{item_name}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="70" uuid="c535b35f-570e-4e9c-b6eb-624615030595">
+						<jr:columnHeader style="table 1_CH" height="17" rowSpan="1">
+							<staticText>
+								<reportElement uuid="c3199e2a-044a-4370-9b7a-f18aa0274ce2" x="0" y="0" width="70" height="17"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<text><![CDATA[Opening]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
+							<textField pattern="#,##0" isBlankWhenNull="false">
+								<reportElement uuid="3dc6affc-89e0-41e4-979d-3b53a941835f" x="0" y="0" width="70" height="15"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{beginning}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="70" uuid="ff03cf08-e870-430b-b9db-03cf49c11d05">
+						<jr:columnHeader style="table 1_CH" height="17" rowSpan="1">
+							<staticText>
+								<reportElement uuid="cd657892-e6d4-4f20-b755-7ff48c6b952c" x="0" y="0" width="70" height="17"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<text><![CDATA[Incoming]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
+							<textField pattern="#,##0">
+								<reportElement uuid="d9076fca-7cc4-4fee-bb8e-9f240316cf33" x="0" y="0" width="70" height="15"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{incoming}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="70" uuid="3fdfb74b-9dd8-4d4f-b2d6-33b04de016a9">
+						<jr:columnHeader style="table 1_CH" height="17" rowSpan="1">
+							<staticText>
+								<reportElement uuid="15920a5d-475b-438d-ae9f-c1276fad699d" x="0" y="0" width="70" height="17"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<text><![CDATA[Outgoing]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
+							<textField pattern="#,##0">
+								<reportElement uuid="8201ed26-d116-4e56-a534-90fdfead5063" x="0" y="0" width="70" height="15"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{outgoing}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="70" uuid="4428dc26-e90a-4b52-8fc1-b10a0f3605ff">
+						<jr:columnHeader style="table 1_CH" height="17" rowSpan="1">
+							<staticText>
+								<reportElement uuid="77fe4e92-43ee-46e6-b94d-a7116428bddb" x="0" y="0" width="70" height="17"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<text><![CDATA[Closing]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
+							<textField pattern="#,##0">
+								<reportElement uuid="ec7637f5-a2d6-4f94-97df-af4057997140" x="0" y="0" width="70" height="15"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{ending}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="6c430987-cd11-40be-bd9d-2077e233745f" x="0" y="0" width="379" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-MMM-dd HH:mm").format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="7a9813a0-b37a-4dcb-a749-b1725b610579" x="522" y="0" width="33" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f96d7780-6357-4924-b519-27f72a508d29" x="431" y="0" width="87" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<noData>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="e8da193c-2a64-44be-96ca-7416132f7400" x="0" y="0" width="306" height="16"/>
+				<textElement textAlignment="Left">
+					<font isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[No data was found to display on the report.]]></text>
+			</staticText>
+		</band>
+	</noData>
+</jasperReport>
