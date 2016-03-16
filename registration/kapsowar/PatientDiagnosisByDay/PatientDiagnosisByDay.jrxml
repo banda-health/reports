@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PatientDiagnosisByDay" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center" fontSize="9"/>
+	<parameter name="parmMonth" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cal" class="java.util.Calendar" isForPrompting="false">
+		<defaultValueExpression><![CDATA[Calendar.getInstance()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="startDate" class="java.util.Date" isForPrompting="false">
+		<defaultValueExpression><![CDATA[(  $P{cal}.set($P{parmMonth}.getYear()+1900, $P{parmMonth}.getMonth(), 1, 0, 0, 0) ) ? null : $P{cal}.getTime()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="endDate" class="java.util.Date" isForPrompting="false">
+		<defaultValueExpression><![CDATA[(  $P{cal}.set($P{parmMonth}.getYear()+1900, $P{parmMonth}.getMonth() + 1, 1, 0, 0, 0) ||  $P{cal}.add(Calendar.MONTH, -1) ||  $P{cal}.set(Calendar.DAY_OF_MONTH, $P{cal}.getActualMaximum(Calendar.DAY_OF_MONTH)) ) ? null : $P{cal}.getTime()]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+    CAST(cal.date as DATE) date,
+    c.concept_id,
+    al.start_date
+FROM
+    (
+        SELECT $P{startDate} + INTERVAL a.i * 10 + b.i DAY as date
+        FROM commons_ints a JOIN commons_ints b
+        ORDER BY a.i * 10 + b.i
+    ) cal CROSS JOIN concept c INNER JOIN concept_set cs ON
+        c.concept_id = cs.concept_id
+    LEFT OUTER JOIN active_list al ON
+        al.concept_id = c.concept_id AND al.start_date = cal.date
+WHERE
+    cs.concept_set = 161889
+AND
+    cal.date BETWEEN $P{startDate} AND $P{endDate}
+ORDER BY
+    cal.date, cs.sort_weight]]>
+	</queryString>
+	<field name="date" class="java.sql.Timestamp"/>
+	<field name="concept_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="start_date" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="startDay" class="java.util.Date">
+		<initialValueExpression><![CDATA[(
+ $P{cal}.set($P{parmMonth}.getYear()+1900, $P{parmMonth}.getMonth(), 1, 0, 0, 0)
+)
+? null : $P{cal}.getTime()]]></initialValueExpression>
+	</variable>
+	<variable name="endDay" class="java.util.Date">
+		<initialValueExpression><![CDATA[(
+ $P{cal}.set($P{parmMonth}.getYear()+1900, $P{parmMonth}.getMonth() + 1, 1, 0, 0, 0) ||
+ $P{cal}.add(Calendar.MONTH, -1) ||
+ $P{cal}.set(Calendar.DAY_OF_MONTH, $P{cal}.getActualMaximum(Calendar.DAY_OF_MONTH))
+)
+? null : $P{cal}.getTime()]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="a334a322-2426-4915-ac87-2fc6a0d5d573" x="0" y="0" width="802" height="32"/>
+				<textElement textAlignment="Center">
+					<font size="24"/>
+				</textElement>
+				<text><![CDATA[AIC Kapsowar Hospital]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="6c430987-cd11-40be-bd9d-2077e233745f" x="0" y="0" width="379" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-MMM-dd HH:mm").format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="7a9813a0-b37a-4dcb-a749-b1725b610579" x="769" y="0" width="33" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f96d7780-6357-4924-b519-27f72a508d29" x="678" y="0" width="87" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="61" splitType="Stretch">
+			<crosstab>
+				<reportElement uuid="44f0a04d-9f7d-445d-8420-9b585b5298fa" x="0" y="0" width="784" height="61"/>
+				<rowGroup name="concept_id" width="70" totalPosition="End">
+					<bucket class="java.lang.Integer">
+						<bucketExpression><![CDATA[$F{concept_id}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="ebfb22b0-5ca3-495d-9580-374009e08d47" style="Crosstab Data Text" x="0" y="0" width="70" height="12"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$V{concept_id}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement uuid="d269f54e-2df3-4df5-af6f-1a081432bef8" x="0" y="0" width="70" height="25"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[Total concept_id]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="date" height="13" totalPosition="End">
+					<bucket class="java.util.Date">
+						<bucketExpression><![CDATA[$F{date}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="96f826c5-9c8c-4d08-bf6c-ab867f0f5b99" style="Crosstab Data Text" x="0" y="0" width="20" height="12"/>
+								<textElement verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[new SimpleDateFormat("d").format($V{date})]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement uuid="775a54a5-924a-4187-8d91-3ac0553eece1" x="0" y="0" width="37" height="12"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[Total date]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="start_dateMeasure" class="java.lang.Integer" calculation="Count">
+					<measureExpression><![CDATA[$F{start_date}]]></measureExpression>
+				</measure>
+				<crosstabCell width="21" height="12">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="42122a5b-949d-4258-bcb2-f0eb5d3b90cc" style="Crosstab Data Text" x="0" y="0" width="20" height="12"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{start_dateMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="21" height="25" rowTotalGroup="concept_id">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="19f39304-79b0-451b-aa24-042fcf07bb5d" style="Crosstab Data Text" x="0" y="0" width="20" height="25"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{start_dateMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="37" height="12" columnTotalGroup="date">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="d1508f24-f3b6-40bf-a385-0e482cf6994a" style="Crosstab Data Text" x="0" y="0" width="37" height="12"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{start_dateMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="37" rowTotalGroup="concept_id" columnTotalGroup="date">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="322eaea5-b906-441b-8268-5d0e9b24345e" style="Crosstab Data Text" x="0" y="0" width="37" height="25"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{start_dateMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+	<noData>
+		<band height="16">
+			<staticText>
+				<reportElement uuid="e8da193c-2a64-44be-96ca-7416132f7400" x="0" y="0" width="306" height="16"/>
+				<textElement textAlignment="Left">
+					<font isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[No data was found to display on the report.]]></text>
+			</staticText>
+		</band>
+	</noData>
+</jasperReport>

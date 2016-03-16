@@ -156,7 +156,7 @@ ORDER BY visit.date_started ASC]]>
 				<textElement textAlignment="Center">
 					<font size="20"/>
 				</textElement>
-				<text><![CDATA[OpenHMIS Demo Clinic]]></text>
+				<text><![CDATA[Kapsowar Hospital]]></text>
 			</staticText>
 		</band>
 	</title>
