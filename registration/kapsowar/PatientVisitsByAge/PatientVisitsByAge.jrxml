@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Patient Visits by Age" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="Under5" uuid="8ad4efe4-d405-4522-8399-a172f5ecbe8d">
+		<parameter name="startDate" class="java.util.Date">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="endDate" class="java.util.Date">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<queryString>
+			<![CDATA[SELECT
+    COUNT(v.visit_id) VisitCount
+FROM
+    patient pt INNER JOIN person p ON
+        pt.patient_id = p.person_id
+    INNER JOIN (
+    SELECT visit_id, date_started, patient_id FROM visit WHERE
+        (date_started BETWEEN $P{startDate} AND $P{endDate}
+        OR
+         date_stopped BETWEEN $P{startDate} AND $P{endDate})
+    OR
+        (date_started <= $P{startDate}
+            AND
+        (date_stopped IS NULL OR date_stopped >= $P{endDate}))
+    ) v ON
+        v.patient_id = pt.patient_id
+WHERE p.birthdate > DATE_SUB(v.date_started, INTERVAL 5 YEAR)]]>
+		</queryString>
+		<field name="VisitCount" class="java.lang.Long"/>
+	</subDataset>
+	<subDataset name="5AndOver" uuid="46054196-3319-46e4-9b7b-1cf652398eda">
+		<parameter name="startDate" class="java.util.Date">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="endDate" class="java.util.Date">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<queryString>
+			<![CDATA[SELECT
+    COUNT(v.visit_id) VisitCount
+FROM
+    patient pt INNER JOIN person p ON
+        pt.patient_id = p.person_id
+    INNER JOIN (
+    SELECT visit_id, date_started, patient_id FROM visit WHERE
+        (date_started BETWEEN $P{startDate} AND $P{endDate}
+        OR
+         date_stopped BETWEEN $P{startDate} AND $P{endDate})
+    OR
+        (date_started <= $P{startDate}
+            AND
+        (date_stopped IS NULL OR date_stopped >= $P{endDate}))
+    ) v ON
+        v.patient_id = pt.patient_id
+WHERE p.birthdate <= DATE_SUB(v.date_started, INTERVAL 5 YEAR)]]>
+		</queryString>
+		<field name="VisitCount" class="java.lang.Long"/>
+	</subDataset>
+	<subDataset name="NoBirthDate" uuid="7eaa8cd5-8232-4b80-8113-b763b6ef6297">
+		<parameter name="startDate" class="java.util.Date">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="endDate" class="java.util.Date">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<queryString>
+			<![CDATA[SELECT
+    COUNT(v.visit_id) VisitCount
+FROM
+    patient pt INNER JOIN person p ON
+        pt.patient_id = p.person_id
+    INNER JOIN (
+    SELECT visit_id, date_started, patient_id FROM visit WHERE
+        (date_started BETWEEN $P{startDate} AND $P{endDate}
+        OR
+         date_stopped BETWEEN $P{startDate} AND $P{endDate})
+    OR
+        (date_started <= $P{startDate}
+            AND
+        (date_stopped IS NULL OR date_stopped >= $P{endDate}))
+    ) v ON
+        v.patient_id = pt.patient_id
+WHERE p.birthdate IS NULL]]>
+		</queryString>
+		<field name="VisitCount" class="java.lang.Long"/>
+	</subDataset>
+	<parameter name="startDate" class="java.util.Date"/>
+	<parameter name="endDate" class="java.util.Date"/>
+	<queryString>
+		<![CDATA[SELECT
+    COUNT(v.visit_id) TotalCount
+FROM
+    patient pt INNER JOIN person p ON
+        pt.patient_id = p.person_id
+    INNER JOIN (
+    SELECT visit_id, patient_id FROM visit WHERE
+        (date_started BETWEEN $P{startDate} AND $P{endDate}
+        OR
+         date_stopped BETWEEN $P{startDate} AND $P{endDate})
+    OR
+        (date_started <= $P{startDate}
+            AND
+        (date_stopped IS NULL OR date_stopped >= $P{endDate}))
+    ) v ON
+        v.patient_id = pt.patient_id]]>
+	</queryString>
+	<field name="TotalCount" class="java.lang.Long"/>
+	<variable name="totalVisits" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{TotalCount}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="a334a322-2426-4915-ac87-2fc6a0d5d573" x="0" y="0" width="555" height="32"/>
+				<textElement textAlignment="Center">
+					<font size="24"/>
+				</textElement>
+				<text><![CDATA[AIC Kapsowar Hospital]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="27" splitType="Stretch">
+			<textField>
+				<reportElement uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf" x="0" y="0" width="555" height="25"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Patient Visits for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{startDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="19" splitType="Stretch">
+			<line>
+				<reportElement uuid="cb1cd48d-2326-4d6f-9d88-77dc197bedf1" x="0" y="16" width="215" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="25f7443e-bf82-4d37-aab1-7e6cd5418ed9" x="0" y="0" width="137" height="16"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Patient Grouping]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e8da193c-2a64-44be-96ca-7416132f7400" x="137" y="0" width="78" height="16"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Visits]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="63">
+			<componentElement>
+				<reportElement uuid="06959046-fec0-4e0f-96ab-92057e2a2723" stretchType="RelativeToBandHeight" x="4" y="0" width="247" height="17"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical" ignoreWidth="true">
+					<datasetRun subDataset="Under5" uuid="3e78ecb5-bb78-4a90-aabf-a627e59976c9">
+						<parametersMapExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></parametersMapExpression>
+						<datasetParameter name="startDate">
+							<datasetParameterExpression><![CDATA[$P{startDate}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="endDate">
+							<datasetParameterExpression><![CDATA[$P{endDate}]]></datasetParameterExpression>
+						</datasetParameter>
+					</datasetRun>
+					<jr:listContents height="17" width="247">
+						<staticText>
+							<reportElement uuid="fb1811b5-1919-43b7-976b-5b142bd994ca" x="0" y="0" width="133" height="16"/>
+							<textElement textAlignment="Right"/>
+							<text><![CDATA[Children (<5 Years)]]></text>
+						</staticText>
+						<textField pattern="">
+							<reportElement uuid="230c8430-103c-42f7-8c5f-60b694e1a6ef" x="133" y="0" width="78" height="16"/>
+							<textElement textAlignment="Right"/>
+							<textFieldExpression><![CDATA[$F{VisitCount}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement uuid="e4b9b8b5-3c36-40be-bf11-d03140ffcdda" x="4" y="17" width="247" height="17"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="5AndOver" uuid="4c3ce413-9a60-4ad8-be4a-00951c2a9999">
+						<datasetParameter name="startDate">
+							<datasetParameterExpression><![CDATA[$P{startDate}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="endDate">
+							<datasetParameterExpression><![CDATA[$P{endDate}]]></datasetParameterExpression>
+						</datasetParameter>
+					</datasetRun>
+					<jr:listContents height="17" width="247">
+						<staticText>
+							<reportElement uuid="7faa8296-691a-4414-ad77-9abf1934106c" x="0" y="1" width="133" height="16"/>
+							<textElement textAlignment="Right"/>
+							<text><![CDATA[Adults (>= 5 Years)]]></text>
+						</staticText>
+						<textField pattern="">
+							<reportElement uuid="6d20f0a6-4d47-42c5-a9b3-d6ba1c5f769e" x="133" y="1" width="78" height="16"/>
+							<textElement textAlignment="Right"/>
+							<textFieldExpression><![CDATA[$F{VisitCount}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement uuid="dc762520-5280-4ccb-af5d-7329aa8d778f" x="4" y="35" width="247" height="17"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="NoBirthDate" uuid="0011dbaf-0754-441c-ad6f-4bfa2882faa5">
+						<datasetParameter name="startDate">
+							<datasetParameterExpression><![CDATA[$P{startDate}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="endDate">
+							<datasetParameterExpression><![CDATA[$P{endDate}]]></datasetParameterExpression>
+						</datasetParameter>
+					</datasetRun>
+					<jr:listContents height="17" width="247">
+						<textField pattern="">
+							<reportElement uuid="6d20f0a6-4d47-42c5-a9b3-d6ba1c5f769e" x="133" y="1" width="78" height="16"/>
+							<textElement textAlignment="Right"/>
+							<textFieldExpression><![CDATA[$F{VisitCount}]]></textFieldExpression>
+						</textField>
+						<staticText>
+							<reportElement uuid="7faa8296-691a-4414-ad77-9abf1934106c" x="0" y="0" width="133" height="16"/>
+							<textElement textAlignment="Right"/>
+							<text><![CDATA[No Birth Date Defined]]></text>
+						</staticText>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="6c430987-cd11-40be-bd9d-2077e233745f" x="0" y="0" width="379" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-MMM-dd HH:mm").format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="7a9813a0-b37a-4dcb-a749-b1725b610579" x="522" y="0" width="33" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f96d7780-6357-4924-b519-27f72a508d29" x="431" y="0" width="87" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="19" splitType="Stretch">
+			<textField pattern="#,##0">
+				<reportElement uuid="e43cd9a7-06a0-4004-b5b7-df77f12929ab" x="137" y="3" width="78" height="16"/>
+				<textElement textAlignment="Right">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalVisits}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e8da193c-2a64-44be-96ca-7416132f7400" x="37" y="2" width="100" height="16"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="4a7f5ff7-4533-45bc-9e4b-1ab21201037a" x="105" y="0" width="110" height="1"/>
+			</line>
+		</band>
+	</summary>
+	<noData>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="e8da193c-2a64-44be-96ca-7416132f7400" x="0" y="0" width="306" height="16"/>
+				<textElement textAlignment="Left">
+					<font isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[No visits occurred during specified time frame.]]></text>
+			</staticText>
+		</band>
+	</noData>
+</jasperReport>

@@ -123,7 +123,7 @@ where (cal_table.datefield BETWEEN  $P{beginDatePattern}  AND $P{endDatePattern}
 				<textElement textAlignment="Center">
 					<font size="20"/>
 				</textElement>
-				<text><![CDATA[OpenHMIS Demo Clinic]]></text>
+				<text><![CDATA[Kapsowar Hospital]]></text>
 			</staticText>
 		</band>
 	</title>
