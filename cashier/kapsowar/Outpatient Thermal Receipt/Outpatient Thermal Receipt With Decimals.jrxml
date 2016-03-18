@@ -79,12 +79,9 @@ WHERE
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="10"/>
 				</textElement>
-				<text><![CDATA[AIC KIJABE HOSPITAL
-MARIRA CLINIC
-Address: 00220 20 KIJABE
-Tel: 020 324 6500
-Fax: 020 324 6355
-Email: info.kh@kijabe.net]]></text>
+				<text><![CDATA[AIC KAPSOWAR HOSPITAL
+Address: Box 68 KAPSOWAR 
+Tel: 0720833865]]></text>
 			</staticText>
 			<textField>
 				<reportElement style="style1" x="69" y="117" width="141" height="17" uuid="0d6439ca-7f1c-489d-944a-c648c6a72d21"/>
