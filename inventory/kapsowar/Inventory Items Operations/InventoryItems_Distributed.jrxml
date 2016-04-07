@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-04-05T14:07:26 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="InventoryItemsDistributed" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="d01934e8-0fb7-4c8f-9a89-b6bd526c395f">
+<!-- 2016-04-07T12:23:53 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="InventoryItems_Distributed" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="2411efa7-bbb4-43eb-94eb-402271379e8e">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Kapsowar"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
@@ -32,10 +31,10 @@
 		</box>
 		<conditionalStyle>
 			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
-			<style backcolor="#D0E1F2"/>
+			<style backcolor="#DAE3ED"/>
 		</conditionalStyle>
 	</style>
-	<subDataset name="DistributedInvData" uuid="c56c0f22-3e22-4d0e-9806-d1a4f465a68e">
+	<subDataset name="DistributedInventory" uuid="b8211bf9-3b4b-4d70-b1a1-dd5e5b84c882">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Kapsowar"/>
 		<parameter name="beginDate" class="java.util.Date">
@@ -58,8 +57,8 @@
 			<![CDATA[SELECT
 CONCAT(patient_person_name.given_name, ' ', patient_person_name.family_name) as PatientName,
 inv_item.name as InventoryItemName, 
-COUNT(inv_trans.transaction_id) as NoOfTransactions, 
-ABS(inv_trans.quantity) as QuantityDistributed
+COUNT(inv_item.name) as NoOfTransactions, 
+SUM(ABS(inv_trans.quantity)) as QuantityDistributed
 FROM inv_transaction AS inv_trans
 	INNER JOIN inv_stock_operation inv_sto
 	ON inv_trans.operation_id = inv_sto.stock_operation_id
@@ -73,14 +72,14 @@ FROM inv_transaction AS inv_trans
     patient_person.person_id = patient_person_name.person_id AND
     patient_person_name.preferred = 1
 WHERE inv_sto.operation_type_id = 3 AND inv_sto.patient_id IS NOT NULL
-AND inv_trans.patient_id = $P{patientID} 
-AND (inv_trans.date_created BETWEEN  $P{beginDatePattern} AND  $P{endDatePattern} )
+AND inv_trans.patient_id = $P{patientID}   
+AND (inv_trans.date_created BETWEEN  $P{beginDatePattern} AND  $P{endDatePattern})
 GROUP BY inv_item.name;]]>
 		</queryString>
 		<field name="PatientName" class="java.lang.String"/>
 		<field name="InventoryItemName" class="java.lang.String"/>
 		<field name="NoOfTransactions" class="java.lang.Long"/>
-		<field name="QuantityDistributed" class="java.lang.Long"/>
+		<field name="QuantityDistributed" class="java.math.BigDecimal"/>
 	</subDataset>
 	<parameter name="beginDate" class="java.util.Date">
 		<parameterDescription><![CDATA[]]></parameterDescription>
@@ -105,9 +104,9 @@ GROUP BY inv_item.name;]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="36" splitType="Stretch">
+		<band height="33" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="575" height="32" uuid="c69cf57a-3805-40ff-b6d1-ac61f62e6884"/>
+				<reportElement x="0" y="0" width="575" height="32" uuid="ee4bb476-c5e4-4077-ab99-6277a2c81891"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="24"/>
 				</textElement>
@@ -116,47 +115,24 @@ GROUP BY inv_item.name;]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="33" splitType="Stretch">
+		<band height="31" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="575" height="25" uuid="91f01cba-b63b-4416-b07e-4e4eb50613ec"/>
-				<textElement>
+				<reportElement x="0" y="0" width="575" height="25" uuid="95add421-7eee-40e8-94bf-3bb31dcdb066"/>
+				<textElement textAlignment="Center">
 					<font size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Inventory Item Distribution Report for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
-	<pageFooter>
-		<band height="29" splitType="Stretch">
-			<textField>
-				<reportElement x="0" y="6" width="369" height="16" uuid="72bfd8d1-f29e-4e91-ad01-f4877143609f"/>
-				<textElement textAlignment="Left">
-					<font isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-dd-MM HH:mm").format(new Date())]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="494" y="5" width="61" height="20" uuid="b27a755d-fecd-4729-8e14-6b1b042c9e6a"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Report">
-				<reportElement x="531" y="5" width="36" height="16" uuid="088857a9-f9c8-4e2f-beb8-5d75ee7c5b2d"/>
-				<textElement textAlignment="Right">
-					<font isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
-		</band>
-	</pageFooter>
-	<summary>
-		<band height="63" splitType="Stretch">
+	<detail>
+		<band height="91" splitType="Stretch">
 			<componentElement>
-				<reportElement x="0" y="0" width="555" height="60" uuid="d01ac313-42d9-485d-9870-69f82cca473b">
+				<reportElement x="40" y="0" width="470" height="90" uuid="eed41d65-6e4a-4d29-85dc-2b5d27c43286">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="DistributedInvData" uuid="227ea83f-9be6-4a49-a306-5bc0d3084714">
+					<datasetRun subDataset="DistributedInventory" uuid="4cf4a0f8-6ed4-4ff6-be86-b31f0ef6bbd6">
 						<datasetParameter name="beginDate">
 							<datasetParameterExpression><![CDATA[new Date()]]></datasetParameterExpression>
 						</datasetParameter>
@@ -174,77 +150,86 @@ GROUP BY inv_item.name;]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="160" uuid="3227ebe4-3040-460b-b245-afe4689f3197">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
-						<jr:columnHeader style="Table_CH" height="30">
-							<staticText>
-								<reportElement x="0" y="0" width="160" height="30" uuid="6a3408e1-8798-4add-a694-d942dac0e0cc"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+					<jr:column width="270" uuid="047e0972-10b4-448f-8758-43bfdde839dc">
+						<jr:tableHeader style="Table_TH" height="30">
+							<box>
+								<topPen lineWidth="0.0"/>
+								<leftPen lineWidth="0.0"/>
+								<bottomPen lineWidth="0.0"/>
+								<rightPen lineWidth="0.0"/>
+							</box>
+							<textField>
+								<reportElement x="0" y="0" width="270" height="30" uuid="55d86313-de5a-4ff8-b04b-5da10163c82d"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font isBold="true"/>
 								</textElement>
-								<text><![CDATA[Patient Name]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
-							<textField>
-								<reportElement x="0" y="0" width="160" height="30" uuid="684f9f8c-a9e4-4e6c-9006-576d71d3ee2b"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{PatientName}]]></textFieldExpression>
 							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="250" uuid="a6f96b02-16cd-4c69-8e4a-7801aab19d92">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						</jr:tableHeader>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="250" height="30" uuid="a94836e9-f36c-4047-91a1-4bba1723a184"/>
+								<reportElement x="0" y="0" width="270" height="30" uuid="d74b15e7-4b12-48ba-9d6f-2694e36d220c"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font isBold="true"/>
 								</textElement>
-								<text><![CDATA[Inventory Item Name]]></text>
+								<text><![CDATA[Item Name]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="250" height="30" uuid="a3efce08-2224-40b3-b813-07ddfc0a848b"/>
+								<reportElement x="0" y="0" width="270" height="30" uuid="e165bca9-d382-4d98-96f9-e82f0ed294f2"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{InventoryItemName}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="80" uuid="55d7fdb0-ec7b-4eed-b46b-db334a991dad">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+					<jr:column width="110" uuid="338dc8a2-84a7-4783-891d-1148527cf3a6">
+						<jr:tableHeader style="Table_TH" height="30">
+							<box>
+								<topPen lineWidth="0.0"/>
+								<leftPen lineWidth="0.0"/>
+								<bottomPen lineWidth="0.0"/>
+								<rightPen lineWidth="0.0"/>
+							</box>
+						</jr:tableHeader>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="80" height="30" uuid="b4f7c9dd-ca91-4304-b05b-9934b914f74f"/>
+								<reportElement x="0" y="0" width="110" height="30" uuid="56e79653-7ade-43d3-91fc-bb8ab567b5c2"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font isBold="true"/>
 								</textElement>
-								<text><![CDATA[No Of Transactions]]></text>
+								<text><![CDATA[Number of Transactions]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="80" height="30" uuid="fd5169d0-2e54-4b89-8354-f88a2e90a9cc"/>
+								<reportElement x="0" y="0" width="110" height="30" uuid="0f04656c-0c81-4211-a405-ca89541f973f"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{NoOfTransactions}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="456b938f-dd4d-4cfe-8237-23953a7bf0d6">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+					<jr:column width="90" uuid="74093e4c-cea9-4a05-bf05-790739435855">
+						<jr:tableHeader style="Table_TH" height="30">
+							<box>
+								<topPen lineWidth="0.0"/>
+								<leftPen lineWidth="0.0"/>
+								<bottomPen lineWidth="0.0"/>
+								<rightPen lineWidth="0.0"/>
+							</box>
+						</jr:tableHeader>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="70" height="30" uuid="9f5b8d39-d73e-4de3-992b-276b8810c511"/>
+								<reportElement x="0" y="0" width="90" height="30" uuid="e08ef8f2-b83c-4816-92ab-af19f6fb84a1"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font isBold="true"/>
 								</textElement>
-								<text><![CDATA[Quantity Distributed]]></text>
+								<text><![CDATA[Amount Distributed]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="70" height="30" uuid="6506cc1d-b7d3-4578-9ff6-142d04c49df1"/>
+								<reportElement x="0" y="0" width="90" height="30" uuid="1f0d6878-2dc4-4dd4-aece-81ea0c2161b3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{QuantityDistributed}]]></textFieldExpression>
 							</textField>
@@ -253,11 +238,34 @@ GROUP BY inv_item.name;]]>
 				</jr:table>
 			</componentElement>
 		</band>
-	</summary>
+	</detail>
+	<pageFooter>
+		<band height="34" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="6" width="369" height="16" uuid="f6e16d1e-88b1-4524-ba23-c7586489b881"/>
+				<textElement textAlignment="Left">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-dd-MM HH:mm").format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="494" y="5" width="61" height="20" uuid="48c93d36-425a-4dc2-a3a8-c33572d22dc9"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="531" y="5" width="36" height="16" uuid="cdf01323-e3db-4deb-87a1-5394b840c957"/>
+				<textElement textAlignment="Right">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
 	<noData>
-		<band height="27">
+		<band height="22">
 			<staticText>
-				<reportElement x="0" y="5" width="306" height="16" uuid="264ddf73-6fe8-4e8f-8dc3-f9eb2462e7c4"/>
+				<reportElement x="0" y="5" width="306" height="16" uuid="632a1189-a83b-4ccb-9b5f-c99488e1c87b"/>
 				<textElement textAlignment="Left">
 					<font isBold="false" isItalic="true"/>
 				</textElement>
