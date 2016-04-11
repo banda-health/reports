@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-04-08T14:25:26 -->
+<!-- 2016-04-11T13:58:24 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="InventoryItems_Distributed" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="2411efa7-bbb4-43eb-94eb-402271379e8e">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
@@ -50,7 +50,7 @@
 		<parameter name="endDatePattern" class="java.lang.String" isForPrompting="false">
 			<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{endDate})]]></defaultValueExpression>
 		</parameter>
-		<parameter name="patientID" class="java.lang.Integer">
+		<parameter name="patientID" class="java.lang.String">
 			<parameterDescription><![CDATA[]]></parameterDescription>
 		</parameter>
 		<queryString>
@@ -71,8 +71,12 @@ FROM inv_transaction AS inv_trans
     LEFT OUTER JOIN person_name patient_person_name ON
     patient_person.person_id = patient_person_name.person_id AND
     patient_person_name.preferred = 1
+    LEFT OUTER JOIN patient_identifier pi ON
+        patient_person.person_id = pi.patient_id
+		AND
+        pi.identifier_type = 4
 WHERE inv_sto.operation_type_id = 3 AND inv_sto.patient_id IS NOT NULL
-AND inv_trans.patient_id = $P{patientID}   
+AND pi.identifier = $P{patientID}   
 AND (inv_trans.date_created BETWEEN  $P{beginDatePattern} AND  $P{endDatePattern})
 GROUP BY inv_item.name;]]>
 		</queryString>
@@ -94,7 +98,7 @@ GROUP BY inv_item.name;]]>
 	<parameter name="endDatePattern" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{endDate})]]></defaultValueExpression>
 	</parameter>
-	<parameter name="patientID" class="java.lang.Integer">
+	<parameter name="patientID" class="java.lang.String">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 	</parameter>
 	<queryString>
@@ -132,7 +136,7 @@ GROUP BY inv_item.name;]]>
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="DistributedInventory" uuid="4cf4a0f8-6ed4-4ff6-be86-b31f0ef6bbd6">
+					<datasetRun subDataset="DistributedInventory" uuid="b7e033a0-f7ba-4116-b835-b003b1e3b9c4">
 						<datasetParameter name="beginDate">
 							<datasetParameterExpression><![CDATA[new Date()]]></datasetParameterExpression>
 						</datasetParameter>
