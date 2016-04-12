@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-02-08T15:05:53 -->
+<!-- 2016-04-08T14:12:16 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VisitDiagnosis" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="e9256aac-77a8-4186-bd5f-78f851f8172d">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
@@ -207,12 +207,14 @@ ORDER BY visit.date_started ASC]]>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
 								<reportElement x="0" y="0" width="65" height="30" uuid="9329c4bf-9c32-45f9-b901-e3535febf28e"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[Visit Date]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="65" height="30" uuid="cc85d7ed-a262-4698-8bea-2617ff533b22"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{date_started}]]></textFieldExpression>
 								<patternExpression><![CDATA["dd-MMM-yy"]]></patternExpression>
 							</textField>
@@ -223,12 +225,14 @@ ORDER BY visit.date_started ASC]]>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
 								<reportElement x="0" y="0" width="50" height="30" uuid="82bee096-e797-470a-aa5f-08349c493e14"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[File No.]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="50" height="30" uuid="ee34b268-d48d-4132-9134-a8ba8df90b22"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{identifier}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -238,12 +242,14 @@ ORDER BY visit.date_started ASC]]>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
 								<reportElement x="0" y="0" width="70" height="30" uuid="0e20cc6b-a2e8-482a-ac6c-6314ffa5064a"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[First Name]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="70" height="30" uuid="425e3998-007b-4f27-83a3-98b0e5d6a7c0"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{given_name}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -253,12 +259,14 @@ ORDER BY visit.date_started ASC]]>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
 								<reportElement x="0" y="0" width="76" height="30" uuid="a414646e-ff98-4537-97e0-90a922e9604e"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[Middle Name]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="76" height="30" uuid="550790a7-be3e-4101-81ef-31e5e7e4b1f0"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{middle_name}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -268,12 +276,14 @@ ORDER BY visit.date_started ASC]]>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
 								<reportElement x="0" y="0" width="70" height="30" uuid="877322f2-2d5b-4142-9dbc-031928da551b"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[Surname]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="70" height="30" uuid="a851826c-08b1-4517-8b57-89c92f433279"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{family_name}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -284,12 +294,14 @@ ORDER BY visit.date_started ASC]]>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
 								<reportElement x="0" y="0" width="30" height="30" uuid="30edda4d-fb25-47c8-bab6-900d1e31652f"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[Gender]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="30" height="30" uuid="086845b1-2d31-45da-840d-6ba852f03e9b"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{gender}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -299,12 +311,14 @@ ORDER BY visit.date_started ASC]]>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
 								<reportElement x="0" y="0" width="74" height="30" uuid="82b39d93-9c52-4c3e-b16f-8e6c48deb4fb"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[Clinic]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="74" height="30" uuid="77b8eb1f-3a2c-460b-a3a9-68f8d4d39965"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{location}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -315,12 +329,14 @@ ORDER BY visit.date_started ASC]]>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
 								<reportElement x="0" y="0" width="174" height="30" uuid="78ec256b-f93e-4ac6-a152-793bde1e621c"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[Diagnosis]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="174" height="30" uuid="501d28db-de02-4bb3-8570-c98cd737706d"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{diag}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -330,12 +346,14 @@ ORDER BY visit.date_started ASC]]>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
 								<reportElement x="0" y="0" width="78" height="30" uuid="63e48009-49f8-477c-908b-a5389abf3951"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[D.O.B]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="78" height="30" uuid="1d2ccb05-bc73-4895-9f2b-7158d200d991"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{birth_date}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -346,12 +364,14 @@ ORDER BY visit.date_started ASC]]>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
 								<reportElement x="0" y="0" width="75" height="30" uuid="1399a13a-9679-4eb4-9684-c3ad126c28f9"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[Phone #]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="75" height="30" uuid="7ae48905-aef8-48d7-826f-a11e2f3c01aa"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{value}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -362,12 +382,14 @@ ORDER BY visit.date_started ASC]]>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
 								<reportElement x="0" y="0" width="35" height="30" uuid="d2c2999a-cd58-422b-947f-7b0de471daf7"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[Age]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="35" height="30" uuid="db5e32c8-b91e-4c1d-b4e3-4786e6685a56"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{age}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>

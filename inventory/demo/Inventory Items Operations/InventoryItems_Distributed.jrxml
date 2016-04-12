@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-04-12T12:18:03 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="InventoryItems_Transfered" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="79a5f0d0-19ad-4022-a658-dcd2caeb7caa">
+<!-- 2016-04-11T13:58:24 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="InventoryItems_Distributed" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="2411efa7-bbb4-43eb-94eb-402271379e8e">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
@@ -31,10 +31,10 @@
 		</box>
 		<conditionalStyle>
 			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
-			<style backcolor="#E1E9F2"/>
+			<style backcolor="#DAE3ED"/>
 		</conditionalStyle>
 	</style>
-	<subDataset name="Inventory items Transfered" uuid="92c3dfd0-e5f6-4b2c-88bf-c30ff366fabc">
+	<subDataset name="DistributedInventory" uuid="b8211bf9-3b4b-4d70-b1a1-dd5e5b84c882">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Kapsowar"/>
 		<parameter name="beginDate" class="java.util.Date">
@@ -50,44 +50,40 @@
 		<parameter name="endDatePattern" class="java.lang.String" isForPrompting="false">
 			<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{endDate})]]></defaultValueExpression>
 		</parameter>
-		<parameter name="firstStockroomName" class="java.lang.String">
+		<parameter name="patientID" class="java.lang.String">
 			<parameterDescription><![CDATA[]]></parameterDescription>
 		</parameter>
-		<parameter name="latterStockroomName" class="java.lang.String"/>
 		<queryString>
 			<![CDATA[SELECT
+CONCAT(patient_person_name.given_name, ' ', patient_person_name.family_name) as PatientName,
 inv_item.name as InventoryItemName, 
-COUNT(inv_item.name) AS NoOfTransactions, 
-SUM(inv_trans.quantity) AS AmountTransfered,
-source_inv_stroom.name AS SourceStockroom,
-dest_inv_stroom.name AS DestinationStockroom
-
+COUNT(inv_item.name) as NoOfTransactions, 
+SUM(ABS(inv_trans.quantity)) as QuantityDistributed
 FROM inv_transaction AS inv_trans
 	INNER JOIN inv_stock_operation inv_sto
 	ON inv_trans.operation_id = inv_sto.stock_operation_id
 	INNER JOIN inv_item 
 	ON inv_item.item_id = inv_trans.item_id
-    INNER JOIN inv_stockroom source_inv_stroom
-    ON source_inv_stroom.stockroom_id = inv_sto.source_id
-    AND inv_sto.status = 'COMPLETED'
-    INNER JOIN inv_stockroom dest_inv_stroom
-    ON dest_inv_stroom.stockroom_id = inv_sto.destination_id
-    AND inv_sto.status = 'COMPLETED'
-    INNER JOIN inv_stockroom dest_inv_stroom_name
-    ON inv_trans.stockroom_id = dest_inv_stroom.stockroom_id
-    
-WHERE inv_sto.operation_type_id = 6 AND (dest_inv_stroom_name.retired = 0
-AND source_inv_stroom.retired = 0 AND dest_inv_stroom_name.retired = 0)
-AND (source_inv_stroom.name = $P{firstStockroomName} AND dest_inv_stroom.name =  $P{latterStockroomName}  
-AND dest_inv_stroom_name.name =  $P{latterStockroomName})
-AND (inv_trans.date_created BETWEEN  $P{beginDatePattern} AND $P{endDatePattern})
+	LEFT OUTER JOIN patient ON
+	inv_trans.patient_id = patient.patient_id
+	LEFT OUTER JOIN person patient_person ON
+	patient.patient_id = patient_person.person_id
+    LEFT OUTER JOIN person_name patient_person_name ON
+    patient_person.person_id = patient_person_name.person_id AND
+    patient_person_name.preferred = 1
+    LEFT OUTER JOIN patient_identifier pi ON
+        patient_person.person_id = pi.patient_id
+		AND
+        pi.identifier_type = 4
+WHERE inv_sto.operation_type_id = 3 AND inv_sto.patient_id IS NOT NULL
+AND pi.identifier = $P{patientID}   
+AND (inv_trans.date_created BETWEEN  $P{beginDatePattern} AND  $P{endDatePattern})
 GROUP BY inv_item.name;]]>
 		</queryString>
+		<field name="PatientName" class="java.lang.String"/>
 		<field name="InventoryItemName" class="java.lang.String"/>
 		<field name="NoOfTransactions" class="java.lang.Long"/>
-		<field name="AmountTransfered" class="java.math.BigDecimal"/>
-		<field name="SourceStockroom" class="java.lang.String"/>
-		<field name="DestinationStockroom" class="java.lang.String"/>
+		<field name="QuantityDistributed" class="java.math.BigDecimal"/>
 	</subDataset>
 	<parameter name="beginDate" class="java.util.Date">
 		<parameterDescription><![CDATA[]]></parameterDescription>
@@ -102,10 +98,9 @@ GROUP BY inv_item.name;]]>
 	<parameter name="endDatePattern" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{endDate})]]></defaultValueExpression>
 	</parameter>
-	<parameter name="firstStockroomName" class="java.lang.String">
+	<parameter name="patientID" class="java.lang.String">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 	</parameter>
-	<parameter name="latterStockroomName" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT 1;]]>
 	</queryString>
@@ -113,42 +108,35 @@ GROUP BY inv_item.name;]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="54" splitType="Stretch">
+		<band height="33" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="575" height="32" uuid="33d91bbb-0dfd-43ac-98e3-99ac79c1e9ac"/>
+				<reportElement x="0" y="0" width="575" height="32" uuid="ee4bb476-c5e4-4077-ab99-6277a2c81891"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="24"/>
 				</textElement>
-				<text><![CDATA[Kapsowar Hospital]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="32" width="575" height="20" uuid="88420910-629f-4e8b-844e-12f02e244933"/>
-				<textElement textAlignment="Center">
-					<font size="14"/>
-				</textElement>
-				<text><![CDATA[Stockroom Inventory Items Transfer Report]]></text>
+				<text><![CDATA[OpenHMIS Demo Clinic]]></text>
 			</staticText>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="26" splitType="Stretch">
+		<band height="31" splitType="Stretch">
 			<textField>
-				<reportElement x="40" y="-2" width="401" height="18" uuid="9f085a7b-1465-4fee-a521-7a528b9b6787"/>
-				<textElement>
+				<reportElement x="0" y="0" width="575" height="25" uuid="95add421-7eee-40e8-94bf-3bb31dcdb066"/>
+				<textElement textAlignment="Center">
 					<font size="12" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["From: " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Inventory Item Distribution Report for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
 	<detail>
 		<band height="91" splitType="Stretch">
 			<componentElement>
-				<reportElement x="40" y="0" width="500" height="90" uuid="8333c7b1-2174-49d5-92cc-f2e67dafba3b">
+				<reportElement x="40" y="0" width="470" height="90" uuid="eed41d65-6e4a-4d29-85dc-2b5d27c43286">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="Inventory items Transfered" uuid="68621d21-2542-4320-ab3f-4fc704795651">
+					<datasetRun subDataset="DistributedInventory" uuid="b7e033a0-f7ba-4116-b835-b003b1e3b9c4">
 						<datasetParameter name="beginDate">
 							<datasetParameterExpression><![CDATA[new Date()]]></datasetParameterExpression>
 						</datasetParameter>
@@ -161,15 +149,12 @@ GROUP BY inv_item.name;]]>
 						<datasetParameter name="endDatePattern">
 							<datasetParameterExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{endDate})]]></datasetParameterExpression>
 						</datasetParameter>
-						<datasetParameter name="firstStockroomName">
-							<datasetParameterExpression><![CDATA[$P{firstStockroomName}]]></datasetParameterExpression>
-						</datasetParameter>
-						<datasetParameter name="latterStockroomName">
-							<datasetParameterExpression><![CDATA[$P{latterStockroomName}]]></datasetParameterExpression>
+						<datasetParameter name="patientID">
+							<datasetParameterExpression><![CDATA[$P{patientID}]]></datasetParameterExpression>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="240" uuid="f7be4d40-0611-4a1f-ae26-6378bb6b338b">
+					<jr:column width="270" uuid="047e0972-10b4-448f-8758-43bfdde839dc">
 						<jr:tableHeader style="Table_TH" height="30">
 							<box>
 								<topPen lineWidth="0.0"/>
@@ -178,16 +163,16 @@ GROUP BY inv_item.name;]]>
 								<rightPen lineWidth="0.0"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="240" height="30" uuid="648abfe0-61fa-498d-a053-8cca2bc6f34e"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
+								<reportElement x="0" y="0" width="270" height="30" uuid="55d86313-de5a-4ff8-b04b-5da10163c82d"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font isBold="true"/>
 								</textElement>
-								<textFieldExpression><![CDATA["From: " + $F{SourceStockroom}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{PatientName}]]></textFieldExpression>
 							</textField>
 						</jr:tableHeader>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="240" height="30" uuid="593f1aa0-eedf-4277-aa57-5b7034102159"/>
+								<reportElement x="0" y="0" width="270" height="30" uuid="d74b15e7-4b12-48ba-9d6f-2694e36d220c"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font isBold="true"/>
 								</textElement>
@@ -196,13 +181,13 @@ GROUP BY inv_item.name;]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="240" height="30" uuid="21dfcee6-f5b1-4682-a26f-26b8b530ea3a"/>
+								<reportElement x="0" y="0" width="270" height="30" uuid="e165bca9-d382-4d98-96f9-e82f0ed294f2"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{InventoryItemName}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="140" uuid="a786d1d4-92dc-4ea2-99ec-874e6bbe5bd3">
+					<jr:column width="110" uuid="338dc8a2-84a7-4783-891d-1148527cf3a6">
 						<jr:tableHeader style="Table_TH" height="30">
 							<box>
 								<topPen lineWidth="0.0"/>
@@ -210,17 +195,10 @@ GROUP BY inv_item.name;]]>
 								<bottomPen lineWidth="0.0"/>
 								<rightPen lineWidth="0.0"/>
 							</box>
-							<textField>
-								<reportElement x="0" y="0" width="140" height="30" uuid="98cc40da-b67e-4559-acec-dbc26bf12d64"/>
-								<textElement textAlignment="Left" verticalAlignment="Middle">
-									<font isBold="true"/>
-								</textElement>
-								<textFieldExpression><![CDATA[" To: " + $F{DestinationStockroom}]]></textFieldExpression>
-							</textField>
 						</jr:tableHeader>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="140" height="30" uuid="d9145824-4e0b-4041-b83a-6b01bb53344f"/>
+								<reportElement x="0" y="0" width="110" height="30" uuid="56e79653-7ade-43d3-91fc-bb8ab567b5c2"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font isBold="true"/>
 								</textElement>
@@ -229,13 +207,13 @@ GROUP BY inv_item.name;]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="140" height="30" uuid="a2ba6589-bcdd-46c8-90c9-9046a97d3b18"/>
+								<reportElement x="0" y="0" width="110" height="30" uuid="0f04656c-0c81-4211-a405-ca89541f973f"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{NoOfTransactions}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="120" uuid="94cebffc-3883-4438-a4c4-9544425da1b5">
+					<jr:column width="90" uuid="74093e4c-cea9-4a05-bf05-790739435855">
 						<jr:tableHeader style="Table_TH" height="30">
 							<box>
 								<topPen lineWidth="0.0"/>
@@ -246,18 +224,18 @@ GROUP BY inv_item.name;]]>
 						</jr:tableHeader>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="120" height="30" uuid="0e9e191c-3785-419f-a9ca-6a87e8cc4811"/>
+								<reportElement x="0" y="0" width="90" height="30" uuid="e08ef8f2-b83c-4816-92ab-af19f6fb84a1"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font isBold="true"/>
 								</textElement>
-								<text><![CDATA[Amount Transfered]]></text>
+								<text><![CDATA[Amount Distributed]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="120" height="30" uuid="8326358f-8e4e-47cf-a2a0-84460d6f2011"/>
+								<reportElement x="0" y="0" width="90" height="30" uuid="1f0d6878-2dc4-4dd4-aece-81ea0c2161b3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{AmountTransfered}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{QuantityDistributed}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -266,21 +244,21 @@ GROUP BY inv_item.name;]]>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="30" splitType="Stretch">
+		<band height="34" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="6" width="369" height="16" uuid="647d6c2a-a6df-4189-b877-f29adf467262"/>
+				<reportElement x="0" y="6" width="369" height="16" uuid="f6e16d1e-88b1-4524-ba23-c7586489b881"/>
 				<textElement textAlignment="Left">
 					<font isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-dd-MM HH:mm").format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="494" y="5" width="61" height="20" uuid="3ea0dfe4-04d3-4691-bcc7-c494b0d46f5b"/>
+				<reportElement x="494" y="5" width="61" height="20" uuid="48c93d36-425a-4dc2-a3a8-c33572d22dc9"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="531" y="5" width="36" height="16" uuid="da665ed0-cc9f-4d78-95a0-17dadcbe2624"/>
+				<reportElement x="531" y="5" width="36" height="16" uuid="cdf01323-e3db-4deb-87a1-5394b840c957"/>
 				<textElement textAlignment="Right">
 					<font isBold="false"/>
 				</textElement>
@@ -289,9 +267,9 @@ GROUP BY inv_item.name;]]>
 		</band>
 	</pageFooter>
 	<noData>
-		<band height="31">
+		<band height="22">
 			<staticText>
-				<reportElement x="0" y="5" width="306" height="16" uuid="6ce6a811-96b2-4a66-ba32-b07120038ecd"/>
+				<reportElement x="0" y="5" width="306" height="16" uuid="632a1189-a83b-4ccb-9b5f-c99488e1c87b"/>
 				<textElement textAlignment="Left">
 					<font isBold="false" isItalic="true"/>
 				</textElement>
