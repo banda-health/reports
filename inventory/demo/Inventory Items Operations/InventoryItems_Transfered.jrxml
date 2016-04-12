@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-04-08T14:29:57 -->
+<!-- 2016-04-12T14:51:33 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="InventoryItems_Transfered" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="79a5f0d0-19ad-4022-a658-dcd2caeb7caa">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
@@ -50,10 +50,10 @@
 		<parameter name="endDatePattern" class="java.lang.String" isForPrompting="false">
 			<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{endDate})]]></defaultValueExpression>
 		</parameter>
-		<parameter name="firstStockroomID" class="java.lang.Integer">
+		<parameter name="firstStockroomName" class="java.lang.String">
 			<parameterDescription><![CDATA[]]></parameterDescription>
 		</parameter>
-		<parameter name="latterStockroomID" class="java.lang.Integer"/>
+		<parameter name="latterStockroomName" class="java.lang.String"/>
 		<queryString>
 			<![CDATA[SELECT
 inv_item.name as InventoryItemName, 
@@ -73,11 +73,14 @@ FROM inv_transaction AS inv_trans
     INNER JOIN inv_stockroom dest_inv_stroom
     ON dest_inv_stroom.stockroom_id = inv_sto.destination_id
     AND inv_sto.status = 'COMPLETED'
+    INNER JOIN inv_stockroom dest_inv_stroom_name
+    ON inv_trans.stockroom_id = dest_inv_stroom.stockroom_id
     
-WHERE inv_sto.operation_type_id = 6
-AND (inv_sto.source_id = $P{firstStockroomID}   AND inv_sto.destination_id = $P{latterStockroomID}  
-AND inv_trans.stockroom_id = $P{latterStockroomID}  )
-AND (inv_trans.date_created BETWEEN  $P{beginDatePattern} AND  $P{endDatePattern})
+WHERE inv_sto.operation_type_id = 6 AND (dest_inv_stroom_name.retired = 0
+AND source_inv_stroom.retired = 0 AND dest_inv_stroom_name.retired = 0)
+AND (source_inv_stroom.name = $P{firstStockroomName} AND dest_inv_stroom.name =  $P{latterStockroomName}  
+AND dest_inv_stroom_name.name =  $P{latterStockroomName})
+AND (inv_trans.date_created BETWEEN  $P{beginDatePattern} AND $P{endDatePattern})
 GROUP BY inv_item.name;]]>
 		</queryString>
 		<field name="InventoryItemName" class="java.lang.String"/>
@@ -99,10 +102,10 @@ GROUP BY inv_item.name;]]>
 	<parameter name="endDatePattern" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{endDate})]]></defaultValueExpression>
 	</parameter>
-	<parameter name="firstStockroomID" class="java.lang.Integer">
+	<parameter name="firstStockroomName" class="java.lang.String">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 	</parameter>
-	<parameter name="latterStockroomID" class="java.lang.Integer"/>
+	<parameter name="latterStockroomName" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT 1;]]>
 	</queryString>
@@ -145,7 +148,7 @@ GROUP BY inv_item.name;]]>
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="Inventory items Transfered" uuid="68621d21-2542-4320-ab3f-4fc704795651">
+					<datasetRun subDataset="Inventory items Transfered" uuid="f8b0feba-ebd6-42a4-93b8-460e8288479b">
 						<datasetParameter name="beginDate">
 							<datasetParameterExpression><![CDATA[new Date()]]></datasetParameterExpression>
 						</datasetParameter>
@@ -158,11 +161,11 @@ GROUP BY inv_item.name;]]>
 						<datasetParameter name="endDatePattern">
 							<datasetParameterExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{endDate})]]></datasetParameterExpression>
 						</datasetParameter>
-						<datasetParameter name="firstStockroomID">
-							<datasetParameterExpression><![CDATA[$P{firstStockroomID}]]></datasetParameterExpression>
+						<datasetParameter name="firstStockroomName">
+							<datasetParameterExpression><![CDATA[$P{firstStockroomName}]]></datasetParameterExpression>
 						</datasetParameter>
-						<datasetParameter name="latterStockroomID">
-							<datasetParameterExpression><![CDATA[$P{latterStockroomID}]]></datasetParameterExpression>
+						<datasetParameter name="latterStockroomName">
+							<datasetParameterExpression><![CDATA[$P{latterStockroomName}]]></datasetParameterExpression>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
