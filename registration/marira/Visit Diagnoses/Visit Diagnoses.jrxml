@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-04-08T11:54:11 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VisitDiagnosis" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="e9256aac-77a8-4186-bd5f-78f851f8172d">
+<!-- 2016-04-14T12:30:30 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VisitDiagnosis" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="e9256aac-77a8-4186-bd5f-78f851f8172d">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
@@ -32,7 +32,7 @@
 	</style>
 	<subDataset name="VisitDiagnosis" uuid="619eba94-45ff-42c0-9d42-97603735bba0">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira_live"/>
 		<parameter name="runDate" class="java.util.Date">
 			<parameterDescription><![CDATA[]]></parameterDescription>
 		</parameter>
@@ -105,7 +105,11 @@ WHERE (date_format(visit.date_started, '%Y-%m') = $P{patternrunDate}  )
 	 AND concept.class_id = 4 
 	 AND concept_name.locale = "en" 
 	 AND concept_name.concept_name_type = "FULLY_SPECIFIED"
-	 GROUP BY visit.date_started
+	 GROUP BY visit.date_started, patient_identifier.identifier, person_name.given_name,
+person_name.middle_name,
+person_name.family_name,
+person.gender,
+visit_type.name, person_attribute.value, person.birthdate,person.birthdate_estimated
 ORDER BY visit.date_started ASC]]>
 		</queryString>
 		<field name="date_started" class="java.sql.Timestamp">
@@ -160,6 +164,17 @@ ORDER BY visit.date_started ASC]]>
 			</staticText>
 		</band>
 	</title>
+	<pageHeader>
+		<band height="22">
+			<staticText>
+				<reportElement x="1" y="0" width="801" height="20" uuid="15dd8bd3-fff7-4131-9afe-5b811541ffe5"/>
+				<textElement textAlignment="Center">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Visit Diagnosis Report]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
 	<columnHeader>
 		<band height="21" splitType="Stretch">
 			<textField>
@@ -192,7 +207,7 @@ ORDER BY visit.date_started ASC]]>
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="VisitDiagnosis" uuid="afb49fbe-b449-48f0-ae0e-101b31095016">
+					<datasetRun subDataset="VisitDiagnosis" uuid="1ce8c904-dc88-4fe2-9fad-2a08a40bbede">
 						<datasetParameter name="runDate">
 							<datasetParameterExpression><![CDATA[$P{runDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -271,36 +286,36 @@ ORDER BY visit.date_started ASC]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="92c10b36-abb6-4097-ae7d-e388d74f7885">
+					<jr:column width="59" uuid="92c10b36-abb6-4097-ae7d-e388d74f7885">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="70" height="30" uuid="877322f2-2d5b-4142-9dbc-031928da551b"/>
+								<reportElement x="0" y="0" width="59" height="30" uuid="877322f2-2d5b-4142-9dbc-031928da551b"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[Surname]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="70" height="30" uuid="a851826c-08b1-4517-8b57-89c92f433279"/>
+								<reportElement x="0" y="0" width="59" height="30" uuid="a851826c-08b1-4517-8b57-89c92f433279"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{family_name}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="30" uuid="99db72cf-a832-4b47-9394-9e627c105972">
+					<jr:column width="39" uuid="99db72cf-a832-4b47-9394-9e627c105972">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="30" height="30" uuid="30edda4d-fb25-47c8-bab6-900d1e31652f"/>
+								<reportElement x="0" y="0" width="39" height="30" uuid="30edda4d-fb25-47c8-bab6-900d1e31652f"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[Gender]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="30" height="30" uuid="086845b1-2d31-45da-840d-6ba852f03e9b"/>
+								<reportElement x="0" y="0" width="39" height="30" uuid="086845b1-2d31-45da-840d-6ba852f03e9b"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{gender}]]></textFieldExpression>
 							</textField>
@@ -398,4 +413,15 @@ ORDER BY visit.date_started ASC]]>
 			</componentElement>
 		</band>
 	</summary>
+	<noData>
+		<band height="25">
+			<staticText>
+				<reportElement x="0" y="5" width="306" height="16" uuid="12f25916-d117-4254-be6d-616ca4308b39"/>
+				<textElement textAlignment="Left">
+					<font isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[No data was found to display on the report.]]></text>
+			</staticText>
+		</band>
+	</noData>
 </jasperReport>
