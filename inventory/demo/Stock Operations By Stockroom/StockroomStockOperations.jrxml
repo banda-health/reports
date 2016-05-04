@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2016-04-27T14:44:07 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="StockTake" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c3ee4abe-f0a8-4957-a323-509e5aa4de28">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -148,8 +150,12 @@ ORDER BY operation_date ASC]]>
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<variable name="balance" class="java.lang.Integer" calculation="Sum">
-			<variableExpression><![CDATA[($V{balance} == 0 ? $P{balanceParm} : 0) + ($F{quantity_received} == null ? 0 : $F{quantity_received} ) -
+			<variableExpression><![CDATA[($V{balance} == 0 && $V{count} == 0 ? $P{balanceParm} : 0) + ($F{quantity_received} == null ? 0 : $F{quantity_received} ) -
 ($F{quantity_issued} == null ? 0 : $F{quantity_issued})]]></variableExpression>
+			<initialValueExpression><![CDATA[0]]></initialValueExpression>
+		</variable>
+		<variable name="count" class="java.lang.Integer">
+			<variableExpression><![CDATA[$V{count} + 1]]></variableExpression>
 			<initialValueExpression><![CDATA[0]]></initialValueExpression>
 		</variable>
 	</subDataset>
@@ -197,14 +203,14 @@ ORDER BY operation_date ASC]]>
 	<title>
 		<band height="50" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="a334a322-2426-4915-ac87-2fc6a0d5d573" x="0" y="0" width="802" height="30"/>
+				<reportElement x="0" y="0" width="802" height="30" uuid="a334a322-2426-4915-ac87-2fc6a0d5d573"/>
 				<textElement textAlignment="Center">
 					<font size="24"/>
 				</textElement>
 				<text><![CDATA[OpenHMIS Demo Clinic]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="6fa9b3ac-d4c3-40cc-bbfc-7ea30eda1b0d" x="0" y="30" width="802" height="20"/>
+				<reportElement x="0" y="30" width="802" height="20" uuid="6fa9b3ac-d4c3-40cc-bbfc-7ea30eda1b0d"/>
 				<textElement textAlignment="Center">
 					<font size="14"/>
 				</textElement>
@@ -215,28 +221,28 @@ ORDER BY operation_date ASC]]>
 	<pageHeader>
 		<band height="39" splitType="Stretch">
 			<textField>
-				<reportElement uuid="773b2b85-0862-4458-a409-6f1e7140baea" x="1" y="1" width="401" height="18"/>
+				<reportElement x="1" y="1" width="401" height="18" uuid="773b2b85-0862-4458-a409-6f1e7140baea"/>
 				<textElement>
 					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Stockroom: " + $F{stockroom_name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="d43d712d-fb7f-4aea-8135-464cfc3daccf" x="423" y="22" width="379" height="14"/>
+				<reportElement x="423" y="22" width="379" height="14" uuid="d43d712d-fb7f-4aea-8135-464cfc3daccf"/>
 				<textElement textAlignment="Right">
 					<font isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Starting Balance: " + $F{starting_stock} + "   Ending Balance: " + $F{total_stock}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="fab3413b-1357-4bd8-bbc2-17ab688f24e3" x="421" y="5" width="379" height="14"/>
+				<reportElement x="421" y="5" width="379" height="14" uuid="fab3413b-1357-4bd8-bbc2-17ab688f24e3"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Operations from " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="b3e72b10-f7b9-4f67-b1dc-24a2c043fc3a" x="1" y="19" width="401" height="18"/>
+				<reportElement x="1" y="19" width="401" height="18" uuid="b3e72b10-f7b9-4f67-b1dc-24a2c043fc3a"/>
 				<textElement>
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -247,7 +253,7 @@ ORDER BY operation_date ASC]]>
 	<detail>
 		<band height="37">
 			<componentElement>
-				<reportElement uuid="f7cc33dd-e26c-4df4-902c-c64dc33add61" key="table 1" style="table 1" x="1" y="0" width="801" height="33"/>
+				<reportElement key="table 1" style="table 1" x="1" y="0" width="801" height="33" uuid="f7cc33dd-e26c-4df4-902c-c64dc33add61"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
 					<datasetRun subDataset="Table Dataset 1" uuid="52789bbc-fada-4726-a670-b3a4fbea4898">
 						<datasetParameter name="itemId">
@@ -270,7 +276,7 @@ ORDER BY operation_date ASC]]>
 					<jr:column width="75" uuid="dbd19deb-0bcd-41a1-b69d-2730affa160b">
 						<jr:columnHeader style="table 1_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="8463e5e0-9512-4938-ac95-12f843de5320" x="0" y="0" width="75" height="15"/>
+								<reportElement x="0" y="0" width="75" height="15" uuid="8463e5e0-9512-4938-ac95-12f843de5320"/>
 								<textElement verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph leftIndent="2"/>
@@ -280,7 +286,7 @@ ORDER BY operation_date ASC]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
 							<textField pattern="dd-MMM-yy">
-								<reportElement uuid="364d0c46-e370-4f93-9794-8799241d7bdf" x="0" y="0" width="75" height="13"/>
+								<reportElement x="0" y="0" width="75" height="13" uuid="364d0c46-e370-4f93-9794-8799241d7bdf"/>
 								<textElement verticalAlignment="Middle">
 									<paragraph leftIndent="2"/>
 								</textElement>
@@ -291,7 +297,7 @@ ORDER BY operation_date ASC]]>
 					<jr:column width="90" uuid="6fb6c157-c6b7-45b9-bf84-e4966369b515">
 						<jr:columnHeader style="table 1_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="a7fc9849-09fa-4c7d-97b0-829d9b723963" x="0" y="0" width="90" height="15"/>
+								<reportElement x="0" y="0" width="90" height="15" uuid="a7fc9849-09fa-4c7d-97b0-829d9b723963"/>
 								<textElement verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph leftIndent="2"/>
@@ -301,7 +307,7 @@ ORDER BY operation_date ASC]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
 							<textField>
-								<reportElement uuid="d2a72a4c-3a3a-41e0-83de-9f312ed7ee04" x="0" y="0" width="90" height="13"/>
+								<reportElement x="0" y="0" width="90" height="13" uuid="d2a72a4c-3a3a-41e0-83de-9f312ed7ee04"/>
 								<textElement verticalAlignment="Middle">
 									<paragraph leftIndent="2"/>
 								</textElement>
@@ -312,7 +318,7 @@ ORDER BY operation_date ASC]]>
 					<jr:column width="77" uuid="53c174a0-8209-436b-bf9b-357ae701e68e">
 						<jr:columnHeader style="table 1_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="51c7fe90-6ff0-413a-81f1-9d55274a82b9" x="0" y="0" width="77" height="15"/>
+								<reportElement x="0" y="0" width="77" height="15" uuid="51c7fe90-6ff0-413a-81f1-9d55274a82b9"/>
 								<textElement verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph leftIndent="2"/>
@@ -322,7 +328,7 @@ ORDER BY operation_date ASC]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
 							<textField>
-								<reportElement uuid="94e2fdad-33b4-4396-b382-37859e078447" x="0" y="0" width="77" height="13"/>
+								<reportElement x="0" y="0" width="77" height="13" uuid="94e2fdad-33b4-4396-b382-37859e078447"/>
 								<textElement verticalAlignment="Middle">
 									<paragraph leftIndent="2"/>
 								</textElement>
@@ -333,7 +339,7 @@ ORDER BY operation_date ASC]]>
 					<jr:column width="90" uuid="b3120430-1803-47d3-94c1-3907251ac8c7">
 						<jr:columnHeader style="table_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="5b846bbc-c456-4a23-ae43-e927edba5085" x="0" y="0" width="90" height="15"/>
+								<reportElement x="0" y="0" width="90" height="15" uuid="5b846bbc-c456-4a23-ae43-e927edba5085"/>
 								<textElement verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph leftIndent="2"/>
@@ -343,7 +349,7 @@ ORDER BY operation_date ASC]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
 							<textField isBlankWhenNull="true">
-								<reportElement uuid="9daff416-0404-45c4-9bef-f65b3d2d7f3b" x="0" y="0" width="90" height="13"/>
+								<reportElement x="0" y="0" width="90" height="13" uuid="9daff416-0404-45c4-9bef-f65b3d2d7f3b"/>
 								<textElement verticalAlignment="Middle">
 									<paragraph leftIndent="2"/>
 								</textElement>
@@ -354,7 +360,7 @@ ORDER BY operation_date ASC]]>
 					<jr:column width="60" uuid="391d047a-60fc-4945-aca3-a81be1621acd">
 						<jr:columnHeader style="table 1_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="83bde89d-26a8-4487-8fcf-5a72ea8b7836" x="0" y="0" width="60" height="15"/>
+								<reportElement x="0" y="0" width="60" height="15" uuid="83bde89d-26a8-4487-8fcf-5a72ea8b7836"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph rightIndent="2"/>
@@ -364,7 +370,7 @@ ORDER BY operation_date ASC]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
 							<textField pattern="#,##0" isBlankWhenNull="true">
-								<reportElement uuid="fb0c0b6d-3167-4e13-b6cd-8d2e82d7ae5a" x="0" y="0" width="60" height="13"/>
+								<reportElement x="0" y="0" width="60" height="13" uuid="fb0c0b6d-3167-4e13-b6cd-8d2e82d7ae5a"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<paragraph rightIndent="2"/>
 								</textElement>
@@ -375,7 +381,7 @@ ORDER BY operation_date ASC]]>
 					<jr:column width="60" uuid="94b718e8-8226-4d4b-b06e-d6c3f1453d32">
 						<jr:columnHeader style="table 1_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="9a96c5d8-d78b-4705-adcd-4e07e96f7564" x="0" y="0" width="60" height="15"/>
+								<reportElement x="0" y="0" width="60" height="15" uuid="9a96c5d8-d78b-4705-adcd-4e07e96f7564"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph rightIndent="2"/>
@@ -385,7 +391,7 @@ ORDER BY operation_date ASC]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
 							<textField pattern="#,##0" isBlankWhenNull="true">
-								<reportElement uuid="b27490a7-be9a-485f-8dd0-ff72f2db53f2" x="0" y="0" width="60" height="13"/>
+								<reportElement x="0" y="0" width="60" height="13" uuid="b27490a7-be9a-485f-8dd0-ff72f2db53f2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<paragraph rightIndent="2"/>
 								</textElement>
@@ -396,7 +402,7 @@ ORDER BY operation_date ASC]]>
 					<jr:column width="60" uuid="2ef0a18a-aa8e-48f6-b743-0724aa927b91">
 						<jr:columnHeader style="table_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="9dd8102e-5c2b-4a90-8455-799a48d042a8" x="0" y="0" width="60" height="15"/>
+								<reportElement x="0" y="0" width="60" height="15" uuid="9dd8102e-5c2b-4a90-8455-799a48d042a8"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph rightIndent="2"/>
@@ -406,7 +412,7 @@ ORDER BY operation_date ASC]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
 							<textField pattern="#,##0">
-								<reportElement uuid="9e531205-2d98-4159-92d5-b579f3e809e0" x="0" y="0" width="60" height="15"/>
+								<reportElement x="0" y="0" width="60" height="15" uuid="9e531205-2d98-4159-92d5-b579f3e809e0"/>
 								<textElement textAlignment="Right">
 									<paragraph rightIndent="2"/>
 								</textElement>
@@ -417,7 +423,7 @@ ORDER BY operation_date ASC]]>
 					<jr:column width="189" uuid="fbb05ce5-9a03-4616-b272-1efa7d66f399">
 						<jr:columnHeader style="table 1_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="5a015b0a-5be3-4814-8e3d-0affb073ec1f" x="0" y="0" width="90" height="15"/>
+								<reportElement x="0" y="0" width="90" height="15" uuid="5a015b0a-5be3-4814-8e3d-0affb073ec1f"/>
 								<textElement verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph leftIndent="2"/>
@@ -427,7 +433,7 @@ ORDER BY operation_date ASC]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement uuid="70d2740a-be4d-4210-9fd2-fd6dcd3f8828" x="0" y="0" width="189" height="13"/>
+								<reportElement x="0" y="0" width="189" height="13" uuid="70d2740a-be4d-4210-9fd2-fd6dcd3f8828"/>
 								<textElement verticalAlignment="Middle">
 									<paragraph leftIndent="2"/>
 								</textElement>
@@ -438,7 +444,7 @@ ORDER BY operation_date ASC]]>
 					<jr:column width="98" uuid="4bf7e1c0-d7a6-46f5-aa79-d51fccb23490">
 						<jr:columnHeader style="table 1_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="179b3d03-80e0-45c3-bfc1-68341747f548" x="0" y="0" width="90" height="15"/>
+								<reportElement x="0" y="0" width="90" height="15" uuid="179b3d03-80e0-45c3-bfc1-68341747f548"/>
 								<textElement verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph leftIndent="2"/>
@@ -448,7 +454,7 @@ ORDER BY operation_date ASC]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
 							<textField>
-								<reportElement uuid="69dd2c7c-dac0-4ad5-92d5-6f063b9b2c60" x="0" y="0" width="98" height="13"/>
+								<reportElement x="0" y="0" width="98" height="13" uuid="69dd2c7c-dac0-4ad5-92d5-6f063b9b2c60"/>
 								<textElement verticalAlignment="Middle">
 									<paragraph leftIndent="2"/>
 								</textElement>
@@ -463,18 +469,16 @@ ORDER BY operation_date ASC]]>
 	<pageFooter>
 		<band height="18" splitType="Stretch">
 			<textField>
-				<reportElement uuid="f96d7780-6357-4924-b519-27f72a508d29" x="679" y="2" width="87" height="16"/>
+				<reportElement x="679" y="2" width="87" height="16" uuid="f96d7780-6357-4924-b519-27f72a508d29"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="6c430987-cd11-40be-bd9d-2077e233745f" x="0" y="0" width="379" height="16"/>
-				<textElement/>
+				<reportElement x="0" y="0" width="379" height="16" uuid="6c430987-cd11-40be-bd9d-2077e233745f"/>
 				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-dd-MM HH:mm").format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement uuid="7a9813a0-b37a-4dcb-a749-b1725b610579" x="769" y="2" width="33" height="16"/>
-				<textElement/>
+				<reportElement x="769" y="2" width="33" height="16" uuid="7a9813a0-b37a-4dcb-a749-b1725b610579"/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
