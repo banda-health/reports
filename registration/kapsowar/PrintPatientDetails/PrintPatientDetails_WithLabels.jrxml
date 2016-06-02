@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-05-31T15:42:40 -->
+<!-- 2016-06-02T15:48:20 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PrintPatientDetails" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f435a154-1852-4145-8b14-ee5ab85af79c">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="personId" class="java.lang.Integer">
@@ -8,22 +8,16 @@
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT
-    pi.identifier as FileNumber,
+    pi.identifier as OPDNumber,
     pn.given_name as GivenName,
     pn.middle_name as MiddleName,
     pn.family_name as FamilyName,
-    a.address1 as Address,
-    a.city_village as City,
-    a.state_province as Province,
-    a.county_district as District,
+    a.city_village as Location,
     p.birthdate as DateBirth,
-    p.gender as Sex,
-    (select value from person_attribute where person_attribute_type_id = 4 and person_id=$P{personId}) as KinName,
-    (select cn.name from concept_name cn inner join person_attribute pa on cn.concept_id = pa.value AND pa.person_attribute_type_id = 5 where person_id= $P{personId}  limit 1) as MaritalStatus,
-    (select value from person_attribute where person_attribute_type_id = 9 and person_id=$P{personId}) as PhoneNumber,
-    (select cn.name from concept_name cn inner join person_attribute pa on cn.concept_id = pa.value AND pa.person_attribute_type_id = 12 where person_id=$P{personId} limit 1) as KinRelationship,
-    (select value from person_attribute where person_attribute_type_id = 13 and person_id=$P{personId}) as KinAddress
-    
+    (select value from person_attribute where person_attribute_type_id = 12 and person_id=$P{personId} ) as Guarantor,
+    (select value from person_attribute where person_attribute_type_id = 8 and person_id= $P{personId} ) as PhoneNumber,
+    (select value from person_attribute where person_attribute_type_id = 26 and person_id= $P{personId} ) as Village    
+
 FROM
     person p 
 		LEFT OUTER JOIN person_name pn ON
@@ -35,26 +29,20 @@ FROM
         LEFT OUTER JOIN patient_identifier pi ON
         p.person_id = pi.patient_id
 		AND
-        pi.identifier_type = 3
+        pi.identifier_type = 4
 WHERE
-        p.person_id = $P{personId}
+        p.person_id = $P{personId} 
 LIMIT 1;]]>
 	</queryString>
-	<field name="FileNumber" class="java.lang.String"/>
+	<field name="OPDNumber" class="java.lang.String"/>
 	<field name="GivenName" class="java.lang.String"/>
 	<field name="MiddleName" class="java.lang.String"/>
 	<field name="FamilyName" class="java.lang.String"/>
-	<field name="Address" class="java.lang.String"/>
-	<field name="City" class="java.lang.String"/>
-	<field name="Province" class="java.lang.String"/>
-	<field name="District" class="java.lang.String"/>
+	<field name="Location" class="java.lang.String"/>
 	<field name="DateBirth" class="java.sql.Date"/>
-	<field name="Sex" class="java.lang.String"/>
-	<field name="KinName" class="java.lang.String"/>
-	<field name="MaritalStatus" class="java.lang.String"/>
+	<field name="Guarantor" class="java.lang.String"/>
 	<field name="PhoneNumber" class="java.lang.String"/>
-	<field name="KinRelationship" class="java.lang.String"/>
-	<field name="KinAddress" class="java.lang.String"/>
+	<field name="Village" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -94,6 +82,7 @@ LIMIT 1;]]>
 						<bottomPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Bottom"/>
+					<textFieldExpression><![CDATA[$F{OPDNumber}]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>
@@ -164,6 +153,7 @@ LIMIT 1;]]>
 					<textElement verticalAlignment="Bottom">
 						<font size="12"/>
 					</textElement>
+					<textFieldExpression><![CDATA[$F{Location}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="8" y="72" width="82" height="20" uuid="d3222595-0c90-468e-b2f0-9b88446fa695"/>
@@ -199,6 +189,7 @@ LIMIT 1;]]>
 					<textElement verticalAlignment="Bottom">
 						<font size="12"/>
 					</textElement>
+					<textFieldExpression><![CDATA[$F{Village}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="8" y="99" width="72" height="16" uuid="3a6b569e-fcb4-41dc-bde5-a3b6155faf04"/>
@@ -215,6 +206,7 @@ LIMIT 1;]]>
 					<textElement verticalAlignment="Bottom">
 						<font size="12"/>
 					</textElement>
+					<textFieldExpression><![CDATA[$F{Guarantor}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="285" y="99" width="55" height="16" uuid="8e2c3f67-efb5-43d8-bdf5-a39f48d4f0f1"/>
@@ -231,6 +223,7 @@ LIMIT 1;]]>
 					<textElement verticalAlignment="Bottom">
 						<font size="12"/>
 					</textElement>
+					<textFieldExpression><![CDATA[$F{PhoneNumber}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<frame>
