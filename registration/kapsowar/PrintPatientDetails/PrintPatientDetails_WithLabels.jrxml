@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-06-02T15:48:20 -->
+<!-- 2016-06-03T13:12:31 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PrintPatientDetails" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f435a154-1852-4145-8b14-ee5ab85af79c">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="personId" class="java.lang.Integer">
@@ -9,13 +9,13 @@
 	<queryString>
 		<![CDATA[SELECT
     pi.identifier as OPDNumber,
-    pn.given_name as GivenName,
-    pn.middle_name as MiddleName,
-    pn.family_name as FamilyName,
+    IFNULL(pn.given_name,'') as GivenName,
+    IFNULL(pn.middle_name,'') as MiddleName,
+    IFNULL(pn.family_name,'') as FamilyName,
     a.city_village as Location,
     p.birthdate as DateBirth,
     (select value from person_attribute where person_attribute_type_id = 12 and person_id=$P{personId} ) as Guarantor,
-    (select value from person_attribute where person_attribute_type_id = 8 and person_id= $P{personId} ) as PhoneNumber,
+    (select value from person_attribute where person_attribute_type_id = 13 and person_id= $P{personId} ) as KINPhoneNumber,
     (select value from person_attribute where person_attribute_type_id = 26 and person_id= $P{personId} ) as Village    
 
 FROM
@@ -41,7 +41,7 @@ LIMIT 1;]]>
 	<field name="Location" class="java.lang.String"/>
 	<field name="DateBirth" class="java.sql.Date"/>
 	<field name="Guarantor" class="java.lang.String"/>
-	<field name="PhoneNumber" class="java.lang.String"/>
+	<field name="KINPhoneNumber" class="java.lang.String"/>
 	<field name="Village" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
@@ -55,11 +55,11 @@ LIMIT 1;]]>
 				<textElement textAlignment="Left">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Kapsowar Hospital      P.O. Box 68 Kapsowar Outpatient Record]]></text>
+				<text><![CDATA[Kapsowar Hospital        P.O. Box 68 Kapsowar Outpatient Record]]></text>
 			</staticText>
 			<image>
 				<reportElement x="0" y="0" width="50" height="50" uuid="3145857a-d636-4b76-bc89-ae5263059dc2"/>
-				<imageExpression><![CDATA["/home/specialist/Documents/sites/kapsowar/wip/print_patient_details/AIC_Logo.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["http://localhost:8080/PrintPatientDetails/images/AIC_Logo.jpg"]]></imageExpression>
 			</image>
 			<frame>
 				<reportElement x="248" y="0" width="306" height="50" uuid="a79ee263-4037-42b0-9466-09808bdd5117"/>
@@ -81,7 +81,9 @@ LIMIT 1;]]>
 					<box>
 						<bottomPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Bottom"/>
+					<textElement verticalAlignment="Bottom">
+						<font size="12"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$F{OPDNumber}]]></textFieldExpression>
 				</textField>
 			</frame>
@@ -223,7 +225,7 @@ LIMIT 1;]]>
 					<textElement verticalAlignment="Bottom">
 						<font size="12"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{PhoneNumber}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{KINPhoneNumber}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<frame>
