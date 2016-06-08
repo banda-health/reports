@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2016-06-07T15:16:41 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Stockroom" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
@@ -119,7 +121,7 @@ ORDER BY i.name ASC;]]>
 	<title>
 		<band height="35" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="a334a322-2426-4915-ac87-2fc6a0d5d573" x="0" y="0" width="555" height="32"/>
+				<reportElement x="0" y="0" width="555" height="32" uuid="a334a322-2426-4915-ac87-2fc6a0d5d573"/>
 				<textElement textAlignment="Center">
 					<font size="24"/>
 				</textElement>
@@ -130,7 +132,7 @@ ORDER BY i.name ASC;]]>
 	<pageHeader>
 		<band height="27" splitType="Stretch">
 			<textField>
-				<reportElement uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf" x="0" y="0" width="555" height="25"/>
+				<reportElement x="0" y="0" width="555" height="25" uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -141,7 +143,7 @@ ORDER BY i.name ASC;]]>
 	<detail>
 		<band height="50">
 			<componentElement>
-				<reportElement uuid="f7c68e6d-0720-43f6-8820-6b8549999ed1" key="table 1" style="table 1" x="0" y="0" width="555" height="50"/>
+				<reportElement key="table 1" style="table 1" x="0" y="0" width="555" height="50" uuid="f7c68e6d-0720-43f6-8820-6b8549999ed1"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
 					<datasetRun subDataset="Stockroom Item Stock" uuid="a0054c7b-98c5-4457-969f-24732885f3ec">
 						<datasetParameter name="beginDate">
@@ -155,10 +157,11 @@ ORDER BY i.name ASC;]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="248" uuid="b58cb061-182d-4902-848e-c1f76933c76c">
+					<jr:column width="220" uuid="b58cb061-182d-4902-848e-c1f76933c76c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<jr:columnHeader style="table 1_CH" height="17" rowSpan="1">
 							<staticText>
-								<reportElement uuid="aaa1b9e9-0f6d-448e-a6be-eb96b5581819" x="0" y="0" width="90" height="17"/>
+								<reportElement x="0" y="0" width="90" height="17" uuid="aaa1b9e9-0f6d-448e-a6be-eb96b5581819"/>
 								<textElement verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph leftIndent="2"/>
@@ -168,7 +171,7 @@ ORDER BY i.name ASC;]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement uuid="5787820a-0aaf-40bf-bd59-0afac03294e6" x="0" y="0" width="248" height="15"/>
+								<reportElement x="0" y="0" width="220" height="15" uuid="5787820a-0aaf-40bf-bd59-0afac03294e6"/>
 								<textElement verticalAlignment="Middle">
 									<paragraph leftIndent="2"/>
 								</textElement>
@@ -177,9 +180,10 @@ ORDER BY i.name ASC;]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="70" uuid="c535b35f-570e-4e9c-b6eb-624615030595">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:columnHeader style="table 1_CH" height="17" rowSpan="1">
 							<staticText>
-								<reportElement uuid="c3199e2a-044a-4370-9b7a-f18aa0274ce2" x="0" y="0" width="70" height="17"/>
+								<reportElement x="0" y="0" width="70" height="17" uuid="c3199e2a-044a-4370-9b7a-f18aa0274ce2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph rightIndent="2"/>
@@ -189,7 +193,7 @@ ORDER BY i.name ASC;]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
 							<textField pattern="#,##0" isBlankWhenNull="false">
-								<reportElement uuid="3dc6affc-89e0-41e4-979d-3b53a941835f" x="0" y="0" width="70" height="15"/>
+								<reportElement x="0" y="0" width="70" height="15" uuid="3dc6affc-89e0-41e4-979d-3b53a941835f"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<paragraph rightIndent="2"/>
 								</textElement>
@@ -198,9 +202,10 @@ ORDER BY i.name ASC;]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="70" uuid="ff03cf08-e870-430b-b9db-03cf49c11d05">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:columnHeader style="table 1_CH" height="17" rowSpan="1">
 							<staticText>
-								<reportElement uuid="cd657892-e6d4-4f20-b755-7ff48c6b952c" x="0" y="0" width="70" height="17"/>
+								<reportElement x="0" y="0" width="70" height="17" uuid="cd657892-e6d4-4f20-b755-7ff48c6b952c"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph rightIndent="2"/>
@@ -210,7 +215,7 @@ ORDER BY i.name ASC;]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
 							<textField pattern="#,##0">
-								<reportElement uuid="d9076fca-7cc4-4fee-bb8e-9f240316cf33" x="0" y="0" width="70" height="15"/>
+								<reportElement x="0" y="0" width="70" height="15" uuid="d9076fca-7cc4-4fee-bb8e-9f240316cf33"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<paragraph rightIndent="2"/>
 								</textElement>
@@ -219,9 +224,10 @@ ORDER BY i.name ASC;]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="70" uuid="3fdfb74b-9dd8-4d4f-b2d6-33b04de016a9">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 						<jr:columnHeader style="table 1_CH" height="17" rowSpan="1">
 							<staticText>
-								<reportElement uuid="15920a5d-475b-438d-ae9f-c1276fad699d" x="0" y="0" width="70" height="17"/>
+								<reportElement x="0" y="0" width="70" height="17" uuid="15920a5d-475b-438d-ae9f-c1276fad699d"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph rightIndent="2"/>
@@ -231,7 +237,7 @@ ORDER BY i.name ASC;]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
 							<textField pattern="#,##0">
-								<reportElement uuid="8201ed26-d116-4e56-a534-90fdfead5063" x="0" y="0" width="70" height="15"/>
+								<reportElement x="0" y="0" width="70" height="15" uuid="8201ed26-d116-4e56-a534-90fdfead5063"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<paragraph rightIndent="2"/>
 								</textElement>
@@ -240,9 +246,10 @@ ORDER BY i.name ASC;]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="70" uuid="4428dc26-e90a-4b52-8fc1-b10a0f3605ff">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<jr:columnHeader style="table 1_CH" height="17" rowSpan="1">
 							<staticText>
-								<reportElement uuid="77fe4e92-43ee-46e6-b94d-a7116428bddb" x="0" y="0" width="70" height="17"/>
+								<reportElement x="0" y="0" width="70" height="17" uuid="77fe4e92-43ee-46e6-b94d-a7116428bddb"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph rightIndent="2"/>
@@ -252,12 +259,35 @@ ORDER BY i.name ASC;]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 1_TD" height="15" rowSpan="1">
 							<textField pattern="#,##0">
-								<reportElement uuid="ec7637f5-a2d6-4f94-97df-af4057997140" x="0" y="0" width="70" height="15"/>
+								<reportElement x="0" y="0" width="70" height="15" uuid="ec7637f5-a2d6-4f94-97df-af4057997140"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<paragraph rightIndent="2"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{ending}]]></textFieldExpression>
 							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="55" uuid="3c81a297-75c0-480c-a8fc-a183c39ddd87">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+						<jr:columnHeader style="table 1_CH" height="17">
+							<staticText>
+								<reportElement x="0" y="0" width="55" height="17" uuid="56af4535-fb1f-4165-bab0-f387f8f5d03a"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<text><![CDATA[Actual]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="15">
+							<staticText>
+								<reportElement x="0" y="1" width="55" height="14" uuid="c1aecbd5-b6d6-41b0-a9e7-f2980eec4e5e"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<text><![CDATA[]]></text>
+							</staticText>
 						</jr:detailCell>
 					</jr:column>
 				</jr:table>
@@ -267,17 +297,15 @@ ORDER BY i.name ASC;]]>
 	<pageFooter>
 		<band height="20" splitType="Stretch">
 			<textField>
-				<reportElement uuid="6c430987-cd11-40be-bd9d-2077e233745f" x="0" y="0" width="379" height="20"/>
-				<textElement/>
+				<reportElement x="0" y="0" width="379" height="20" uuid="6c430987-cd11-40be-bd9d-2077e233745f"/>
 				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-MMM-dd HH:mm").format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement uuid="7a9813a0-b37a-4dcb-a749-b1725b610579" x="522" y="0" width="33" height="20"/>
-				<textElement/>
+				<reportElement x="522" y="0" width="33" height="20" uuid="7a9813a0-b37a-4dcb-a749-b1725b610579"/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="f96d7780-6357-4924-b519-27f72a508d29" x="431" y="0" width="87" height="20"/>
+				<reportElement x="431" y="0" width="87" height="20" uuid="f96d7780-6357-4924-b519-27f72a508d29"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
 			</textField>
@@ -286,7 +314,7 @@ ORDER BY i.name ASC;]]>
 	<noData>
 		<band height="20">
 			<staticText>
-				<reportElement uuid="e8da193c-2a64-44be-96ca-7416132f7400" x="0" y="0" width="306" height="16"/>
+				<reportElement x="0" y="0" width="306" height="16" uuid="e8da193c-2a64-44be-96ca-7416132f7400"/>
 				<textElement textAlignment="Left">
 					<font isBold="false" isItalic="true"/>
 				</textElement>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-05-31T10:41:31 -->
+<!-- 2016-06-07T15:38:59 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="non-Coded_Diagnoses" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="d4320062-a4f9-41c4-8308-0a99ae6c4e04">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
@@ -41,17 +41,16 @@
 		<parameter name="endDate" class="java.util.Date"/>
 		<queryString>
 			<![CDATA[select 
-value_text,date_created 
+value_text, count(value_text) as NoofDiagnosis
 from obs where concept_id = 161602
 and
-(date_format(date_created, '%Y-%m-%d') between cast($P{beginDate} as date) and cast($P{endDate} as date));]]>
+(date_format(date_created, '%Y-%m-%d') between cast($P{beginDate} as date) and cast($P{endDate} as date))
+GROUP BY value_text;]]>
 		</queryString>
 		<field name="value_text" class="java.lang.String">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
-		<field name="date_created" class="java.sql.Timestamp">
-			<fieldDescription><![CDATA[]]></fieldDescription>
-		</field>
+		<field name="NoofDiagnosis" class="java.lang.Long"/>
 	</subDataset>
 	<parameter name="beginDate" class="java.util.Date"/>
 	<parameter name="endDate" class="java.util.Date"/>
@@ -102,7 +101,7 @@ and
 	<detail>
 		<band height="42" splitType="Stretch">
 			<componentElement>
-				<reportElement x="80" y="0" width="400" height="40" uuid="8b9eb159-5dff-4e6b-9f5a-b2afbd87a39e">
+				<reportElement x="94" y="0" width="286" height="40" uuid="8b9eb159-5dff-4e6b-9f5a-b2afbd87a39e">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
@@ -115,40 +114,48 @@ and
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="220" uuid="6682ee85-fb40-467b-8289-b7e9e56979af">
+					<jr:column width="210" uuid="6682ee85-fb40-467b-8289-b7e9e56979af">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="20">
 							<staticText>
-								<reportElement x="0" y="0" width="220" height="20" uuid="2baf49bb-24c4-4ba8-9d91-b616b95f5258"/>
-								<textElement>
+								<reportElement x="0" y="0" width="210" height="20" uuid="2baf49bb-24c4-4ba8-9d91-b616b95f5258"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font isBold="true"/>
+									<paragraph leftIndent="2"/>
 								</textElement>
 								<text><![CDATA[Non-Coded Diagnoses]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="20">
 							<textField>
-								<reportElement x="0" y="0" width="220" height="20" uuid="71cc38bd-1f97-4198-b99d-a1aa27044e50"/>
+								<reportElement x="0" y="0" width="210" height="20" uuid="71cc38bd-1f97-4198-b99d-a1aa27044e50"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
+									<paragraph leftIndent="2"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{value_text}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="180" uuid="3d5292a9-4507-494d-8599-4aa1e5ccecf9">
+					<jr:column width="80" uuid="3d5292a9-4507-494d-8599-4aa1e5ccecf9">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:columnHeader style="Table_CH" height="20">
 							<staticText>
-								<reportElement x="0" y="0" width="180" height="20" uuid="4772b6d4-fb00-4768-91ad-03f1e39ef940"/>
-								<textElement>
+								<reportElement x="0" y="0" width="80" height="20" uuid="4772b6d4-fb00-4768-91ad-03f1e39ef940"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font isBold="true"/>
+									<paragraph rightIndent="2"/>
 								</textElement>
-								<text><![CDATA[Entry Date]]></text>
+								<text><![CDATA[Count]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="20">
 							<textField>
-								<reportElement x="0" y="0" width="180" height="20" uuid="71482e24-0a87-41b7-920f-d6cfe32a6b93"/>
-								<textFieldExpression><![CDATA[$F{date_created}]]></textFieldExpression>
+								<reportElement x="0" y="0" width="80" height="20" uuid="71482e24-0a87-41b7-920f-d6cfe32a6b93"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{NoofDiagnosis}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
