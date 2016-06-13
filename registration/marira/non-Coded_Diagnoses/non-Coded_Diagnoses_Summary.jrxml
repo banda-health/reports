@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-06-10T11:11:19 -->
+<!-- 2016-06-10T13:08:55 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="non-Coded_Diagnoses" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="d4320062-a4f9-41c4-8308-0a99ae6c4e04">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
@@ -40,38 +40,21 @@
 		<parameter name="beginDate" class="java.util.Date"/>
 		<parameter name="endDate" class="java.util.Date"/>
 		<queryString>
-			<![CDATA[SELECT
-pi.identifier as OPDNumber,
-IFNULL(pn.given_name,'') as GivenName,
-IFNULL(pn.middle_name,'') as MiddleName,
-IFNULL(pn.family_name,'') as FamilyName, 
-obs.value_text,
-obs.date_created 
+			<![CDATA[SELECT 
+obs.value_text as NonCodedDiagnoses,
+count(obs.value_text) as Count
 
 FROM 
-	obs obs
-    LEFT OUTER JOIN person_name pn ON
-    obs.person_id = pn.person_id
-    LEFT OUTER JOIN patient_identifier pi ON
-	obs.person_id = pi.patient_id
-	AND
-    pi.identifier_type = 3
-
+	obs 
+	
 WHERE obs.concept_id = 161602
 AND
-(date_format(obs.date_created, '%Y-%m-%d') BETWEEN CAST($P{beginDate} as DATE) and 
-CAST($P{endDate} as DATE));]]>
+(date_format(obs.date_created, '%Y-%m-%d') BETWEEN CAST($P{beginDate} as DATE) AND 
+CAST($P{endDate} as DATE))
+GROUP BY obs.value_text;]]>
 		</queryString>
-		<field name="OPDNumber" class="java.lang.String"/>
-		<field name="GivenName" class="java.lang.String"/>
-		<field name="MiddleName" class="java.lang.String"/>
-		<field name="FamilyName" class="java.lang.String"/>
-		<field name="value_text" class="java.lang.String">
-			<fieldDescription><![CDATA[]]></fieldDescription>
-		</field>
-		<field name="date_created" class="java.sql.Timestamp">
-			<fieldDescription><![CDATA[]]></fieldDescription>
-		</field>
+		<field name="NonCodedDiagnoses" class="java.lang.String"/>
+		<field name="Count" class="java.lang.Long"/>
 	</subDataset>
 	<parameter name="beginDate" class="java.util.Date"/>
 	<parameter name="endDate" class="java.util.Date"/>
@@ -84,24 +67,24 @@ CAST($P{endDate} as DATE));]]>
 	<title>
 		<band height="34" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="550" height="32" uuid="5fb7def9-ecde-49cc-bcd0-92f2968bbac7">
+				<reportElement x="0" y="0" width="430" height="32" uuid="5fb7def9-ecde-49cc-bcd0-92f2968bbac7">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Center">
 					<font size="20"/>
 				</textElement>
-				<text><![CDATA[OpenHMIS Demo Clinic]]></text>
+				<text><![CDATA[AIC Marira Clinic]]></text>
 			</staticText>
 		</band>
 	</title>
 	<pageHeader>
 		<band height="21" splitType="Stretch">
 			<staticText>
-				<reportElement x="1" y="0" width="549" height="20" uuid="1c75d90d-7d14-4848-a252-5e89c050d12d"/>
+				<reportElement x="1" y="0" width="429" height="20" uuid="1c75d90d-7d14-4848-a252-5e89c050d12d"/>
 				<textElement textAlignment="Center">
 					<font size="14"/>
 				</textElement>
-				<text><![CDATA[Non-Coded Diagnoses Report]]></text>
+				<text><![CDATA[Non-Coded Diagnoses Summary Report]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
@@ -115,14 +98,14 @@ CAST($P{endDate} as DATE));]]>
 					<font isBold="false"/>
 					<paragraph leftIndent="5" spacingBefore="5" spacingAfter="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Non-Coded Diagnoses from " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Non-Coded Diagnoses Summary from " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="42" splitType="Stretch">
 			<componentElement>
-				<reportElement x="94" y="0" width="286" height="40" uuid="8b9eb159-5dff-4e6b-9f5a-b2afbd87a39e">
+				<reportElement x="94" y="0" width="226" height="40" uuid="8b9eb159-5dff-4e6b-9f5a-b2afbd87a39e">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
@@ -135,52 +118,8 @@ CAST($P{endDate} as DATE));]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="60" uuid="a7a1bccf-a2c8-41e1-a8b5-f3bb44ebfdf0">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
-						<jr:columnHeader style="Table_CH" height="20">
-							<staticText>
-								<reportElement x="0" y="0" width="60" height="20" uuid="4e23d80d-e6d6-484a-9947-b0228461d4f1"/>
-								<textElement textAlignment="Left" verticalAlignment="Middle">
-									<font isBold="true"/>
-									<paragraph leftIndent="2"/>
-								</textElement>
-								<text><![CDATA[Patient ID]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
-							<textField>
-								<reportElement x="0" y="0" width="60" height="20" uuid="d10289ea-c626-4858-ab33-d4c1d67f2c6a"/>
-								<textElement textAlignment="Left" verticalAlignment="Middle">
-									<paragraph leftIndent="2" rightIndent="0"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{OPDNumber}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="150" uuid="8a4145e1-ae8c-4062-8ae0-5a420e1ecb55">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
-						<jr:columnHeader style="Table_CH" height="20">
-							<staticText>
-								<reportElement x="0" y="0" width="150" height="20" uuid="8f22f40b-2c83-46ab-9335-baed1ce1f6d8"/>
-								<textElement verticalAlignment="Middle">
-									<font isBold="true"/>
-									<paragraph leftIndent="2"/>
-								</textElement>
-								<text><![CDATA[Name]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
-							<textField isStretchWithOverflow="true">
-								<reportElement x="0" y="0" width="150" height="20" uuid="068a2e75-db11-4c0a-9cc6-c300826dda2d"/>
-								<textElement verticalAlignment="Middle">
-									<paragraph leftIndent="2"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{GivenName} + " " + $F{MiddleName} + " " + $F{FamilyName}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
 					<jr:column width="180" uuid="6682ee85-fb40-467b-8289-b7e9e56979af">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="20">
 							<staticText>
@@ -198,29 +137,29 @@ CAST($P{endDate} as DATE));]]>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<paragraph leftIndent="2"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{value_text}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{NonCodedDiagnoses}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="80" uuid="3d5292a9-4507-494d-8599-4aa1e5ccecf9">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+					<jr:column width="46" uuid="3d5292a9-4507-494d-8599-4aa1e5ccecf9">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:columnHeader style="Table_CH" height="20">
 							<staticText>
-								<reportElement x="0" y="0" width="80" height="20" uuid="4772b6d4-fb00-4768-91ad-03f1e39ef940"/>
-								<textElement textAlignment="Left" verticalAlignment="Middle">
+								<reportElement x="0" y="0" width="46" height="20" uuid="4772b6d4-fb00-4768-91ad-03f1e39ef940"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph leftIndent="2" rightIndent="0"/>
 								</textElement>
-								<text><![CDATA[Date]]></text>
+								<text><![CDATA[Count]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="20">
-							<textField pattern="dd/MM/yyyy">
-								<reportElement x="0" y="0" width="80" height="20" uuid="71482e24-0a87-41b7-920f-d6cfe32a6b93"/>
-								<textElement textAlignment="Left" verticalAlignment="Middle">
-									<paragraph leftIndent="2" rightIndent="0"/>
+							<textField pattern="">
+								<reportElement x="0" y="0" width="46" height="20" uuid="71482e24-0a87-41b7-920f-d6cfe32a6b93"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<paragraph leftIndent="0" rightIndent="2"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{date_created}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{Count}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
