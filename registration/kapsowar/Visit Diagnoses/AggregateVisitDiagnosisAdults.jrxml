@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-02-18T12:42:45 -->
+<!-- 2016-07-08T16:00:27 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AggregateVisitDiagnosisAdults" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="e293a027-b4d7-4ac1-b14b-b8c14891648b">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Crosstab_CH" mode="Opaque" backcolor="#F0F8FF">
@@ -45,18 +45,12 @@
 	</style>
 	<subDataset name="DiagnosisDataSet" uuid="6a0b694b-0571-4e14-8c3b-c8376e0cc107">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kapsowar"/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira_live"/>
 		<parameter name="beginDate" class="java.util.Date">
 			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 		</parameter>
 		<parameter name="endDate" class="java.util.Date">
 			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
-		</parameter>
-		<parameter name="beginDatePattern" class="java.lang.String" isForPrompting="false">
-			<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{beginDate})]]></defaultValueExpression>
-		</parameter>
-		<parameter name="endDatePattern" class="java.lang.String" isForPrompting="false">
-			<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{endDate})]]></defaultValueExpression>
 		</parameter>
 		<queryString>
 			<![CDATA[SELECT 
@@ -72,7 +66,7 @@ FROM
 	person as per_table
 	LEFT JOIN obs as obs_table on per_table.person_id = obs_table.person_id
 	where (timestampdiff(year, per_table.birthdate,obs_table.obs_datetime) >5) 
-    AND (date(obs_table.obs_datetime) BETWEEN  $P{beginDatePattern}  AND $P{endDatePattern}  )
+    AND (date(obs_table.obs_datetime) BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{endDate} AS DATE))
     ) as bday
     INNER JOIN
     (
@@ -85,13 +79,13 @@ FROM
 	AND cname.locale = "en")
 	LEFT JOIN concept as concpt ON cname.concept_id = concpt.concept_id
 	AND concpt.class_id = 4
-    where (date(obs_table.obs_datetime) BETWEEN  $P{beginDatePattern}  AND $P{endDatePattern}) AND 
+    where (date(obs_table.obs_datetime) BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{endDate} AS DATE)) AND 
     obs_table.value_coded NOT IN (159393,159943,159944,159392)
     ) as diag on diag.person_id=bday.person_id 
     RIGHT JOIN
     calendar as cal_table ON diag.obsdate = cal_table.datefield
 	 
-where (cal_table.datefield BETWEEN  $P{beginDatePattern}  AND $P{endDatePattern})]]>
+where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{endDate} AS DATE))]]>
 		</queryString>
 		<field name="calendar" class="java.sql.Date"/>
 		<field name="diagnosis" class="java.lang.String"/>
@@ -102,12 +96,6 @@ where (cal_table.datefield BETWEEN  $P{beginDatePattern}  AND $P{endDatePattern}
 	</parameter>
 	<parameter name="endDate" class="java.util.Date">
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
-	</parameter>
-	<parameter name="beginDatePattern" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{beginDate})]]></defaultValueExpression>
-	</parameter>
-	<parameter name="endDatePattern" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{endDate})]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT 1 as One]]>
@@ -122,7 +110,7 @@ where (cal_table.datefield BETWEEN  $P{beginDatePattern}  AND $P{endDatePattern}
 				<textElement textAlignment="Center">
 					<font size="20"/>
 				</textElement>
-				<text><![CDATA[Kapsowar Hospital]]></text>
+				<text><![CDATA[AIC Kapsowar Hospital]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -158,18 +146,12 @@ where (cal_table.datefield BETWEEN  $P{beginDatePattern}  AND $P{endDatePattern}
 				</reportElement>
 				<crosstabDataset>
 					<dataset>
-						<datasetRun subDataset="DiagnosisDataSet" uuid="15eeb58c-d432-4746-bfb4-a43687bcecbc">
+						<datasetRun subDataset="DiagnosisDataSet" uuid="9cad6b91-3715-4141-868a-1734e743e9fd">
 							<datasetParameter name="beginDate">
-								<datasetParameterExpression><![CDATA[new Date()]]></datasetParameterExpression>
+								<datasetParameterExpression><![CDATA[$P{beginDate}]]></datasetParameterExpression>
 							</datasetParameter>
 							<datasetParameter name="endDate">
-								<datasetParameterExpression><![CDATA[new Date()]]></datasetParameterExpression>
-							</datasetParameter>
-							<datasetParameter name="beginDatePattern">
-								<datasetParameterExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{beginDate})]]></datasetParameterExpression>
-							</datasetParameter>
-							<datasetParameter name="endDatePattern">
-								<datasetParameterExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($P{endDate})]]></datasetParameterExpression>
+								<datasetParameterExpression><![CDATA[$P{endDate}]]></datasetParameterExpression>
 							</datasetParameter>
 							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 						</datasetRun>
@@ -185,7 +167,9 @@ where (cal_table.datefield BETWEEN  $P{beginDatePattern}  AND $P{endDatePattern}
 								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="92" height="20" uuid="b2359e1f-a345-44c5-ae2b-610b630cd1db">
 									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 								</reportElement>
-								<textElement textAlignment="Left" verticalAlignment="Middle"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
+									<paragraph leftIndent="2"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$V{diagnosis1}]]></textFieldExpression>
 							</textField>
 						</cellContents>

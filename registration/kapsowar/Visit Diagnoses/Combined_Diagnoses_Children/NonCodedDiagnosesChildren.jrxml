@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-07-08T16:00:27 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AggregateVisitDiagnosisAdults" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="e293a027-b4d7-4ac1-b14b-b8c14891648b">
+<!-- 2016-07-11T10:51:57 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NonCodedDiagnosesChildren" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="2eade94f-29dc-4fb6-8ad4-7dd69c27140e">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Crosstab_CH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
@@ -30,7 +30,7 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<style name="Crosstab_CD" mode="Opaque" backcolor="#FFFFFF">
+	<style name="Crosstab_CD" mode="Transparent" backcolor="#FFFFFF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 			<topPen lineWidth="0.5" lineColor="#000000"/>
@@ -40,113 +40,84 @@
 		</box>
 		<conditionalStyle>
 			<conditionExpression><![CDATA[new Boolean($V{ROW_COUNT}.intValue()%2==1)]]></conditionExpression>
-			<style mode="Opaque" backcolor="#E3DEDE"/>
+			<style mode="Opaque" backcolor="#E3DADA"/>
 		</conditionalStyle>
 	</style>
-	<subDataset name="DiagnosisDataSet" uuid="6a0b694b-0571-4e14-8c3b-c8376e0cc107">
+	<subDataset name="NonCodedDataset" uuid="8164deb1-8fba-41f1-abee-18f3bc79239b">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira_live"/>
-		<parameter name="beginDate" class="java.util.Date">
-			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
-		</parameter>
-		<parameter name="endDate" class="java.util.Date">
-			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
-		</parameter>
+		<parameter name="beginDate" class="java.util.Date"/>
+		<parameter name="endDate" class="java.util.Date"/>
 		<queryString>
 			<![CDATA[SELECT 
-    coalesce(obsdate, cal_table.datefield) as calendar,
-    coalesce(diag.name,'No Diagnosis') as diagnosis,
-    coalesce(diag.value_coded,NULL) AS NoOfDiagnosis
+COALESCE(diag.obsdate, cal_table.datefield) AS calendar,
+COALESCE(diag.NonCodedDiagnoses,'No Diagnosis') AS diagnosis,
+COALESCE(diag.Count,NULL) AS NoOfDiagnosis
 
 FROM
-	(
-    SELECT
-	distinct(per_table.person_id)
-	FROM 
-	person as per_table
-	LEFT JOIN obs as obs_table on per_table.person_id = obs_table.person_id
-	where (timestampdiff(year, per_table.birthdate,obs_table.obs_datetime) >5) 
-    AND (date(obs_table.obs_datetime) BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{endDate} AS DATE))
-    ) as bday
-    INNER JOIN
-    (
-    SELECT
-    date(obs_table.obs_datetime) as obsdate, cname.name, obs_table.value_coded, obs_table.person_id
-    FROM
-    obs as obs_table
-	LEFT JOIN concept_name as cname ON obs_table.value_coded = cname.concept_id
-	AND (cname.concept_name_type = "FULLY_SPECIFIED"
-	AND cname.locale = "en")
-	LEFT JOIN concept as concpt ON cname.concept_id = concpt.concept_id
-	AND concpt.class_id = 4
-    where (date(obs_table.obs_datetime) BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{endDate} AS DATE)) AND 
-    obs_table.value_coded NOT IN (159393,159943,159944,159392)
-    ) as diag on diag.person_id=bday.person_id 
-    RIGHT JOIN
-    calendar as cal_table ON diag.obsdate = cal_table.datefield
-	 
-where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{endDate} AS DATE))]]>
+(
+SELECT
+distinct(per_table.person_id)
+FROM 
+person as per_table
+LEFT JOIN obs as obs_table on per_table.person_id = obs_table.person_id
+where (timestampdiff(year, per_table.birthdate,obs_table.obs_datetime) <=5) 
+AND (date(obs_table.obs_datetime) BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{endDate} AS DATE))
+) as bday
+INNER JOIN
+(
+SELECT
+DATE(obs.obs_datetime) AS obsdate,
+obs.person_id,
+obs.value_text AS NonCodedDiagnoses,
+count(obs.value_text) AS Count
+
+FROM 
+	obs 
+	
+WHERE obs.concept_id = 161602
+AND
+(DATE(obs.date_created) BETWEEN  $P{beginDate} AND $P{endDate})
+GROUP BY obsdate,obs.value_text
+) AS diag  on diag.person_id=bday.person_id
+RIGHT JOIN
+calendar AS cal_table ON diag.obsdate = cal_table.datefield
+ 
+WHERE (cal_table.datefield BETWEEN  $P{beginDate} AND $P{endDate});]]>
 		</queryString>
 		<field name="calendar" class="java.sql.Date"/>
 		<field name="diagnosis" class="java.lang.String"/>
-		<field name="NoOfDiagnosis" class="java.lang.Integer"/>
+		<field name="NoOfDiagnosis" class="java.lang.Long"/>
 	</subDataset>
-	<parameter name="beginDate" class="java.util.Date">
-		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
-	</parameter>
-	<parameter name="endDate" class="java.util.Date">
-		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
-	</parameter>
+	<parameter name="beginDate" class="java.util.Date"/>
+	<parameter name="endDate" class="java.util.Date"/>
 	<queryString>
-		<![CDATA[SELECT 1 as One]]>
+		<![CDATA[SELECT 1]]>
 	</queryString>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
-	<title>
-		<band height="32" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="0" width="802" height="30" uuid="89428502-5e87-4f6e-9150-b06858ffea92"/>
-				<textElement textAlignment="Center">
-					<font size="20"/>
-				</textElement>
-				<text><![CDATA[OpenHMIS Demo Clinic]]></text>
-			</staticText>
-		</band>
-	</title>
-	<columnHeader>
-		<band height="21">
+	<pageHeader>
+		<band height="21" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="802" height="20" uuid="abfe5881-5c19-437f-b246-5f679672a668"/>
+				<reportElement x="0" y="0" width="802" height="20" uuid="993e7c11-8526-4e1c-8b6e-0c54d0a1fa59"/>
 				<textElement>
-					<font size="12" isBold="false"/>
+					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Aggregate Visit Diagnosis Report (Adults) for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Non-Coded Diagnoses"]]></textFieldExpression>
 			</textField>
 		</band>
-	</columnHeader>
-	<columnFooter>
-		<band height="20">
-			<textField>
-				<reportElement x="0" y="2" width="369" height="16" uuid="e3e3b2c9-6879-49ed-949c-bd091fdee4fb"/>
-				<textElement textAlignment="Left">
-					<font isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-dd-MM HH:mm").format(new Date())]]></textFieldExpression>
-			</textField>
-		</band>
-	</columnFooter>
+	</pageHeader>
 	<summary>
-		<band height="83" splitType="Stretch">
+		<band height="71" splitType="Stretch">
 			<crosstab>
-				<reportElement x="0" y="0" width="800" height="70" uuid="14680491-3ff5-4691-a600-420b19af3fa7">
+				<reportElement x="0" y="0" width="800" height="70" uuid="8c365265-ea55-4526-b5fb-1a36cefe550a">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<crosstabDataset>
 					<dataset>
-						<datasetRun subDataset="DiagnosisDataSet" uuid="9cad6b91-3715-4141-868a-1734e743e9fd">
+						<datasetRun subDataset="NonCodedDataset" uuid="86a513f1-2f05-4b7f-906a-fc045e0d6cb0">
 							<datasetParameter name="beginDate">
 								<datasetParameterExpression><![CDATA[$P{beginDate}]]></datasetParameterExpression>
 							</datasetParameter>
@@ -162,12 +133,10 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 						<bucketExpression><![CDATA[$F{diagnosis}]]></bucketExpression>
 					</bucket>
 					<crosstabRowHeader>
-						<cellContents mode="Opaque" style="Crosstab_CD">
+						<cellContents mode="Opaque" style="Crosstab_CH">
 							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="92" height="20" uuid="b2359e1f-a345-44c5-ae2b-610b630cd1db">
-									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-								</reportElement>
-								<textElement textAlignment="Left" verticalAlignment="Middle">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="92" height="20" uuid="e7d021e5-e2d3-40a0-b9be-4a4a105e6117"/>
+								<textElement verticalAlignment="Middle">
 									<paragraph leftIndent="2"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$V{diagnosis1}]]></textFieldExpression>
@@ -177,7 +146,7 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 					<crosstabTotalRowHeader>
 						<cellContents mode="Opaque" style="Crosstab_CT">
 							<staticText>
-								<reportElement x="0" y="0" width="92" height="20" forecolor="#FFFFFF" uuid="b01a8b49-5142-4570-a614-139229a96b19">
+								<reportElement x="0" y="0" width="92" height="20" forecolor="#FFFFFF" uuid="d364bca6-1b58-4c74-a6ec-282b30d335be">
 									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 								</reportElement>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
@@ -193,7 +162,10 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 					<crosstabColumnHeader>
 						<cellContents mode="Opaque" style="Crosstab_CH">
 							<textField>
-								<reportElement x="0" y="0" width="22" height="30" uuid="1613907a-6dcc-4eb8-95c6-ca727c7df6df"/>
+								<reportElement x="0" y="0" width="22" height="30" uuid="2c946bde-a967-43fd-b4a1-e2fe633539fa">
+									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+								</reportElement>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$V{calendar1}]]></textFieldExpression>
 							</textField>
@@ -202,7 +174,10 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 					<crosstabTotalColumnHeader>
 						<cellContents mode="Opaque" style="Crosstab_CT">
 							<staticText>
-								<reportElement x="0" y="0" width="30" height="30" forecolor="#FFFFFF" uuid="88e589f2-ea74-4984-b3a6-25da67c9cffa"/>
+								<reportElement x="0" y="0" width="30" height="30" forecolor="#FFFFFF" uuid="552fcef4-b57d-4913-97a3-93209991779b">
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+								</reportElement>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[Total]]></text>
 							</staticText>
@@ -215,7 +190,7 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 				<crosstabCell width="22" height="20">
 					<cellContents mode="Opaque" style="Crosstab_CD">
 						<textField isStretchWithOverflow="true">
-							<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="22" height="20" uuid="4c6ef2ae-e392-44cf-a480-c66435f2c28c">
+							<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="22" height="20" uuid="09c80eaf-e597-43d1-9182-778559bc96e3">
 								<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 							</reportElement>
 							<textElement textAlignment="Center" verticalAlignment="Middle"/>
@@ -226,7 +201,7 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 				<crosstabCell width="30" height="20" columnTotalGroup="calendar1">
 					<cellContents mode="Opaque" style="Crosstab_CT">
 						<textField isStretchWithOverflow="true">
-							<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="30" height="20" forecolor="#FFFFFF" uuid="439d09ad-b53d-4ab0-a186-fc873493a860">
+							<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="30" height="20" forecolor="#FFFFFF" uuid="1bfd1e25-2b31-40c6-9bd7-3e320aacfa51">
 								<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 							</reportElement>
 							<textElement textAlignment="Center" verticalAlignment="Middle"/>
@@ -237,7 +212,7 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 				<crosstabCell width="22" height="20" rowTotalGroup="diagnosis1">
 					<cellContents mode="Opaque" style="Crosstab_CT">
 						<textField>
-							<reportElement x="0" y="0" width="22" height="20" forecolor="#FFFFFF" uuid="77a57b2b-08ae-452a-a25e-beacca0dd75b">
+							<reportElement x="0" y="0" width="22" height="20" forecolor="#FFFFFF" uuid="8a4782e7-62a7-4dc5-a90b-2affba5f6596">
 								<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 							</reportElement>
 							<textElement textAlignment="Center" verticalAlignment="Middle"/>
@@ -248,7 +223,7 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 				<crosstabCell width="30" height="20" rowTotalGroup="diagnosis1" columnTotalGroup="calendar1">
 					<cellContents mode="Opaque" style="Crosstab_CT">
 						<textField>
-							<reportElement x="0" y="0" width="30" height="20" forecolor="#FFFFFF" uuid="3a11ec7b-8f73-40ad-b68c-522f404e71b7">
+							<reportElement x="0" y="0" width="30" height="20" forecolor="#FFFFFF" uuid="3647b45f-10bb-4546-9783-7ba9e6074da8">
 								<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 							</reportElement>
 							<textElement textAlignment="Center" verticalAlignment="Middle"/>
@@ -260,9 +235,9 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 		</band>
 	</summary>
 	<noData>
-		<band height="8">
+		<band height="21">
 			<staticText>
-				<reportElement x="0" y="-10" width="306" height="16" uuid="cee93f6c-feb5-4793-8eab-eef51b8dc5b2"/>
+				<reportElement x="0" y="3" width="306" height="16" uuid="17040526-2963-4e37-8a79-24d18bc165cb"/>
 				<textElement textAlignment="Left">
 					<font isBold="false" isItalic="true"/>
 				</textElement>
