@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-08-11T11:38:37 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cashier-outpatient-invoice" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="fe780ab7-fe00-48bf-89f9-30ca2fb097d1">
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-08-17T10:00:36 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cashier-outpatient-invoice" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="fe780ab7-fe00-48bf-89f9-30ca2fb097d1">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira_live"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
@@ -33,16 +33,14 @@
 	</style>
 	<subDataset name="opd_invoice" uuid="1b24907d-b6b0-42ab-a415-bbf658d22036">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira_live"/>
-		<parameter name="accountNumber" class="java.lang.String">
-			<parameterDescription><![CDATA[]]></parameterDescription>
-		</parameter>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
 		<parameter name="beginDate" class="java.util.Date">
 			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 		</parameter>
 		<parameter name="endDate" class="java.util.Date">
 			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 		</parameter>
+		<parameter name="accountNumber" class="java.lang.String"/>
 		<queryString>
 			<![CDATA[SELECT
     cb.receipt_number AS BillReceipt,
@@ -79,22 +77,20 @@ WHERE
 			<initialValueExpression><![CDATA[0]]></initialValueExpression>
 		</variable>
 	</subDataset>
-	<parameter name="accountNumber" class="java.lang.String">
-		<parameterDescription><![CDATA[]]></parameterDescription>
-	</parameter>
 	<parameter name="beginDate" class="java.util.Date">
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
 	<parameter name="endDate" class="java.util.Date">
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
+	<parameter name="accountNumber" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
 	CASE 
-		WHEN value_reference = '43462' THEN 'Kijabe'
-		WHEN value_reference = '21011' THEN 'AIDS Relief'
-		WHEN value_reference = '67200' THEN 'Rift Valley Academy'
-        WHEN value_reference = '60052' THEN "New Hope Children's Center" 
+		WHEN value_reference = '43462' THEN 'Kijabe (43462)'
+		WHEN value_reference = '21011' THEN 'AIDS Relief (21011)'
+		WHEN value_reference = '67200' THEN 'Rift Valley Academy (67200)'
+        WHEN value_reference = '60052' THEN "New Hope Children's Center (60052)" 
 	END AS companyname
     
 FROM
@@ -115,39 +111,49 @@ limit 1;]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="65" splitType="Stretch">
+		<band height="52" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="555" height="32" uuid="7f92f315-aa15-4a5a-966e-4c4f975f9c3f"/>
-				<textElement textAlignment="Center">
-					<font size="24"/>
+				<reportElement x="0" y="1" width="170" height="22" uuid="7f92f315-aa15-4a5a-966e-4c4f975f9c3f"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font size="14" isBold="false"/>
 				</textElement>
-				<text><![CDATA[AIC Kijabe]]></text>
+				<text><![CDATA[AIC Kijabe Hospital]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="32" width="555" height="32" uuid="55fac814-bfc7-492a-ba42-21f681fa4825"/>
-				<textElement textAlignment="Center">
-					<font size="22"/>
-				</textElement>
-				<text><![CDATA[ Marira Invoice]]></text>
-			</staticText>
-		</band>
-	</title>
-	<pageHeader>
-		<band height="31" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="1" width="140" height="23" uuid="a262e2cf-0718-410d-b63e-c3d631f7ef01"/>
+				<reportElement x="0" y="24" width="300" height="26" uuid="55fac814-bfc7-492a-ba42-21f681fa4825"/>
 				<textElement>
-					<font size="16"/>
+					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Company Name:]]></text>
+				<text><![CDATA[Marira Clinic Outpatient Invoice]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="141" y="1" width="414" height="23" uuid="8166640c-bb05-4f02-a7ed-37244e090977"/>
-				<textElement>
-					<font size="16"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="306" y="24" width="249" height="26" uuid="8166640c-bb05-4f02-a7ed-37244e090977"/>
+				<textElement textAlignment="Right">
+					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{companyname}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="380" y="2" width="172" height="22" uuid="12f673a5-f937-428c-8085-5832bb9944bb">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("MMMMM yyyy").format($P{beginDate})]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="470" height="20" uuid="ab160986-6a31-43a6-a236-1dcae6e38703"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[P.O. Box 20, Kijabe 00220 KENYA Tel: 02-3204 6500]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<detail>
@@ -157,7 +163,7 @@ limit 1;]]>
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="opd_invoice" uuid="a113bfc8-dd3f-462d-9a6b-685a57493ecd">
+					<datasetRun subDataset="opd_invoice" uuid="e6f3d157-473e-40d5-ad44-30a090f36310">
 						<datasetParameter name="beginDate">
 							<datasetParameterExpression><![CDATA[$P{beginDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -171,20 +177,52 @@ limit 1;]]>
 					</datasetRun>
 					<jr:column width="130" uuid="4d9a46ae-7ec2-4a3c-876e-13beb12df664">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
-						<jr:columnHeader style="Table_CH" height="30">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+						<jr:columnHeader height="30">
+							<box topPadding="0" bottomPadding="3">
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="130" height="30" uuid="7f3b20f6-5784-4ecf-a10e-789ada95abe1"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<reportElement key="" x="0" y="0" width="130" height="27" uuid="7f3b20f6-5784-4ecf-a10e-789ada95abe1">
+									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+								</reportElement>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Bottom">
 									<font size="12" isBold="true"/>
 								</textElement>
-								<text><![CDATA[Receipt No.]]></text>
+								<text><![CDATA[Receipt #]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30"/>
+						<jr:columnFooter height="30">
+							<box topPadding="3" bottomPadding="3">
+								<topPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+							</box>
+						</jr:columnFooter>
 						<jr:detailCell style="Table_TD" height="30">
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
 							<textField>
 								<reportElement x="0" y="0" width="130" height="30" uuid="3d0ff405-dbf6-442e-a8d9-47743f10d941"/>
-								<textElement verticalAlignment="Middle">
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="11"/>
 									<paragraph leftIndent="2"/>
 								</textElement>
@@ -194,20 +232,49 @@ limit 1;]]>
 					</jr:column>
 					<jr:column width="90" uuid="fc352d97-d17a-4727-87a1-d6aab64e8a6e">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
-						<jr:columnHeader style="Table_CH" height="30">
+						<jr:columnHeader height="30">
+							<box topPadding="0" bottomPadding="3">
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="90" height="30" uuid="84cb7b02-61e5-4b99-8d67-5becdd13ad99"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<reportElement x="0" y="0" width="90" height="27" uuid="84cb7b02-61e5-4b99-8d67-5becdd13ad99"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Bottom">
 									<font size="12" isBold="true"/>
 								</textElement>
 								<text><![CDATA[Date]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30"/>
+						<jr:columnFooter height="30">
+							<box topPadding="3" bottomPadding="3">
+								<topPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+							</box>
+						</jr:columnFooter>
 						<jr:detailCell style="Table_TD" height="30">
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
 							<textField>
 								<reportElement x="0" y="0" width="90" height="30" uuid="25caa3da-21f2-4f10-94ba-83d75632583c"/>
-								<textElement verticalAlignment="Middle">
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="11"/>
 									<paragraph leftIndent="2"/>
 								</textElement>
@@ -215,24 +282,54 @@ limit 1;]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="80" uuid="07942b88-683c-41c8-a526-910b8c6b0fdb">
+					<jr:column width="90" uuid="07942b88-683c-41c8-a526-910b8c6b0fdb">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
-						<jr:columnHeader style="Table_CH" height="30">
+						<jr:columnHeader height="30">
+							<box topPadding="0" bottomPadding="3">
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="80" height="30" uuid="4c94103d-5b60-4ea1-9159-8f21cd447ddf"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<reportElement x="0" y="0" width="90" height="27" uuid="4c94103d-5b60-4ea1-9159-8f21cd447ddf"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Bottom">
 									<font size="12" isBold="true"/>
+									<paragraph rightIndent="10"/>
 								</textElement>
 								<text><![CDATA[Hospital #]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30"/>
+						<jr:columnFooter height="30">
+							<box topPadding="3" bottomPadding="3">
+								<topPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+							</box>
+						</jr:columnFooter>
 						<jr:detailCell style="Table_TD" height="30">
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
 							<textField>
-								<reportElement x="0" y="0" width="80" height="30" uuid="e3db7e54-9e32-4bf7-9f89-fb0140f5abb7"/>
-								<textElement verticalAlignment="Middle">
+								<reportElement x="0" y="0" width="90" height="30" uuid="e3db7e54-9e32-4bf7-9f89-fb0140f5abb7"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="11"/>
-									<paragraph leftIndent="2"/>
+									<paragraph leftIndent="2" rightIndent="20"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{FileNumber}]]></textFieldExpression>
 							</textField>
@@ -240,27 +337,55 @@ limit 1;]]>
 					</jr:column>
 					<jr:column width="170" uuid="f75abc42-2795-43c2-8a95-66bcdea7e049">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
-						<jr:columnHeader style="Table_CH" height="30">
+						<jr:columnHeader height="30">
+							<box topPadding="0" bottomPadding="3">
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="170" height="30" uuid="30b83f5a-6b5e-44f6-b904-52753f06ed56"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<reportElement x="0" y="0" width="170" height="27" uuid="30b83f5a-6b5e-44f6-b904-52753f06ed56"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Left" verticalAlignment="Bottom">
 									<font size="12" isBold="true"/>
 								</textElement>
 								<text><![CDATA[Patient Name]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30">
+						<jr:columnFooter height="30">
+							<box topPadding="3" bottomPadding="3">
+								<topPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="170" height="30" uuid="c44610a9-beec-4773-8f5e-d8b18027674f"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<reportElement x="0" y="0" width="170" height="24" uuid="c44610a9-beec-4773-8f5e-d8b18027674f"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="11" isBold="true"/>
 								</textElement>
 								<text><![CDATA[Total]]></text>
 							</staticText>
 						</jr:columnFooter>
 						<jr:detailCell style="Table_TD" height="30">
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
 							<textField>
 								<reportElement x="0" y="0" width="170" height="30" uuid="04b655cd-6edf-4fbf-9c98-fd4bb9f7ffc6"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
 								<textElement verticalAlignment="Middle">
 									<font size="11"/>
 									<paragraph leftIndent="2"/>
@@ -272,18 +397,34 @@ limit 1;]]>
 					<jr:column width="85" uuid="fb264306-6bfd-46c9-8b82-c70eaae4ebad">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
-						<jr:columnHeader style="Table_CH" height="30">
+						<jr:columnHeader height="30">
+							<box topPadding="0" bottomPadding="3">
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="85" height="30" uuid="9862ba83-5024-4348-8287-9060951658ed"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<reportElement x="0" y="0" width="85" height="27" uuid="9862ba83-5024-4348-8287-9060951658ed"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Bottom">
 									<font size="12" isBold="true"/>
 								</textElement>
 								<text><![CDATA[Amount]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30">
+						<jr:columnFooter height="30">
+							<box topPadding="3" bottomPadding="3">
+								<topPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+							</box>
 							<textField>
-								<reportElement x="0" y="0" width="85" height="30" uuid="f255ff1f-c1d2-4614-8f76-800c191d10bc"/>
+								<reportElement x="0" y="0" width="85" height="24" uuid="f255ff1f-c1d2-4614-8f76-800c191d10bc"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="11" isBold="true"/>
 									<paragraph rightIndent="2"/>
@@ -292,8 +433,20 @@ limit 1;]]>
 							</textField>
 						</jr:columnFooter>
 						<jr:detailCell style="Table_TD" height="30">
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
 							<textField>
 								<reportElement x="0" y="0" width="85" height="30" uuid="4c41bcea-910f-492c-9d64-253dc4e9b4dc"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="11"/>
 									<paragraph rightIndent="2"/>
