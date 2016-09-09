@@ -43,8 +43,7 @@ FROM
     ) bill_date ON
         b.bill_id = bill_date.bill_id
     LEFT OUTER JOIN person_name upn ON
-        u.person_id = upn.person_id AND
-        upn.preferred = 1
+        u.person_id = upn.person_id
 WHERE
     b.bill_id = $P{billId}]]>
 	</queryString>
