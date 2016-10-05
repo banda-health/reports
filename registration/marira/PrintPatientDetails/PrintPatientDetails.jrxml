@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-01-19T09:32:15 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PrintPatientDetails" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a3b4907c-bc1c-4c75-931a-3ad16891c21b">
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-09-25T08:09:58 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PrintPatientDetails" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a3b4907c-bc1c-4c75-931a-3ad16891c21b">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="background.image.path" value="/home/specialist/Documents/wip/scan for Jeremy.jpeg"/>
+	<property name="background.image.path" value="/home/implementer/Documents/sites/marira/PatientDetails_OneParameter/patient_details_scan.jpg"/>
 	<property name="background.image.keep_ratio" value="true"/>
 	<property name="background.image.widht" value="596"/>
 	<property name="background.image.height" value="1167"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
 	<parameter name="personId" class="java.lang.Integer">
 		<parameterDescription><![CDATA[ID of Patient to Print]]></parameterDescription>
 	</parameter>
@@ -65,80 +66,9 @@ LIMIT 1;]]>
 	<detail>
 		<band height="350" splitType="Stretch">
 			<frame>
-				<reportElement x="290" y="-20" width="285" height="90" uuid="ff146b0e-fb20-42db-b864-9a7c0c4b4629"/>
-				<box>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
-				</box>
-				<textField>
-					<reportElement x="125" y="21" width="103" height="18" uuid="754ce42a-abee-473a-8dff-15c73eed48dd"/>
-					<box bottomPadding="0">
-						<bottomPen lineWidth="0.0"/>
-					</box>
-					<textElement verticalAlignment="Bottom">
-						<font size="11"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{FileNumber}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement x="70" y="35" width="163" height="26" uuid="557c6997-ac9b-4848-8482-97adc1199d25"/>
-					<box>
-						<bottomPen lineWidth="0.0"/>
-					</box>
-					<textElement verticalAlignment="Bottom">
-						<font size="9"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{GivenName} + " " + $F{MiddleName} + " " + $F{FamilyName}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement x="100" y="65" width="161" height="16" uuid="467722d0-a786-4f15-be3e-3af9004c4f84"/>
-					<box>
-						<bottomPen lineWidth="0.0"/>
-					</box>
-					<textElement verticalAlignment="Bottom">
-						<font size="11"/>
-					</textElement>
-					<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-MMM-dd").format($F{DateBirth})]]></textFieldExpression>
-				</textField>
-			</frame>
-			<textField>
-				<reportElement x="349" y="85" width="26" height="16" uuid="a85dacff-0738-422f-8124-c894f011b55d"/>
-				<box>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{Sex}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="483" y="87" width="92" height="17" uuid="9e9b0c0f-8671-4bc7-abf1-06da0ba9024e"/>
-				<box>
-					<bottomPen lineWidth="0.0"/>
-				</box>
-				<textElement textAlignment="Left" verticalAlignment="Bottom">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{MaritalStatus}]]></textFieldExpression>
-			</textField>
-			<frame>
-				<reportElement x="40" y="100" width="240" height="154" uuid="28bd09a5-dec3-4176-9932-b9d2cb0c06eb"/>
+				<reportElement x="20" y="70" width="260" height="210" uuid="28bd09a5-dec3-4176-9932-b9d2cb0c06eb"/>
 				<textField isBlankWhenNull="true">
-					<reportElement x="102" y="61" width="123" height="14" uuid="d6b74ea8-3fc1-49e5-8ca8-ea7f1ffe059c"/>
-					<box>
-						<topPen lineWidth="0.0"/>
-						<leftPen lineWidth="0.0"/>
-						<bottomPen lineWidth="0.0"/>
-						<rightPen lineWidth="0.0"/>
-					</box>
-				</textField>
-				<textField isBlankWhenNull="true">
-					<reportElement x="109" y="45" width="122" height="13" uuid="b04e8834-7ea9-407b-b097-f70eab7fe73b"/>
+					<reportElement x="87" y="81" width="122" height="13" uuid="b04e8834-7ea9-407b-b097-f70eab7fe73b"/>
 					<box>
 						<topPen lineWidth="0.0"/>
 						<leftPen lineWidth="0.0"/>
@@ -147,11 +77,12 @@ LIMIT 1;]]>
 					</box>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="10"/>
+						<paragraph leftIndent="5"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{Province}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="108" y="115" width="125" height="14" uuid="4e2b85a0-e5f7-4e36-892f-37f242e27228">
+					<reportElement x="87" y="156" width="125" height="14" uuid="4e2b85a0-e5f7-4e36-892f-37f242e27228">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
 					<box>
@@ -162,11 +93,12 @@ LIMIT 1;]]>
 					</box>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="10"/>
+						<paragraph leftIndent="5"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{Address}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="108" y="86" width="125" height="13" uuid="60f68fea-85e8-416d-8718-cfab5b45ab5c">
+					<reportElement x="87" y="140" width="125" height="13" uuid="60f68fea-85e8-416d-8718-cfab5b45ab5c">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
 					<box>
@@ -177,56 +109,128 @@ LIMIT 1;]]>
 					</box>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="10"/>
+						<paragraph leftIndent="5"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{City}]]></textFieldExpression>
 				</textField>
-				<textField isBlankWhenNull="true">
-					<reportElement x="108" y="129" width="125" height="14" uuid="15696bfc-b96b-4bcb-a874-1ad8321ed8de">
+				<textField>
+					<reportElement x="87" y="15" width="103" height="18" uuid="754ce42a-abee-473a-8dff-15c73eed48dd"/>
+					<box bottomPadding="0">
+						<bottomPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{FileNumber}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="87" y="33" width="163" height="26" uuid="557c6997-ac9b-4848-8482-97adc1199d25"/>
+					<box>
+						<bottomPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{GivenName} + " " + $F{MiddleName} + " " + $F{FamilyName}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="87" y="59" width="161" height="16" uuid="467722d0-a786-4f15-be3e-3af9004c4f84"/>
+					<box>
+						<bottomPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-MMM-dd").format($F{DateBirth})]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="18" width="87" height="18" uuid="382c554a-f0f7-4221-9174-84f3735a4d77">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
-					<box>
-						<topPen lineWidth="0.0"/>
-						<leftPen lineWidth="0.0"/>
-						<bottomPen lineWidth="0.0"/>
-						<rightPen lineWidth="0.0"/>
-					</box>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font size="10"/>
+						<paragraph leftIndent="5" rightIndent="0"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{PhoneNumber}]]></textFieldExpression>
-				</textField>
-				<textField isBlankWhenNull="true">
-					<reportElement x="105" y="32" width="123" height="14" uuid="a97dec1d-5f73-4dd6-be2d-abf8d7de8bf1"/>
-					<box>
-						<topPen lineWidth="0.0"/>
-						<leftPen lineWidth="0.0"/>
-						<bottomPen lineWidth="0.0"/>
-						<rightPen lineWidth="0.0"/>
-					</box>
-				</textField>
-				<textField isBlankWhenNull="true">
-					<reportElement x="104" y="75" width="123" height="14" uuid="08dbac01-e5eb-4059-8cbc-7c6261c83178"/>
-					<box>
-						<topPen lineWidth="0.0"/>
-						<leftPen lineWidth="0.0"/>
-						<bottomPen lineWidth="0.0"/>
-						<rightPen lineWidth="0.0"/>
-					</box>
-				</textField>
-				<textField isBlankWhenNull="true">
-					<reportElement x="102" y="103" width="123" height="14" uuid="857c46b1-1a39-4259-b495-1f3a07d97a95"/>
-					<box>
-						<topPen lineWidth="0.0"/>
-						<leftPen lineWidth="0.0"/>
-						<bottomPen lineWidth="0.0"/>
-						<rightPen lineWidth="0.0"/>
-					</box>
-				</textField>
+					<text><![CDATA[Patient No:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="39" width="87" height="18" uuid="333f329f-459a-4ef4-a912-cc5bb64c149a">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="0"/>
+					</textElement>
+					<text><![CDATA[Name:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="60" width="87" height="18" uuid="2f131600-85d9-43f0-97dc-a5981b0c5c36">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="0"/>
+					</textElement>
+					<text><![CDATA[Date of Birth:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="80" width="87" height="18" uuid="3e491e02-57f1-4997-87f5-8d72a54c94ff">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="0"/>
+					</textElement>
+					<text><![CDATA[Province:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="100" width="87" height="18" uuid="f1d47137-681b-4036-84ed-4c92e85a2cf3">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="0"/>
+					</textElement>
+					<text><![CDATA[Location:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="119" width="87" height="18" uuid="eba9b260-0e59-4b9a-a153-ef41d721d50f">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="0"/>
+					</textElement>
+					<text><![CDATA[Sub location:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="139" width="87" height="18" uuid="64fab018-ad74-4a72-b19f-c3350ffd523d">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="0"/>
+					</textElement>
+					<text><![CDATA[Town/City:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="158" width="87" height="18" uuid="5010da23-6949-4d70-8595-18e5797ea79b">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="0"/>
+					</textElement>
+					<text><![CDATA[P.O. Box:]]></text>
+				</staticText>
 			</frame>
 			<frame>
-				<reportElement x="290" y="110" width="255" height="122" uuid="b3b61eca-4f11-4b28-88ab-c2e23738bd72"/>
+				<reportElement x="280" y="60" width="265" height="220" uuid="b3b61eca-4f11-4b28-88ab-c2e23738bd72"/>
 				<textField isBlankWhenNull="true">
-					<reportElement x="132" y="23" width="115" height="14" uuid="5944f60e-f6dc-47e9-8490-b79a3bebc74d">
+					<reportElement x="109" y="90" width="115" height="14" uuid="5944f60e-f6dc-47e9-8490-b79a3bebc74d">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
 					<box>
@@ -235,37 +239,28 @@ LIMIT 1;]]>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
+					<textElement verticalAlignment="Middle">
 						<font size="10"/>
+						<paragraph leftIndent="5"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{KinRelationship}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="135" y="65" width="119" height="14" uuid="6c8d9568-7825-4e63-9c02-2f277dab87f8"/>
+					<reportElement x="125" y="110" width="119" height="14" uuid="6c8d9568-7825-4e63-9c02-2f277dab87f8"/>
 					<box>
 						<topPen lineWidth="0.0"/>
 						<leftPen lineWidth="0.0"/>
 						<bottomPen lineWidth="0.0"/>
 						<rightPen lineWidth="0.0"/>
 					</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
+					<textElement verticalAlignment="Middle">
 						<font size="10"/>
+						<paragraph leftIndent="5"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{KinAddress}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="122" y="55" width="118" height="14" uuid="b2e39974-9e43-4021-9b76-3f01243fcca0">
-						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					</reportElement>
-					<box>
-						<topPen lineWidth="0.0"/>
-						<leftPen lineWidth="0.0"/>
-						<bottomPen lineWidth="0.0"/>
-						<rightPen lineWidth="0.0"/>
-					</box>
-				</textField>
-				<textField isBlankWhenNull="true">
-					<reportElement x="131" y="37" width="118" height="14" uuid="825572a1-a72f-44a8-a651-01802aae95b4">
+					<reportElement x="109" y="70" width="118" height="14" uuid="825572a1-a72f-44a8-a651-01802aae95b4">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
 					<box>
@@ -274,13 +269,39 @@ LIMIT 1;]]>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
+					<textElement verticalAlignment="Middle">
 						<font size="10"/>
+						<paragraph leftIndent="5"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{KinName}]]></textFieldExpression>
 				</textField>
+				<textField>
+					<reportElement x="109" y="30" width="26" height="16" uuid="a85dacff-0738-422f-8124-c894f011b55d"/>
+					<box>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Bottom">
+						<font size="10"/>
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Sex}]]></textFieldExpression>
+				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="124" y="84" width="118" height="14" uuid="ab58d753-ede9-40d6-9d97-0d42e285c5ac">
+					<reportElement x="109" y="49" width="92" height="17" uuid="9e9b0c0f-8671-4bc7-abf1-06da0ba9024e"/>
+					<box>
+						<bottomPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{MaritalStatus}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="109" y="169" width="125" height="14" uuid="15696bfc-b96b-4bcb-a874-1ad8321ed8de">
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
 					<box>
@@ -289,18 +310,92 @@ LIMIT 1;]]>
 						<bottomPen lineWidth="0.0"/>
 						<rightPen lineWidth="0.0"/>
 					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{PhoneNumber}]]></textFieldExpression>
 				</textField>
-				<textField isBlankWhenNull="true">
-					<reportElement x="124" y="97" width="118" height="14" uuid="3e400017-eafa-4581-874d-c4f0cc3f7e16">
+				<staticText>
+					<reportElement x="8" y="28" width="87" height="18" uuid="2386159d-11a4-4929-8281-d2c7f0e53c3b">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					</reportElement>
-					<box>
-						<topPen lineWidth="0.0"/>
-						<leftPen lineWidth="0.0"/>
-						<bottomPen lineWidth="0.0"/>
-						<rightPen lineWidth="0.0"/>
-					</box>
-				</textField>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="0"/>
+					</textElement>
+					<text><![CDATA[Sex:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="8" y="49" width="87" height="18" uuid="62b64cf4-5b44-47f6-af65-7747b50d1ddb">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="0"/>
+					</textElement>
+					<text><![CDATA[Marital Status:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="8" y="69" width="87" height="18" uuid="55bf8b87-a5a2-4b82-b252-7cfdd5ffef12">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="0"/>
+					</textElement>
+					<text><![CDATA[NOK Name:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="8" y="89" width="87" height="18" uuid="66d80304-7422-4085-bac3-442246e1d917">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="0"/>
+					</textElement>
+					<text><![CDATA[Relation:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="8" y="109" width="112" height="18" uuid="4a828d37-e43a-4126-93c8-abe53b0600a8">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="0"/>
+					</textElement>
+					<text><![CDATA[Contact Information:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="8" y="129" width="87" height="18" uuid="5735d993-34b6-4c1a-a9e7-d99099386b43">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="0"/>
+					</textElement>
+					<text><![CDATA[Phone:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="8" y="148" width="87" height="18" uuid="7abca1fa-b8bb-48e6-a0aa-1eaee3cce439">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="0"/>
+					</textElement>
+					<text><![CDATA[Residence:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="8" y="166" width="87" height="18" uuid="b0663b22-608a-4e62-b68a-58e5297f21ad">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="0"/>
+					</textElement>
+					<text><![CDATA[Phone:]]></text>
+				</staticText>
 			</frame>
 		</band>
 	</detail>

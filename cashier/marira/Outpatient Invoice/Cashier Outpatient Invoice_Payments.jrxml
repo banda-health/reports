@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-08-17T11:57:47 -->
+<!-- 2016-09-19T15:53:43 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cashier-outpatient-invoice" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="fe780ab7-fe00-48bf-89f9-30ca2fb097d1">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
@@ -33,7 +33,7 @@
 	</style>
 	<subDataset name="opd_invoice" uuid="1b24907d-b6b0-42ab-a415-bbf658d22036">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira_live"/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
 		<parameter name="beginDate" class="java.util.Date">
 			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 		</parameter>
@@ -51,16 +51,13 @@
     
 FROM
 	cashier_bill cb
-	INNER JOIN cashier_bill_payment cbp ON
-    cb.bill_id = cbp.bill_id
-    INNER JOIN cashier_payment_mode cpm ON
-    cbp.payment_mode_id = cpm.payment_mode_id
-    INNER JOIN person_name pn ON
-    cb.patient_id = pn.person_id
-    INNER JOIN patient_identifier pi ON
-	cb.patient_id = pi.patient_id
-	AND
-    pi.identifier_type = 3
+	INNER JOIN cashier_bill_payment cbp ON cb.bill_id = cbp.bill_id
+	AND cbp.bill_id NOT IN 
+	(SELECT cashier_bill.adjusted_bill_id FROM cashier_bill WHERE adjusted_bill_id IS NOT NULL)
+    INNER JOIN cashier_payment_mode cpm ON cbp.payment_mode_id = cpm.payment_mode_id
+    INNER JOIN person_name pn ON cb.patient_id = pn.person_id
+    INNER JOIN patient_identifier pi ON cb.patient_id = pi.patient_id
+	AND pi.identifier_type = 3
     
 WHERE 
     cpm.payment_mode_id =  $P{paymentModeID} AND
@@ -86,6 +83,7 @@ WHERE
 	<queryString>
 		<![CDATA[SELECT
 	CASE
+		WHEN cpm.payment_mode_id = 1 THEN 'Cash'
 		WHEN cpm.payment_mode_id = 2 THEN 'M-Pesa (512900)'
         WHEN cpm.payment_mode_id = 3 THEN 'Cheque'
         WHEN cpm.payment_mode_id = 5 THEN 'Arrears AR (59999)'
@@ -123,7 +121,7 @@ Limit 1]]>
 				</textElement>
 				<text><![CDATA[Marira Clinic Outpatient Invoice]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="330" y="25" width="225" height="26" uuid="8166640c-bb05-4f02-a7ed-37244e090977"/>
 				<textElement textAlignment="Right">
 					<font size="16"/>
