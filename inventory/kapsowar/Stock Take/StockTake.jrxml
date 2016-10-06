@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-10-04T16:40:28 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="StockTake" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c3ee4abe-f0a8-4957-a323-509e5aa4de28">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kapsowar_live"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -28,24 +31,27 @@
 		</conditionalStyle>
 	</style>
 	<subDataset name="Table Dataset 1" uuid="4ef056f0-f85e-4a03-95f5-9ba73c705b7d">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kapsowar_live"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 		<parameter name="stockroomId" class="java.lang.Integer"/>
 		<queryString>
-			<![CDATA[SELECT
+			<![CDATA[SELECT 
     i.name AS item_name,
-    ist.quantity
+    date_format(detail.expiration, '%Y-%m-%d') as expiration,
+    SUM(detail.quantity) AS quantity
 FROM
-	inv_stockroom sr INNER JOIN inv_item_stock ist ON
-		sr.stockroom_id = ist.stockroom_id
-	INNER JOIN inv_item i ON
-		ist.item_id = i.item_id
+    inv_item_stock_detail detail
+        INNER JOIN
+    inv_item i ON i.item_id = detail.item_id
 WHERE
-	sr.stockroom_id = $P{stockroomId}
-ORDER BY i.name ASC]]>
+    detail.stockroom_id = $P{stockroomId}
+GROUP BY i.name , detail.expiration
+HAVING SUM(detail.quantity) <> 0
+ORDER BY i.name ASC , detail.expiration ASC]]>
 		</queryString>
 		<field name="item_name" class="java.lang.String"/>
-		<field name="quantity" class="java.lang.Integer">
-			<fieldDescription><![CDATA[]]></fieldDescription>
-		</field>
+		<field name="expiration" class="java.lang.String"/>
+		<field name="quantity" class="java.math.BigDecimal"/>
 	</subDataset>
 	<parameter name="stockroomId" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -68,7 +74,7 @@ WHERE
 	<title>
 		<band height="33" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="a334a322-2426-4915-ac87-2fc6a0d5d573" x="0" y="0" width="555" height="30"/>
+				<reportElement x="0" y="0" width="555" height="30" uuid="a334a322-2426-4915-ac87-2fc6a0d5d573"/>
 				<textElement textAlignment="Center">
 					<font size="24"/>
 				</textElement>
@@ -79,7 +85,7 @@ WHERE
 	<pageHeader>
 		<band height="20" splitType="Stretch">
 			<textField>
-				<reportElement uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf" x="0" y="0" width="555" height="17"/>
+				<reportElement x="0" y="0" width="555" height="17" uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
@@ -90,7 +96,7 @@ WHERE
 	<detail>
 		<band height="50">
 			<componentElement>
-				<reportElement uuid="52d9eeb5-519a-465c-af9a-bad6fc6fb750" key="table" style="table" x="0" y="0" width="554" height="50"/>
+				<reportElement key="table" style="table" x="0" y="0" width="555" height="50" uuid="52d9eeb5-519a-465c-af9a-bad6fc6fb750"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
 					<datasetRun subDataset="Table Dataset 1" uuid="f543ee67-97c1-4018-9893-36b77deea9e3">
 						<datasetParameter name="stockroomId">
@@ -98,11 +104,12 @@ WHERE
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="275" uuid="70123569-c03e-44e7-a19d-852426428078">
+					<jr:column width="230" uuid="70123569-c03e-44e7-a19d-852426428078">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<jr:columnHeader style="table_CH" height="14" rowSpan="1">
 							<staticText>
-								<reportElement uuid="9e6ce3db-4775-40b7-be2a-8a9272cc31ef" x="0" y="0" width="275" height="14"/>
-								<textElement>
+								<reportElement x="0" y="0" width="230" height="14" uuid="9e6ce3db-4775-40b7-be2a-8a9272cc31ef"/>
+								<textElement verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph leftIndent="2"/>
 								</textElement>
@@ -111,19 +118,42 @@ WHERE
 						</jr:columnHeader>
 						<jr:detailCell style="table_TD" height="15" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement uuid="e69c4639-4518-4ad3-ab80-461c33671c27" x="0" y="0" width="275" height="15"/>
-								<textElement>
+								<reportElement x="0" y="0" width="230" height="15" uuid="e69c4639-4518-4ad3-ab80-461c33671c27"/>
+								<textElement verticalAlignment="Middle">
 									<paragraph leftIndent="2"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{item_name}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="9fdaee24-6377-40d3-b08b-f27e1c99d338">
+					<jr:column width="70" uuid="78e8cf5e-5987-4936-8669-402eeb60a70f">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:columnHeader style="table_CH" height="14" rowSpan="1">
 							<staticText>
-								<reportElement uuid="8581b862-3e67-4efb-b9b2-25907e6386f0" x="0" y="0" width="70" height="14"/>
-								<textElement textAlignment="Right">
+								<reportElement x="0" y="0" width="70" height="14" uuid="681c93bd-1849-41b1-be4d-4f2029b12fde"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font isBold="true"/>
+									<paragraph leftIndent="0" rightIndent="2"/>
+								</textElement>
+								<text><![CDATA[Expiration]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="15">
+							<textField isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="70" height="15" uuid="e988565b-41d5-454a-8422-c90ad678fed8"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<paragraph leftIndent="0" rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{expiration}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="80" uuid="9fdaee24-6377-40d3-b08b-f27e1c99d338">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader style="table_CH" height="14" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="80" height="14" uuid="8581b862-3e67-4efb-b9b2-25907e6386f0"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph rightIndent="2"/>
 								</textElement>
@@ -132,8 +162,8 @@ WHERE
 						</jr:columnHeader>
 						<jr:detailCell style="table_TD" height="15" rowSpan="1">
 							<textField pattern="#,##0">
-								<reportElement uuid="062541c2-2b60-4c14-9424-1dac8cfc1eed" x="0" y="0" width="70" height="15"/>
-								<textElement textAlignment="Right">
+								<reportElement x="0" y="0" width="80" height="15" uuid="062541c2-2b60-4c14-9424-1dac8cfc1eed"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<paragraph rightIndent="2"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
@@ -141,10 +171,11 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="70" uuid="65ae1a5f-5f6c-453c-b781-b64c03af9281">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 						<jr:columnHeader style="table_CH" height="14" rowSpan="1">
 							<staticText>
-								<reportElement uuid="8581b862-3e67-4efb-b9b2-25907e6386f0" x="0" y="0" width="70" height="14"/>
-								<textElement textAlignment="Right">
+								<reportElement x="0" y="0" width="70" height="14" uuid="8581b862-3e67-4efb-b9b2-25907e6386f0"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph rightIndent="2"/>
 								</textElement>
@@ -153,11 +184,12 @@ WHERE
 						</jr:columnHeader>
 						<jr:detailCell style="table_TD" height="15" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="148" uuid="9e877ab6-095e-47db-a699-b2c591de4d98">
+					<jr:column width="105" uuid="9e877ab6-095e-47db-a699-b2c591de4d98">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<jr:columnHeader style="table_CH" height="14" rowSpan="1">
 							<staticText>
-								<reportElement uuid="8581b862-3e67-4efb-b9b2-25907e6386f0" x="0" y="0" width="148" height="14"/>
-								<textElement textAlignment="Left">
+								<reportElement x="0" y="0" width="105" height="14" uuid="8581b862-3e67-4efb-b9b2-25907e6386f0"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph leftIndent="2"/>
 								</textElement>
@@ -173,18 +205,16 @@ WHERE
 	<pageFooter>
 		<band height="18" splitType="Stretch">
 			<textField>
-				<reportElement uuid="f96d7780-6357-4924-b519-27f72a508d29" x="432" y="0" width="87" height="16"/>
+				<reportElement x="432" y="0" width="87" height="16" uuid="f96d7780-6357-4924-b519-27f72a508d29"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="6c430987-cd11-40be-bd9d-2077e233745f" x="0" y="0" width="379" height="16"/>
-				<textElement/>
+				<reportElement x="0" y="0" width="379" height="16" uuid="6c430987-cd11-40be-bd9d-2077e233745f"/>
 				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-dd-MM HH:mm").format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement uuid="7a9813a0-b37a-4dcb-a749-b1725b610579" x="522" y="0" width="33" height="16"/>
-				<textElement/>
+				<reportElement x="522" y="0" width="33" height="16" uuid="7a9813a0-b37a-4dcb-a749-b1725b610579"/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>

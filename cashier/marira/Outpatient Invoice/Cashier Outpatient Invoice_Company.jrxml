@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-08-17T10:00:36 -->
+<!-- 2016-09-20T15:02:16 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cashier-outpatient-invoice" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="fe780ab7-fe00-48bf-89f9-30ca2fb097d1">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
@@ -53,6 +53,8 @@ FROM
     cashier_bill cb
     INNER JOIN cashier_bill_payment cbp ON
     cb.bill_id = cbp.bill_id
+    AND cbp.bill_id NOT IN 
+	(SELECT cashier_bill.adjusted_bill_id FROM cashier_bill WHERE adjusted_bill_id IS NOT NULL)
     INNER JOIN cashier_bill_payment_attribute cbpa ON
     cbp.bill_payment_id = cbpa.bill_payment_id
     AND cbpa.payment_mode_attribute_type_id = 2
@@ -126,7 +128,7 @@ limit 1;]]>
 				</textElement>
 				<text><![CDATA[Marira Clinic Outpatient Invoice]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="306" y="24" width="249" height="26" uuid="8166640c-bb05-4f02-a7ed-37244e090977"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
