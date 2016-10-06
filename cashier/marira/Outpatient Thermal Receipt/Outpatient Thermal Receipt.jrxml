@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-10-06T09:07:59 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Outpatient Thermal Receipt" language="groovy" pageWidth="216" pageHeight="297" columnWidth="216" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="b0650e21-f6cf-4aad-acec-9e81aea4c41f">
 	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="252"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="style1" fontName="Courier New" fontSize="12"/>
 	<parameter name="billId" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[4]]></defaultValueExpression>
@@ -49,15 +53,13 @@ FROM
         b.bill_id = bill_date.bill_id
     LEFT OUTER JOIN person_name upn ON
         u.person_id = upn.person_id
+        AND upn.voided = 0
 WHERE
-    b.bill_id = $P{billId}]]>
+    b.bill_id = $P{billId}
+LIMIT 1]]>
 	</queryString>
-	<field name="bill_id" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="receipt_number" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="bill_id" class="java.lang.Integer"/>
+	<field name="receipt_number" class="java.lang.String"/>
 	<field name="bill_date" class="java.sql.Timestamp"/>
 	<field name="cash_point" class="java.lang.String"/>
 	<field name="cashier" class="java.lang.String"/>
