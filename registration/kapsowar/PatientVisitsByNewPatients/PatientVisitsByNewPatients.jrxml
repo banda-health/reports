@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-10-28T16:31:03 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="New Patient Visit List" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="500"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="beginDate" class="java.util.Date"/>
+	<parameter name="endDate" class="java.util.Date"/>
+	<queryString>
+		<![CDATA[SELECT
+        pi.identifier AS FileNumber,
+        concat_ws(' ', pn.given_name, pn.middle_name, pn.family_name) AS PatientName,
+        DATE_FORMAT(v.date_started, '%Y-%m-%d') AS VisitDate
+
+FROM
+    patient as p
+INNER JOIN person_name as pn on pn.person_id = p.patient_id
+INNER JOIN visit as v on p.patient_id = v.patient_id
+INNER JOIN visit_attribute as va on v.visit_id = va.visit_id
+LEFT OUTER JOIN patient_identifier pi ON
+        p.patient_id = pi.patient_id
+		AND
+        pi.identifier_type = 3
+WHERE va.attribute_type_id = 1
+AND va.value_reference = 'true'
+AND (CAST(v.date_created AS DATE) BETWEEN CAST($P{beginDate} AS DATE) AND CAST($P{endDate} AS DATE))
+ORDER BY v.date_started DESC]]>
+	</queryString>
+	<field name="FileNumber" class="java.lang.String"/>
+	<field name="PatientName" class="java.lang.String"/>
+	<field name="VisitDate" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="35" uuid="a334a322-2426-4915-ac87-2fc6a0d5d573"/>
+				<textElement textAlignment="Center">
+					<font size="24"/>
+				</textElement>
+				<text><![CDATA[AIC Kapsowar Hospital]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="555" height="15" uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["New Patients from " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="18" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="-3" width="99" height="16" uuid="de140269-bbf7-4026-a3ea-6c1254aaaf56"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[File Number]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="307" y="-3" width="223" height="16" uuid="08138a37-96d1-4fca-86d2-017b6d54dc6c">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Patient Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="148" y="-3" width="119" height="16" uuid="3416f17b-2346-4043-b1ba-336a08d4485b"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Visit Date]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="13" width="530" height="1" uuid="e9ae85de-7d27-47b6-9abb-dfd5c972ef8d"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="17">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="99" height="16" uuid="089ae30e-2a51-4419-ab4a-99216852769d"/>
+				<textFieldExpression><![CDATA[$F{FileNumber}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="307" y="0" width="223" height="16" uuid="b112dbde-59e8-4a99-ba20-0b1b16c22f2a">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{PatientName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="148" y="0" width="119" height="16" uuid="29817303-1a87-45f4-9cb5-3927a9925476"/>
+				<textFieldExpression><![CDATA[$F{VisitDate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="3" width="379" height="16" uuid="6c430987-cd11-40be-bd9d-2077e233745f"/>
+				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-MMM-dd HH:mm").format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="522" y="3" width="33" height="16" uuid="7a9813a0-b37a-4dcb-a749-b1725b610579"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="431" y="3" width="87" height="16" uuid="f96d7780-6357-4924-b519-27f72a508d29"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="21" splitType="Stretch">
+			<textField pattern="#,##0">
+				<reportElement x="455" y="5" width="75" height="16" uuid="a2509bd4-a44c-413d-94ea-4b5738900864"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="356" y="5" width="99" height="16" uuid="de140269-bbf7-4026-a3ea-6c1254aaaf56"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Patient Count:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="1" width="530" height="1" uuid="0e6fac0c-085f-45c3-93f3-37c2a067f3af"/>
+			</line>
+		</band>
+	</summary>
+	<noData>
+		<band height="20">
+			<staticText>
+				<reportElement x="0" y="0" width="306" height="16" uuid="e8da193c-2a64-44be-96ca-7416132f7400"/>
+				<textElement textAlignment="Left">
+					<font isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[No data was found to display on the report.]]></text>
+			</staticText>
+		</band>
+	</noData>
+</jasperReport>

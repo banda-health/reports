@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-04-08T11:47:28 -->
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-10-28T16:00:48 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Patient Visits by Type" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -14,13 +14,7 @@
 FROM
     visit_type vt LEFT OUTER JOIN (
     SELECT visit_id, visit_type_id FROM visit WHERE
-        (date_started BETWEEN $P{beginDate} AND $P{endDate}
-        OR
-         date_stopped BETWEEN $P{beginDate} AND $P{endDate})
-    OR
-        (date_started <= $P{beginDate}
-            AND
-        (date_stopped IS NULL OR date_stopped >= $P{endDate}))
+        (CAST(date_started AS DATE) BETWEEN CAST($P{beginDate} AS DATE) AND CAST($P{endDate} AS DATE))
     ) v ON
         vt.visit_type_id = v.visit_type_id
 GROUP BY vt.name]]>
