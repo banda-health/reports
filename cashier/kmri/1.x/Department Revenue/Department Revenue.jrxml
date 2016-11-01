@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-10-05T15:15:41 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Daily Revenue" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e1d662ac-bb90-449a-818e-665744ad3091">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="beginDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="endDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="locationId" class="java.lang.String"/>
+	<parameter name="locationName" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+    d.Name,
+    COUNT(b.bill_id) Cases,
+    IF(li.price IS NULL, 0.00, SUM(li.price * li.quantity)) Amount
+FROM
+    cashier_bill b INNER JOIN cashier_bill_line_item li ON
+        b.bill_id = li.bill_id
+    INNER JOIN inv_item i ON
+        li.item_id = i.item_id
+    RIGHT OUTER JOIN inv_department d ON
+        i.department_id = d.department_id
+WHERE
+    (b.status = 'PAID' or b.status = 'OVERPAID')
+AND
+	d.location_id = $P{locationId}    
+AND
+    ((b.date_changed IS NULL AND b.date_created BETWEEN $P{beginDate} AND $P{endDate})
+        OR
+     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN $P{beginDate} AND $P{endDate}))
+GROUP BY d.Name]]>
+	</queryString>
+	<field name="Name" class="java.lang.String"/>
+	<field name="Cases" class="java.lang.Long"/>
+	<field name="Amount" class="java.math.BigDecimal"/>
+	<variable name="runningAmount" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Amount}]]></variableExpression>
+		<initialValueExpression><![CDATA[$F{Amount}]]></initialValueExpression>
+	</variable>
+	<variable name="totalAmount" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Amount}]]></variableExpression>
+	</variable>
+	<variable name="totalCases" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{Cases}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="35" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="555" height="32" uuid="b0d2b87a-12dc-40ef-86a9-95536db60c92"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{locationName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="26" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="555" height="25" uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Department Revenue for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="16" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="15" uuid="78d77030-7e29-4209-a810-b6ce966e5bd6"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Department]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="299" y="0" width="100" height="15" uuid="bd3d5fd9-5732-4aa2-9707-fac17ad62126"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cash Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="223" y="0" width="76" height="15" uuid="8b9e25e6-ec66-48be-b6d3-2bf1e8e1fca3"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Bills]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="14" width="555" height="1" uuid="98e169ca-845c-4ba7-b3e5-0a0d2459ae44"/>
+			</line>
+			<staticText>
+				<reportElement x="399" y="0" width="100" height="16" uuid="bd3d5fd9-5732-4aa2-9707-fac17ad62126"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Running Total]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="223" height="16" uuid="36841dc5-7eab-41cd-b3a1-3d14a215921e"/>
+				<textFieldExpression><![CDATA[$F{Name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="299" y="0" width="100" height="16" uuid="806e64ba-7498-4962-9b62-e2a65f596e15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{Amount}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="223" y="0" width="76" height="16" uuid="9d4a3666-c7a6-4492-9d45-cc2277a6084e"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{Cases}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="399" y="0" width="100" height="16" uuid="ade5a77e-24da-49b6-b2c5-8e5fc7bbe736"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{runningAmount}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Auto" pattern="#,##0.00 %">
+				<reportElement x="499" y="0" width="56" height="16" uuid="68a70d3b-b852-4867-8005-77e783c34d26"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{Amount} / $V{totalAmount}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="379" height="20" uuid="6c430987-cd11-40be-bd9d-2077e233745f"/>
+				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-MMM-dd HH:mm").format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="436" y="0" width="87" height="20" uuid="f96d7780-6357-4924-b519-27f72a508d29"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="527" y="0" width="33" height="20" uuid="7a9813a0-b37a-4dcb-a749-b1725b610579"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="18">
+			<textField pattern="#,##0">
+				<reportElement x="399" y="2" width="100" height="16" uuid="7ef25002-51ee-477c-a7b2-2f89f8dd467b"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="223" y="2" width="76" height="16" uuid="63ccd8c1-598b-4795-8d1c-f5169ae2d684"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalCases}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="-2" width="555" height="1" uuid="5fae4481-2ac8-42c5-a359-3cc661cadfb0"/>
+			</line>
+			<staticText>
+				<reportElement x="123" y="2" width="100" height="16" uuid="fe6de53d-9e11-4aff-a737-d02963808568"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Gross Total]]></text>
+			</staticText>
+		</band>
+	</summary>
+	<noData>
+		<band height="23">
+			<staticText>
+				<reportElement x="0" y="0" width="268" height="15" uuid="78d77030-7e29-4209-a810-b6ce966e5bd6"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[There are no bills within the specified dates.]]></text>
+			</staticText>
+		</band>
+	</noData>
+</jasperReport>
