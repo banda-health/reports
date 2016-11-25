@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-10-28T16:10:34 -->
+<!-- 2016-11-18T14:39:13 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Patient Visits by Type" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira_live"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="beginDate" class="java.util.Date"/>
 	<parameter name="endDate" class="java.util.Date"/>
 	<queryString>
-		<![CDATA[SELECT
-    vt.name Visit_Type,
+		<![CDATA[SELECT 
+	vt.name Visit_Type,
     COUNT(v.visit_id) VisitCount
 FROM
-    visit_type vt LEFT OUTER JOIN (
-    SELECT visit_id, visit_type_id FROM visit WHERE
-        (CAST(date_started AS DATE) BETWEEN CAST($P{beginDate} AS DATE) AND CAST($P{endDate} AS DATE))
-    ) v ON
-        vt.visit_type_id = v.visit_type_id
+    visit v
+        INNER JOIN
+    visit_type vt ON v.visit_type_id = vt.visit_type_id
+WHERE
+    (CAST(v.date_started AS DATE) BETWEEN CAST($P{beginDate} AS DATE) AND CAST($P{endDate} AS DATE))
 GROUP BY vt.name]]>
 	</queryString>
 	<field name="Visit_Type" class="java.lang.String"/>
