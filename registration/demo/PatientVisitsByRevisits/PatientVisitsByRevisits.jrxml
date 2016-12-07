@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-10-28T16:31:50 -->
+<!-- 2016-11-18T14:40:24 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Patient Re-Visit List" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="500"/>
@@ -24,8 +24,9 @@ LEFT OUTER JOIN patient_identifier pi ON
         p.patient_id = pi.patient_id
 		AND
         pi.identifier_type = 3
-WHERE va.attribute_type_id = 1
+WHERE va.attribute_type_id = 10
 AND va.value_reference = 'false'
+AND va.voided = 0
 AND (CAST(v.date_created AS DATE) BETWEEN CAST($P{beginDate} AS DATE) AND CAST($P{endDate} AS DATE))
 ORDER BY v.date_started DESC]]>
 	</queryString>

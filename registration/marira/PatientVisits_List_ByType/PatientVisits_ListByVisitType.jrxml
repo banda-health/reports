@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-11-18T14:44:17 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="New Patient Visit List" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
+<!-- 2016-11-25T12:51:39 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Patient Visit List" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="500"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira_live"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="beginDate" class="java.util.Date"/>
 	<parameter name="endDate" class="java.util.Date"/>
@@ -13,26 +13,31 @@
 		<![CDATA[SELECT
         pi.identifier AS FileNumber,
         concat_ws(' ', pn.given_name, pn.middle_name, pn.family_name) AS PatientName,
-        DATE_FORMAT(v.date_started, '%Y-%m-%d') AS VisitDate
+        DATE_FORMAT(v.date_started, '%Y-%m-%d') AS VisitDate,
+        vt.name Visit_Type,
+        va.value_reference FirstVisit
 
 FROM
     patient as p
 INNER JOIN person_name as pn on pn.person_id = p.patient_id
 INNER JOIN visit as v on p.patient_id = v.patient_id
-INNER JOIN visit_attribute as va on v.visit_id = va.visit_id
+LEFT OUTER JOIN visit_attribute as va on v.visit_id = va.visit_id
+AND va.attribute_type_id = 1
+AND va.voided = 0
+INNER JOIN visit_type as vt on v.visit_type_id = vt.visit_type_id
 LEFT OUTER JOIN patient_identifier pi ON
         p.patient_id = pi.patient_id
 		AND
         pi.identifier_type = 3
-WHERE va.attribute_type_id = 10
-AND va.value_reference = 'true'
-AND va.voided = 0
-AND (CAST(v.date_created AS DATE) BETWEEN CAST($P{beginDate} AS DATE) AND CAST($P{endDate} AS DATE))
+WHERE
+(CAST(v.date_created AS DATE) BETWEEN CAST($P{beginDate} AS DATE) AND CAST($P{endDate} AS DATE))
 ORDER BY v.date_started DESC]]>
 	</queryString>
 	<field name="FileNumber" class="java.lang.String"/>
 	<field name="PatientName" class="java.lang.String"/>
 	<field name="VisitDate" class="java.lang.String"/>
+	<field name="Visit_Type" class="java.lang.String"/>
+	<field name="FirstVisit" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -43,7 +48,7 @@ ORDER BY v.date_started DESC]]>
 				<textElement textAlignment="Center">
 					<font size="24"/>
 				</textElement>
-				<text><![CDATA[OpenHMIS Demo Clinic]]></text>
+				<text><![CDATA[AIC Marira Clinic]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -56,14 +61,14 @@ ORDER BY v.date_started DESC]]>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["New Patients from " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Patients Visits from " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="18" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="-3" width="99" height="16" uuid="de140269-bbf7-4026-a3ea-6c1254aaaf56"/>
+				<reportElement x="0" y="-3" width="80" height="16" uuid="de140269-bbf7-4026-a3ea-6c1254aaaf56"/>
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
@@ -79,7 +84,7 @@ ORDER BY v.date_started DESC]]>
 				<text><![CDATA[Patient Name]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="148" y="-3" width="119" height="16" uuid="3416f17b-2346-4043-b1ba-336a08d4485b"/>
+				<reportElement x="81" y="-3" width="59" height="16" uuid="3416f17b-2346-4043-b1ba-336a08d4485b"/>
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
@@ -88,12 +93,26 @@ ORDER BY v.date_started DESC]]>
 			<line>
 				<reportElement x="0" y="13" width="530" height="1" uuid="e9ae85de-7d27-47b6-9abb-dfd5c972ef8d"/>
 			</line>
+			<staticText>
+				<reportElement x="153" y="-3" width="59" height="16" uuid="4f518e51-12e8-46a5-8e84-fd6a053a686f"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Visit Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="226" y="-3" width="59" height="16" uuid="ae38c58b-6da5-4835-9e5f-5bc5ba738478"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[First Visit]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="17">
+		<band height="23">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="0" y="0" width="99" height="16" uuid="089ae30e-2a51-4419-ab4a-99216852769d"/>
+				<reportElement x="0" y="0" width="80" height="16" uuid="089ae30e-2a51-4419-ab4a-99216852769d"/>
 				<textFieldExpression><![CDATA[$F{FileNumber}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
@@ -103,8 +122,16 @@ ORDER BY v.date_started DESC]]>
 				<textFieldExpression><![CDATA[$F{PatientName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="148" y="0" width="119" height="16" uuid="29817303-1a87-45f4-9cb5-3927a9925476"/>
+				<reportElement x="83" y="0" width="70" height="16" uuid="29817303-1a87-45f4-9cb5-3927a9925476"/>
 				<textFieldExpression><![CDATA[$F{VisitDate}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="154" y="1" width="70" height="16" uuid="5e09afd1-3128-4749-8725-b03cb8aa5cfb"/>
+				<textFieldExpression><![CDATA[$F{Visit_Type}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="226" y="1" width="70" height="16" uuid="e622a54f-2632-4d70-b822-107cb41fcdef"/>
+				<textFieldExpression><![CDATA[$F{FirstVisit}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
