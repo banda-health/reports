@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-12-09T15:25:19 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CombinedDeptCollectionsNRevenue" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c633204-7e93-409a-ad62-c151e183af17">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kapsowar_live"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="beginDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="endDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+    d.Name Department,
+    d.department_id,
+    COUNT(b.bill_id) Cases,
+    IF(li.price IS NULL, 0.00, SUM(li.price * li.quantity)) Amount
+FROM
+    cashier_bill b INNER JOIN cashier_bill_line_item li ON
+        b.bill_id = li.bill_id
+    INNER JOIN inv_item i ON
+        li.item_id = i.item_id
+    RIGHT OUTER JOIN inv_department d ON
+        i.department_id = d.department_id
+WHERE
+    b.status = 'PAID'
+AND
+    ((b.date_changed IS NULL AND b.date_created BETWEEN CONCAT($P{beginDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59'))
+        OR
+     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN CONCAT($P{beginDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59')))
+GROUP BY d.Name
+ORDER BY Amount DESC]]>
+	</queryString>
+	<field name="Department" class="java.lang.String"/>
+	<field name="department_id" class="java.lang.Integer"/>
+	<field name="Cases" class="java.lang.Long"/>
+	<field name="Amount" class="java.math.BigDecimal"/>
+	<variable name="amountGrandTotal" class="java.math.BigDecimal" calculation="Sum"/>
+	<variable name="countGrandTotal" class="java.math.BigDecimal" calculation="Sum">
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="32" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="30" uuid="a334a322-2426-4915-ac87-2fc6a0d5d573"/>
+				<textElement textAlignment="Center">
+					<font size="24"/>
+				</textElement>
+				<text><![CDATA[AIC Kapsowar Hospital]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="555" height="17" uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Department Revenue for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement x="320" y="0" width="34" height="15" uuid="001cbdf6-872c-46d8-bd91-406545f98077"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cases]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="366" y="0" width="90" height="15" uuid="001cbdf6-872c-46d8-bd91-406545f98077"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="469" y="0" width="84" height="15" uuid="001cbdf6-872c-46d8-bd91-406545f98077"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[% of Total]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="12" width="553" height="1" uuid="3ffcc743-64de-4559-ba70-98275a5127e1"/>
+			</line>
+			<staticText>
+				<reportElement x="1" y="1" width="77" height="15" uuid="59e2f93c-007f-4d2d-b5ba-0dd06ffd3e04"/>
+				<textElement textAlignment="Left">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Department]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="43" splitType="Stretch">
+			<textField>
+				<reportElement mode="Transparent" x="0" y="0" width="171" height="16" uuid="d73f0de7-8f12-449d-aa05-1055460e3844"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Department}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="14" y="18" width="541" height="22" uuid="6f88e28c-3f71-46f3-9931-83b369323bb1"/>
+				<subreportParameter name="beginDate">
+					<subreportParameterExpression><![CDATA[$P{beginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="endDate">
+					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="departmentId">
+					<subreportParameterExpression><![CDATA[$F{department_id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<returnValue subreportVariable="amountTotal" toVariable="amountGrandTotal" calculation="Sum"/>
+				<returnValue subreportVariable="countTotal" toVariable="countGrandTotal" calculation="Sum"/>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "DepartmentCollectionDetail.jasper"]]></subreportExpression>
+			</subreport>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="41" width="555" height="1" uuid="b845450e-18c0-436e-972c-93e71863750a"/>
+			</line>
+			<textField pattern="#,##0">
+				<reportElement x="278" y="0" width="76" height="16" uuid="19b340f3-7b9d-4c60-a638-0199e6148e7e"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{Cases}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="355" y="0" width="100" height="16" uuid="3fe5021f-58bb-4436-9954-b3bd416757a5"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{Amount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" evaluationTime="Auto" pattern="#,##0.00 %">
+				<reportElement x="499" y="0" width="56" height="16" uuid="37b1cf8f-816e-490c-8236-d8129c532679"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{Amount} / $V{amountGrandTotal}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="12" width="553" height="1" uuid="0b4adc2f-3906-4fb1-8dd2-f0447b6d5313"/>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="21">
+			<textField evaluationTime="Report">
+				<reportElement x="522" y="5" width="33" height="16" uuid="7a9813a0-b37a-4dcb-a749-b1725b610579"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="432" y="5" width="87" height="16" uuid="f96d7780-6357-4924-b519-27f72a508d29"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="5" width="379" height="16" uuid="6c430987-cd11-40be-bd9d-2077e233745f"/>
+				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-dd-MM HH:mm").format(new Date())]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="22">
+			<staticText>
+				<reportElement x="187" y="4" width="98" height="16" uuid="001cbdf6-872c-46d8-bd91-406545f98077"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Grand Totals:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="288" y="4" width="69" height="16" uuid="8c616b10-9b16-4c4f-bd4f-b7deec019925"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{countGrandTotal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="405" y="4" width="64" height="16" uuid="601ce548-9f74-42c9-84f8-31de27651e69"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{amountGrandTotal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+	<noData>
+		<band height="16">
+			<staticText>
+				<reportElement x="0" y="0" width="285" height="14" uuid="5182490c-2d6f-4df1-8325-b839c1b9893d"/>
+				<textElement>
+					<font isItalic="true"/>
+				</textElement>
+				<text><![CDATA[No Data was found for this report]]></text>
+			</staticText>
+		</band>
+	</noData>
+</jasperReport>
