@@ -2,7 +2,7 @@
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
 <!-- 2017-01-12T14:55:18 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cashier_bill_adjustments" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b59e27c7-ce03-49e9-a2aa-82668a2ff0bf">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kapsowar_live"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="openhmis_demo"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
@@ -37,7 +37,7 @@
 	</style>
 	<subDataset name="cashier_bill_adjustments" uuid="405bae56-58fc-4696-a858-f5fb958b5e6c">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kapsowar_live"/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="openhmis_demo"/>
 		<parameter name="beginDate" class="java.util.Date">
 			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 		</parameter>
@@ -71,7 +71,7 @@ SELECT
 FROM cashier_bill cb
 	INNER JOIN cashier_bill_line_item cbli on cb.bill_id = cbli.bill_id 
 	INNER JOIN patient_identifier pi ON cb.patient_id = pi.patient_id
-	AND pi.identifier_type = 4
+	AND pi.identifier_type = 1
 	INNER JOIN users bill_creator ON cb.creator = bill_creator.user_id
 	INNER JOIN users bill_changer ON cb.changed_by = bill_changer.user_id
 	WHERE cb.status = 'ADJUSTED'
@@ -122,7 +122,7 @@ GROUP BY cbli.bill_id
 				<textElement textAlignment="Center">
 					<font size="24"/>
 				</textElement>
-				<text><![CDATA[AIC Kapsowar Hospital]]></text>
+				<text><![CDATA[OpenHMIS Demo Clinic]]></text>
 			</staticText>
 		</band>
 	</title>
