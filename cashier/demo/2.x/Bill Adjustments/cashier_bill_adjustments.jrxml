@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-01-12T14:55:18 -->
+<!-- 2017-01-12T16:05:23 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cashier_bill_adjustments" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b59e27c7-ce03-49e9-a2aa-82668a2ff0bf">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="openhmis_demo"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="demo"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
@@ -37,7 +37,7 @@
 	</style>
 	<subDataset name="cashier_bill_adjustments" uuid="405bae56-58fc-4696-a858-f5fb958b5e6c">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="openhmis_demo"/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="demo"/>
 		<parameter name="beginDate" class="java.util.Date">
 			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 		</parameter>
@@ -198,20 +198,23 @@ GROUP BY cbli.bill_id
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="80" uuid="26b65123-e13d-481a-85d1-e947618b07b3">
+					<jr:column width="76" uuid="26b65123-e13d-481a-85d1-e947618b07b3">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="80" height="30" uuid="3ba08162-5b19-4515-b8fb-f5f55afad05a"/>
+								<reportElement x="0" y="0" width="76" height="30" uuid="3ba08162-5b19-4515-b8fb-f5f55afad05a">
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+								</reportElement>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font isBold="true"/>
 								</textElement>
-								<text><![CDATA[Bill Changed By]]></text>
+								<text><![CDATA[Bill  Changed  By]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="80" height="30" uuid="dc4159ac-c584-44d1-8443-fe8449e57bb1"/>
+								<reportElement x="0" y="0" width="76" height="30" uuid="dc4159ac-c584-44d1-8443-fe8449e57bb1"/>
 								<textElement verticalAlignment="Middle">
 									<paragraph leftIndent="5"/>
 								</textElement>
@@ -219,11 +222,11 @@ GROUP BY cbli.bill_id
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="80" uuid="8fe8aa5e-d537-42f3-b13a-2ed05864b46a">
+					<jr:column width="70" uuid="8fe8aa5e-d537-42f3-b13a-2ed05864b46a">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="80" height="30" uuid="9f33737a-017c-4a45-b054-4e94e2399953"/>
+								<reportElement x="0" y="0" width="70" height="30" uuid="9f33737a-017c-4a45-b054-4e94e2399953"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font isBold="true"/>
 									<paragraph spacingBefore="0"/>
@@ -233,9 +236,9 @@ GROUP BY cbli.bill_id
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="80" height="30" uuid="8cc50c29-3a3c-4351-88fc-4ac13fced1fe"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<paragraph rightIndent="5"/>
+								<reportElement x="0" y="0" width="70" height="30" uuid="8cc50c29-3a3c-4351-88fc-4ac13fced1fe"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
+									<paragraph leftIndent="5" rightIndent="0"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{FileNumber}]]></textFieldExpression>
 							</textField>
@@ -284,20 +287,20 @@ GROUP BY cbli.bill_id
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="27e5928e-7fb1-47e2-be6c-dabdc08dfcb3">
+					<jr:column width="60" uuid="27e5928e-7fb1-47e2-be6c-dabdc08dfcb3">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="70" height="30" uuid="e6d97e05-d33d-4f12-8d2a-3322a1644467"/>
+								<reportElement x="0" y="0" width="60" height="30" uuid="e6d97e05-d33d-4f12-8d2a-3322a1644467"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font isBold="true"/>
 								</textElement>
-								<text><![CDATA[Final Amount]]></text>
+								<text><![CDATA[Final  Amount]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="70" height="30" uuid="333d19e1-0dcc-4995-b7c1-e3285d83c748"/>
+								<reportElement x="0" y="0" width="60" height="30" uuid="333d19e1-0dcc-4995-b7c1-e3285d83c748"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<paragraph leftIndent="0" rightIndent="5"/>
 								</textElement>
@@ -305,11 +308,11 @@ GROUP BY cbli.bill_id
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="160" uuid="9d6701e1-4b6f-4ee2-89a1-b720e87a7fc3">
+					<jr:column width="184" uuid="9d6701e1-4b6f-4ee2-89a1-b720e87a7fc3">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="160" height="30" uuid="a1120a8a-6b62-4e6c-a10e-c9513265d5a3"/>
+								<reportElement x="0" y="0" width="184" height="30" uuid="a1120a8a-6b62-4e6c-a10e-c9513265d5a3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font isBold="true"/>
 								</textElement>
@@ -318,7 +321,7 @@ GROUP BY cbli.bill_id
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="160" height="30" uuid="127fe43d-a35d-4efe-9738-39aaedeeb729"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="184" height="30" uuid="127fe43d-a35d-4efe-9738-39aaedeeb729"/>
 								<textElement verticalAlignment="Middle">
 									<paragraph leftIndent="5"/>
 								</textElement>
