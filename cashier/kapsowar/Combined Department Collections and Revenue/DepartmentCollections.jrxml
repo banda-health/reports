@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-12-09T15:25:19 -->
+<!-- 2017-03-09T10:33:38 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CombinedDeptCollectionsNRevenue" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c633204-7e93-409a-ad62-c151e183af17">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
@@ -15,6 +15,12 @@
 	</parameter>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="patternBeginDate" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd HH:mm").format($P{beginDate})]]></defaultValueExpression>
+	</parameter>
+	<parameter name="patternEndDate" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd HH:mm").format($P{endDate})]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT
@@ -32,9 +38,9 @@ FROM
 WHERE
     b.status = 'PAID'
 AND
-    ((b.date_changed IS NULL AND b.date_created BETWEEN CONCAT($P{beginDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59'))
+    ((b.date_changed IS NULL AND b.date_created BETWEEN $P{patternBeginDate} AND $P{patternEndDate})
         OR
-     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN CONCAT($P{beginDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59')))
+     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN $P{patternBeginDate} AND $P{patternEndDate}))
 GROUP BY d.Name
 ORDER BY Amount DESC]]>
 	</queryString>
@@ -67,7 +73,7 @@ ORDER BY Amount DESC]]>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Department Revenue for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Department Revenue for " + new SimpleDateFormat("yyyy-MMM-dd HH:mm").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd HH:mm").format($P{endDate})]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -125,6 +131,12 @@ ORDER BY Amount DESC]]>
 				</subreportParameter>
 				<subreportParameter name="departmentId">
 					<subreportParameterExpression><![CDATA[$F{department_id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternBeginDate">
+					<subreportParameterExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd HH:mm").format($P{beginDate})]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternEndDate">
+					<subreportParameterExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd HH:mm").format($P{endDate})]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<returnValue subreportVariable="amountTotal" toVariable="amountGrandTotal" calculation="Sum"/>
