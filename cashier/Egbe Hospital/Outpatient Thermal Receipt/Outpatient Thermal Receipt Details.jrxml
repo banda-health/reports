@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Outpatient Thermal Receipt Details" language="groovy" pageWidth="216" pageHeight="297" columnWidth="216" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="865ee1bb-bd7d-4d8a-b0a0-732f57770a27">
+	<property name="ireport.zoom" value="3.305785123966944"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="billId" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+    b.bill_id,
+    i.name AS item_name,
+    d.name AS department_name,
+    bi.quantity,
+    bi.price
+FROM
+    cashier_bill b INNER JOIN cashier_bill_line_item bi ON
+        b.bill_id = bi.bill_id
+    INNER JOIN inv_item i ON
+        bi.item_id = i.item_id
+    INNER JOIN inv_department d ON
+        i.department_id = d.department_id
+WHERE
+    b.bill_id = $P{billId}
+ORDER BY
+    bi.line_item_order ASC]]>
+	</queryString>
+	<field name="bill_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="item_name" class="java.lang.String"/>
+	<field name="department_name" class="java.lang.String"/>
+	<field name="quantity" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="price" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="totalCost" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{price}.multiply($F{quantity})]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="21">
+			<staticText>
+				<reportElement uuid="87629929-d34f-4165-8c85-a041e765e0ba" x="7" y="0" width="22" height="12"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<text><![CDATA[Qty]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="87629929-d34f-4165-8c85-a041e765e0ba" x="32" y="0" width="121" height="12"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<text><![CDATA[Description]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="87629929-d34f-4165-8c85-a041e765e0ba" x="153" y="0" width="58" height="12"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="281e838c-7a6f-48d6-8925-12d2cbbb99c1" x="0" y="15" width="216" height="1"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="b6129c2c-e785-4c69-a179-a135a786673c" x="7" y="0" width="22" height="12"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="3c6e796f-4ded-4100-859a-fbec76f7868b" x="32" y="0" width="121" height="12"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{item_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0">
+				<reportElement uuid="f27b9b2b-699c-4252-813c-e3a266b1c405" x="153" y="0" width="58" height="12"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{price}.multiply($F{quantity})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="17">
+			<textField>
+				<reportElement uuid="66809266-fd5e-4cc5-8a7e-9d9425131297" x="119" y="5" width="92" height="12"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0").format($V{totalCost})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="1e8beb63-73e7-4b46-9a7f-56e10587f782" x="74" y="5" width="45" height="12"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="3e6467b6-995e-46a8-895d-3088de4019fa" x="153" y="2" width="63" height="1"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

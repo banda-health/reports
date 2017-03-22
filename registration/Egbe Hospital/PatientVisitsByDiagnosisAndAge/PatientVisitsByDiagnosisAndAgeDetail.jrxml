@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PatientVisitsByDiagnosisAndAgeDetail" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="24f0df47-9708-4e3e-b052-631a507febb1">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="Under5" uuid="53e9af27-cf0e-4582-b697-f14afedae6ac">
+		<parameter name="conceptId" class="java.lang.Integer"/>
+		<parameter name="startDate" class="java.util.Date"/>
+		<parameter name="endDate" class="java.util.Date"/>
+		<queryString>
+			<![CDATA[SELECT
+    COUNT(*) visit_count
+FROM
+    patient pt INNER JOIN person p ON
+        pt.patient_id = p.person_id
+    INNER JOIN visit v ON
+        v.patient_id = pt.patient_id
+    INNER JOIN concept c ON
+        v.indication_concept_id = c.concept_id
+WHERE
+    v.indication_concept_id = $P{conceptId}
+AND
+    p.birthdate > DATE_SUB(v.date_started, INTERVAL 5 YEAR)
+AND
+    ((v.date_started BETWEEN $P{startDate} AND $P{endDate}
+        OR
+    v.date_stopped BETWEEN $P{startDate} AND $P{endDate})
+        OR
+    (v.date_started <= $P{startDate} AND (v.date_stopped IS NULL OR v.date_stopped >= $P{endDate})))]]>
+		</queryString>
+		<field name="visit_count" class="java.lang.Long"/>
+	</subDataset>
+	<subDataset name="5AndOver" uuid="ef3ef2e6-8d4b-479e-ba6d-3e763ed50da1">
+		<parameter name="conceptId" class="java.lang.Integer"/>
+		<parameter name="startDate" class="java.util.Date"/>
+		<parameter name="endDate" class="java.util.Date"/>
+		<queryString>
+			<![CDATA[SELECT
+    COUNT(*) visit_count
+FROM
+    patient pt INNER JOIN person p ON
+        pt.patient_id = p.person_id
+    INNER JOIN visit v ON
+        v.patient_id = pt.patient_id
+    INNER JOIN concept c ON
+        v.indication_concept_id = c.concept_id
+WHERE
+    v.indication_concept_id = $P{conceptId}
+AND
+    p.birthdate <= DATE_SUB(v.date_started, INTERVAL 5 YEAR)
+AND
+    ((v.date_started BETWEEN $P{startDate} AND $P{endDate}
+        OR
+    v.date_stopped BETWEEN $P{startDate} AND $P{endDate})
+        OR
+    (v.date_started <= $P{startDate} AND (v.date_stopped IS NULL OR v.date_stopped >= $P{endDate})))]]>
+		</queryString>
+		<field name="visit_count" class="java.lang.Long"/>
+	</subDataset>
+	<subDataset name="NoBirthDate" uuid="6fe50e6e-65a2-4e58-be63-a5d26de7f8fa">
+		<parameter name="conceptId" class="java.lang.Integer"/>
+		<parameter name="startDate" class="java.util.Date"/>
+		<parameter name="endDate" class="java.util.Date"/>
+		<queryString>
+			<![CDATA[SELECT
+    COUNT(*) visit_count
+FROM
+    patient pt INNER JOIN person p ON
+        pt.patient_id = p.person_id
+    INNER JOIN visit v ON
+        v.patient_id = pt.patient_id
+    INNER JOIN concept c ON
+        v.indication_concept_id = c.concept_id
+WHERE
+    v.indication_concept_id = $P{conceptId}
+AND
+    p.birthdate IS NULL
+AND
+    ((v.date_started BETWEEN $P{startDate} AND $P{endDate}
+        OR
+    v.date_stopped BETWEEN $P{startDate} AND $P{endDate})
+        OR
+    (v.date_started <= $P{startDate} AND (v.date_stopped IS NULL OR v.date_stopped >= $P{endDate})))]]>
+		</queryString>
+		<field name="visit_count" class="java.lang.Long"/>
+	</subDataset>
+	<parameter name="conceptId" class="java.lang.Integer"/>
+	<parameter name="startDate" class="java.util.Date"/>
+	<parameter name="endDate" class="java.util.Date"/>
+	<queryString language="SQL">
+		<![CDATA[select * from visit]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="24" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="992c252e-be96-48a7-966c-34a1797b1374" x="133" y="2" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Children (<5 Years)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1f4c5d7c-0bc3-4095-bd39-7ee76b82f330" x="243" y="2" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Adults (>= 5 Years)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2d7d04ab-450a-4ef3-9c4a-2701d55d3486" x="356" y="2" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[No Birth Date]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement uuid="a4d17125-f13f-4956-94b0-1b1f5f123598" x="133" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{visit_count}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ff3a9b9a-7ba8-4972-9904-0f92d246d6d1" x="243" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{visit_count}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="447b79bb-4eb4-41d1-be83-13db6d4017bc" x="356" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{visit_count}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

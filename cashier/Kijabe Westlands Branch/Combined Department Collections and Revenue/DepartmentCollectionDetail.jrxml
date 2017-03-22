@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-03-09T09:45:55 -->
+<!-- 2016-12-08T15:54:16 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DepartmentCollectionDetail" language="groovy" pageWidth="540" pageHeight="802" whenNoDataType="NoDataSection" columnWidth="540" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="1830272f-5b5f-44f5-ba3b-a20e5380986e">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kapsowar_live"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kijabe_westlands"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="beginDate" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -15,12 +15,6 @@
 	</parameter>
 	<parameter name="departmentId" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
-	<parameter name="patternBeginDate" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd HH:mm").format($P{beginDate})]]></defaultValueExpression>
-	</parameter>
-	<parameter name="patternEndDate" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd HH:mm").format($P{endDate})]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT
@@ -39,9 +33,9 @@ WHERE
 AND
     d.department_id = $P{departmentId}
 AND
-    ((b.date_changed IS NULL AND b.date_created BETWEEN $P{patternBeginDate} AND $P{patternEndDate})
+    ((b.date_changed IS NULL AND b.date_created BETWEEN CONCAT($P{beginDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59'))
         OR
-     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN $P{patternBeginDate} AND $P{patternEndDate}))
+     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN CONCAT($P{beginDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59')))
 GROUP BY d.department_id, d.Name, i.Name
 ORDER BY Amount DESC]]>
 	</queryString>
