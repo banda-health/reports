@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-04-13T17:58:04 -->
+<!-- 2017-04-18T11:50:16 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="auditDataReport" pageWidth="1710" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1670" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -41,6 +41,37 @@
 			<bottomPen lineWidth="0.5" lineColor="#000000"/>
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
+	</style>
+	<style name="Table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#E6F0FA"/>
+		</conditionalStyle>
 	</style>
 	<subDataset name="tableDataset" uuid="8abbbe48-cf4b-45de-ace5-ac67d4301d53">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker sandbox"/>
@@ -448,12 +479,12 @@ ORDER BY PatientDemographics.DOA asc]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="71" splitType="Stretch">
+		<band height="50" splitType="Stretch">
 			<componentElement>
 				<reportElement x="0" y="0" width="1680" height="50" uuid="1a35f4fa-7e78-45a5-96ac-fcf277e755a4">
-					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
-					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
-					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table 1_TD"/>
 					<property name="com.jaspersoft.studio.components.autoresize.next" value="true"/>
 					<property name="net.sf.jasperreports.export.headertoolbar.table.name" value=""/>
 				</reportElement>
@@ -473,7 +504,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					<jr:column width="50" uuid="110fb227-cf94-4e09-92c6-33279a0f56cd">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="50" height="30" uuid="44154a13-0095-41b7-8626-c70278b1adb1"/>
 								<box leftPadding="2"/>
@@ -484,7 +515,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[Done?]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="50" height="20" uuid="7614510a-c958-4fe9-b3c7-c8f2f39ad9f6"/>
 								<box leftPadding="2"/>
@@ -498,7 +529,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="190" uuid="975fc5cb-a7c1-4703-acba-b4d0efe17a9b">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="190" height="30" uuid="774ff1fe-ca64-4b52-995a-6db31ef9074c"/>
 								<box leftPadding="2"/>
@@ -508,7 +539,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[Name]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="190" height="20" uuid="46db1dd3-c6fc-46b7-bb20-530442515053"/>
 								<box leftPadding="2"/>
@@ -522,7 +553,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="70" uuid="a923ead7-d793-4930-9049-213af371b0f2">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="70" height="30" uuid="13970ab8-0c70-4f84-9f8b-b39eda40015a"/>
 								<box leftPadding="2"/>
@@ -532,7 +563,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[Hosp ID #]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="70" height="20" uuid="e122354b-9075-46f6-a481-e893307f46ca"/>
 								<box leftPadding="2"/>
@@ -546,7 +577,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="110" uuid="c00a1cdd-bda4-4a88-9e5e-043687fb6a4e">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="110" height="30" uuid="e8112eb4-44e7-49c6-9fe3-b6db40152699"/>
 								<box leftPadding="2"/>
@@ -556,7 +587,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[DOA (MM/DD/YYYY)]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" pattern="MM/dd/yyyy" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="110" height="20" uuid="a40a20fc-9752-41e2-824d-5a3366ca415b"/>
 								<box leftPadding="2"/>
@@ -570,7 +601,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="110" uuid="42454e0a-18ad-40ec-9e83-a52cb6d3a132">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="110" height="30" uuid="723addc7-e7dc-4abf-90f8-72e0a51aa3a7"/>
 								<box leftPadding="2"/>
@@ -581,7 +612,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 ]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" pattern="MM/dd/yyyy" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="110" height="20" uuid="533ad8df-acd9-4cb4-bbe2-ec3a734ed927"/>
 								<box leftPadding="2"/>
@@ -595,7 +626,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="50" uuid="f54732ee-da94-46e2-8d4b-49d1d95a2a09">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="50" height="30" uuid="9695d975-c309-4f48-a7f2-83c75679ffb0"/>
 								<box leftPadding="2"/>
@@ -605,7 +636,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[Death]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="50" height="20" uuid="9cc4fc32-73c1-4130-be15-60616725031b"/>
 								<box leftPadding="2"/>
@@ -619,7 +650,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="39" uuid="474c29a9-f1eb-41c4-9b96-7e47d40fff8d">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="39" height="30" uuid="abfaa31f-77e7-460e-aa36-61fb0f8b8d06"/>
 								<box leftPadding="2"/>
@@ -629,7 +660,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[Age]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="39" height="20" uuid="55b367b3-5577-4b23-9745-f644c03f43cf"/>
 								<box leftPadding="2"/>
@@ -643,7 +674,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="151" uuid="94eb90c9-c365-460c-8c10-ceeb004776bb">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="151" height="30" uuid="96bf4528-5080-4e76-bcdd-05652316630d"/>
 								<box leftPadding="2"/>
@@ -653,7 +684,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[Inpatient Service]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="151" height="20" uuid="b9f80357-36a6-42aa-8aa2-fce26d3fe249"/>
 								<box leftPadding="2"/>
@@ -667,7 +698,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="70" uuid="da7a9ead-70a2-4161-9b08-f0fe89b23e43">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="70" height="30" uuid="2d4143fd-6678-46ab-81a0-d9a30d9772f6"/>
 								<box leftPadding="2"/>
@@ -677,7 +708,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[Pre-OP Clearance Only]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="70" height="20" uuid="3cec7ad4-b5aa-4b0d-aa21-d689dbba7d56"/>
 								<box leftPadding="2"/>
@@ -691,7 +722,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="60" uuid="29b77a3c-fd1b-466b-99c8-5a4a4dbf2482">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="60" height="30" uuid="6ccdd739-5806-49ec-a561-aae8ca10f704"/>
 								<box leftPadding="2"/>
@@ -701,7 +732,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[Gender]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="60" height="20" uuid="a26bbdb7-1ed8-4d52-8934-005097fe1bad"/>
 								<box leftPadding="2"/>
@@ -715,7 +746,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="70" uuid="2600dcac-58a1-4007-b2e9-e0fa8940bf8f">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="70" height="30" uuid="fe619ddc-af35-438f-a1e1-309997ef1ebc"/>
 								<box leftPadding="2"/>
@@ -725,7 +756,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[Palliative Consult]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="70" height="20" uuid="26dee4d2-0155-46d2-bfdf-b29acf68f567"/>
 								<box leftPadding="2"/>
@@ -739,7 +770,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="90" uuid="f9962e7f-acff-488a-b2d7-e80eff8d0b41">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="90" height="30" uuid="f2d9701d-5ad7-4d43-a258-c607dce2a873"/>
 								<box leftPadding="2"/>
@@ -749,7 +780,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[ICU during stay?]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="90" height="20" uuid="3da997d3-3af4-4f60-89c8-93f814df9939"/>
 								<box leftPadding="2"/>
@@ -763,7 +794,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="87" uuid="9e955090-baca-45cc-827e-c4eda5e30e92">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="87" height="30" uuid="dabaadf9-11cf-462a-b4e2-17ea2c9f11e9"/>
 								<box leftPadding="2"/>
@@ -773,7 +804,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[HDU during stay?]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="87" height="20" uuid="96c581e9-7408-4ceb-9747-be6c7a448c65"/>
 								<box leftPadding="2"/>
@@ -787,7 +818,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="63" uuid="4e661044-42e6-4e2e-9781-64d0c5b66dd5">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="63" height="30" uuid="22c32ca6-03f1-4d0f-a10a-19103893465c"/>
 								<box leftPadding="2"/>
@@ -797,7 +828,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[HDU CO-MGMT]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="63" height="20" uuid="8f3e3192-5176-434f-90cc-e437f3e3df3b"/>
 								<box leftPadding="2"/>
@@ -811,7 +842,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="250" uuid="f168a0c5-d95b-46e1-b99e-eef0554bf35c">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="250" height="30" uuid="469bae4f-48de-4a80-9f7f-c473783d8ae7"/>
 								<box leftPadding="2"/>
@@ -821,7 +852,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[Discharge Diagnosis]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="250" height="20" uuid="42d8a3a4-9f07-4071-959e-7d66999add30"/>
 								<box leftPadding="2"/>
@@ -835,7 +866,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="50" uuid="863adde0-9752-425d-a06b-e46557919aad">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="50" height="30" uuid="a2dc1160-0d70-4e76-806b-8c7ba93ca40b"/>
 								<box leftPadding="2"/>
@@ -845,7 +876,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[A1c]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="50" height="20" uuid="b04366e7-75e4-47aa-ad71-f8850eb54e8e"/>
 								<box leftPadding="2"/>
@@ -859,7 +890,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="80" uuid="6b7ffc7b-5898-4db8-a30d-b96e51e9feee">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="80" height="30" uuid="e97f0c2f-8b48-424a-8eab-b1096880b2e9"/>
 								<box leftPadding="2"/>
@@ -869,7 +900,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[HIV+]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="80" height="20" uuid="554602f1-929d-458b-bf59-e2d80960f7fe"/>
 								<box leftPadding="2"/>
@@ -883,7 +914,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="40" uuid="041a341a-39f5-49c9-9b04-12366f2311b9">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column18"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="40" height="30" uuid="3ebf8c78-dca2-469a-b967-cf3c5d5f5f89"/>
 								<box leftPadding="2"/>
@@ -893,7 +924,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[CD4]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="40" height="20" uuid="da4ac314-1d2e-46ee-975e-284f5e561503"/>
 								<box leftPadding="2"/>
@@ -907,7 +938,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 					</jr:column>
 					<jr:column width="50" uuid="f4b9cabb-a9d5-41ae-b5fc-7af89178952d">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column19"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="50" height="30" uuid="df8dd65f-16aa-488e-8405-19a6e5e65712"/>
 								<box leftPadding="2"/>
@@ -917,7 +948,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 								<text><![CDATA[LOS (DAYS)]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="50" height="20" uuid="d4e64308-e294-48b7-b6c1-0eb28510ac7c"/>
 								<box leftPadding="2"/>
@@ -933,4 +964,15 @@ ORDER BY PatientDemographics.DOA asc]]>
 			</componentElement>
 		</band>
 	</summary>
+	<noData>
+		<band height="36">
+			<staticText>
+				<reportElement x="0" y="16" width="306" height="16" uuid="f8d073ff-aad4-469d-a66d-56ed0fad0d91"/>
+				<textElement textAlignment="Left">
+					<font isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[No data was found to display on the report.]]></text>
+			</staticText>
+		</band>
+	</noData>
 </jasperReport>
