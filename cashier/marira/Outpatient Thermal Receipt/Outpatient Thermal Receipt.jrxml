@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-10-06T09:07:59 -->
+<!-- 2017-05-24T11:31:51 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Outpatient Thermal Receipt" language="groovy" pageWidth="216" pageHeight="297" columnWidth="216" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="b0650e21-f6cf-4aad-acec-9e81aea4c41f">
 	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="252"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker marira emr"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="style1" fontName="Courier New" fontSize="12"/>
 	<parameter name="billId" class="java.lang.Integer">
@@ -24,10 +24,11 @@
     END as bill_date,
     cp.name cash_point,
     u.username cashier,
-    upn.given_name cashier_given_name,
-    upn.family_name cashier_family_name,
+    IFNULL(upn.given_name, "") cashier_given_name,
+    IFNULL(upn.family_name,"") cashier_family_name,
     patient_person_name.given_name patient_given_name,
-    patient_person_name.family_name patient_family_name
+    patient_person_name.family_name patient_family_name,
+    pi.identifier AS FileNumber
 FROM
     cashier_bill b INNER JOIN users u ON
       CASE
@@ -54,6 +55,10 @@ FROM
     LEFT OUTER JOIN person_name upn ON
         u.person_id = upn.person_id
         AND upn.voided = 0
+    LEFT OUTER JOIN patient_identifier pi ON
+        patient.patient_id = pi.patient_id
+		AND
+        pi.identifier_type = 3
 WHERE
     b.bill_id = $P{billId}
 LIMIT 1]]>
@@ -67,6 +72,7 @@ LIMIT 1]]>
 	<field name="cashier_family_name" class="java.lang.String"/>
 	<field name="patient_given_name" class="java.lang.String"/>
 	<field name="patient_family_name" class="java.lang.String"/>
+	<field name="FileNumber" class="java.lang.String"/>
 	<variable name="totalCost" class="java.math.BigDecimal">
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
@@ -74,7 +80,7 @@ LIMIT 1]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="170" splitType="Stretch">
+		<band height="190" splitType="Stretch">
 			<staticText>
 				<reportElement style="style1" mode="Transparent" x="0" y="0" width="216" height="70" uuid="e49ce628-bd2d-4cb0-b1c7-1ae5d963e2c3"/>
 				<textElement textAlignment="Center">
@@ -143,7 +149,7 @@ Email: info.kh@kijabe.net]]></text>
 				<reportElement x="0" y="94" width="216" height="1" uuid="3da84233-25c2-471f-be29-1e9532a22240"/>
 			</line>
 			<line>
-				<reportElement x="0" y="167" width="216" height="1" uuid="3da84233-25c2-471f-be29-1e9532a22240"/>
+				<reportElement x="0" y="184" width="216" height="1" uuid="3da84233-25c2-471f-be29-1e9532a22240"/>
 			</line>
 			<staticText>
 				<reportElement x="13" y="151" width="56" height="16" uuid="11372256-903a-4f4c-9d38-a588c5f39958"/>
@@ -158,6 +164,20 @@ Email: info.kh@kijabe.net]]></text>
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cashier_family_name} + ", " + $F{cashier_given_name}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="13" y="167" width="56" height="16" uuid="aaa8366b-9c4e-4856-b003-9573638e9859"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[File No:]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="style1" x="70" y="167" width="141" height="17" uuid="9167388e-3e9c-47c0-9310-2e7f03805b3d"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FileNumber}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
