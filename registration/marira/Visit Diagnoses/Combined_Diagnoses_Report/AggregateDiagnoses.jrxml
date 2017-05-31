@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-09-25T11:42:19 -->
+<!-- 2017-05-30T17:17:57 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AggregateVisitDiagnosis" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="e293a027-b4d7-4ac1-b14b-b8c14891648b">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker marira emr"/>
 	<style name="Crosstab_CH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
@@ -53,7 +53,6 @@
 		<parameter name="endDate" class="java.util.Date">
 			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 		</parameter>
-		<parameter name="gender" class="java.lang.String"/>
 		<parameter name="lowerAgeLimit" class="java.lang.Integer"/>
 		<parameter name="upperAgeLimit" class="java.lang.Integer"/>
 		<queryString>
@@ -72,7 +71,6 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
 	</parameter>
-	<parameter name="gender" class="java.lang.String"/>
 	<parameter name="lowerAgeLimit" class="java.lang.Integer"/>
 	<parameter name="upperAgeLimit" class="java.lang.Integer"/>
 	<queryString>
@@ -116,9 +114,6 @@
 				<subreportParameter name="endDate">
 					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="gender">
-					<subreportParameterExpression><![CDATA[$P{gender}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="lowerAgeLimit">
 					<subreportParameterExpression><![CDATA[$P{lowerAgeLimit}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -140,9 +135,6 @@
 				</subreportParameter>
 				<subreportParameter name="endDate">
 					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="gender">
-					<subreportParameterExpression><![CDATA[$P{gender}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="lowerAgeLimit">
 					<subreportParameterExpression><![CDATA[$P{lowerAgeLimit}]]></subreportParameterExpression>
