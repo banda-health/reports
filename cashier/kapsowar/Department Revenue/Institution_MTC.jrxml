@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-06-13T16:28:26 -->
+<!-- 2017-06-14T16:58:36 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Daily Revenue Institution MTC" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="e1d662ac-bb90-449a-818e-665744ad3091">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -12,6 +12,12 @@
 	</parameter>
 	<parameter name="endDate" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="patternBeginDate" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd HH:mm").format($P{beginDate})]]></defaultValueExpression>
+	</parameter>
+	<parameter name="patternEndDate" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd HH:mm").format($P{endDate})]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT
@@ -37,9 +43,9 @@ AND
 AND 
 	cbpa.value_reference = 164110	
 AND
-    ((b.date_changed IS NULL AND b.date_created BETWEEN CONCAT($P{beginDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59'))
+    ((b.date_changed IS NULL AND b.date_created BETWEEN $P{patternBeginDate} AND $P{patternEndDate})
         OR
-     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN CONCAT($P{beginDate},' ' , '00:00:00') AND CONCAT($P{endDate} ,' ' ,'23:59:59')))
+     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN $P{patternBeginDate} AND $P{patternEndDate}))
 GROUP BY d.Name]]>
 	</queryString>
 	<field name="Name" class="java.lang.String"/>
@@ -167,7 +173,7 @@ GROUP BY d.Name]]>
 				<textElement>
 					<font isBold="false"/>
 				</textElement>
-				<text><![CDATA[There are no Institution bills within the specified dates.]]></text>
+				<text><![CDATA[There are no MTC Institution bills within the specified dates.]]></text>
 			</staticText>
 		</band>
 	</noData>
