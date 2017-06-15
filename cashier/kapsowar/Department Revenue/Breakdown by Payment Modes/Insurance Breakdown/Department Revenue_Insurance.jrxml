@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-06-14T16:31:32 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Daily Revenue Institution Combined" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="e293a027-b4d7-4ac1-b14b-b8c14891648b">
+<!-- 2017-06-15T17:10:28 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Daily Revenue Insurance Combined" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="e293a027-b4d7-4ac1-b14b-b8c14891648b">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker kapsowar"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -54,6 +54,12 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
 	</parameter>
+	<parameter name="patternBeginDate" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd HH:mm").format($P{beginDate})]]></defaultValueExpression>
+	</parameter>
+	<parameter name="patternEndDate" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd HH:mm").format($P{endDate})]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[select 1 as one;]]>
 	</queryString>
@@ -63,13 +69,12 @@
 	</background>
 	<pageHeader>
 		<band height="26">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField>
 				<reportElement x="0" y="0" width="555" height="25" uuid="6bbfa1f3-567e-402e-a032-5616f35f6c16"/>
-				<textElement>
+				<textElement verticalAlignment="Bottom">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Institution Payments"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Insurance Payments between " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " and " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -86,12 +91,17 @@
 				<subreportParameter name="endDate">
 					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="patternBeginDate">
+					<subreportParameterExpression><![CDATA[$P{patternBeginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternEndDate">
+					<subreportParameterExpression><![CDATA[$P{patternEndDate}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Institution_Total.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Insurance_Total.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="70">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<subreport>
 				<reportElement x="0" y="0" width="555" height="70" uuid="59b3e94d-4a95-4c5e-8bdd-0cb1896ac65e">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -103,12 +113,17 @@
 				<subreportParameter name="endDate">
 					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="patternBeginDate">
+					<subreportParameterExpression><![CDATA[$P{patternBeginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternEndDate">
+					<subreportParameterExpression><![CDATA[$P{patternEndDate}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Institution_AIC-KapsowarGirls.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Insurance_AAR.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="70">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<subreport>
 				<reportElement x="0" y="0" width="555" height="70" uuid="62c4876f-31a1-465e-ae82-ebf70cd9a177">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -120,25 +135,14 @@
 				<subreportParameter name="endDate">
 					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
 				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Institution_MTC.jasper"]]></subreportExpression>
-			</subreport>
-		</band>
-		<band height="70">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-			<subreport>
-				<reportElement x="0" y="0" width="555" height="70" uuid="2d832d14-c929-462f-8787-d2f9db84805b">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<subreportParameter name="beginDate">
-					<subreportParameterExpression><![CDATA[$P{beginDate}]]></subreportParameterExpression>
+				<subreportParameter name="patternBeginDate">
+					<subreportParameterExpression><![CDATA[$P{patternBeginDate}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="endDate">
-					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
+				<subreportParameter name="patternEndDate">
+					<subreportParameterExpression><![CDATA[$P{patternEndDate}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Institution_MarakwetBoys.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Insurance_Equity.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
@@ -149,7 +153,7 @@
 				<textElement textAlignment="Left">
 					<font isBold="false" isItalic="true"/>
 				</textElement>
-				<text><![CDATA[There are no Institution bills within the specified dates.]]></text>
+				<text><![CDATA[There are no Insurance bills within the specified dates.]]></text>
 			</staticText>
 		</band>
 	</noData>
