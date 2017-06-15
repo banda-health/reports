@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-06-13T15:36:16 -->
+<!-- 2017-06-15T10:55:53 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Daily Revenue Combined" language="groovy" pageWidth="610" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="570" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e293a027-b4d7-4ac1-b14b-b8c14891648b">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker kapsowar"/>
@@ -110,6 +110,12 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
 	</parameter>
+	<parameter name="patternBeginDate" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd HH:mm").format($P{beginDate})]]></defaultValueExpression>
+	</parameter>
+	<parameter name="patternEndDate" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd HH:mm").format($P{endDate})]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[SELECT 1 as One]]>
 	</queryString>
@@ -129,10 +135,9 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 	</title>
 	<pageHeader>
 		<band height="26">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField>
 				<reportElement x="0" y="0" width="555" height="25" uuid="6bbfa1f3-567e-402e-a032-5616f35f6c16"/>
-				<textElement>
+				<textElement verticalAlignment="Bottom">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Department Revenue Breakdown between " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " and " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
@@ -152,12 +157,17 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 				<subreportParameter name="endDate">
 					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="patternBeginDate">
+					<subreportParameterExpression><![CDATA[$P{patternBeginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternEndDate">
+					<subreportParameterExpression><![CDATA[$P{patternEndDate}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Department Revenue Total.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="70">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<subreport>
 				<reportElement x="0" y="0" width="555" height="70" uuid="3512ba2e-f89d-4476-a490-be651a4fd479">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -169,12 +179,17 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 				<subreportParameter name="endDate">
 					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="patternBeginDate">
+					<subreportParameterExpression><![CDATA[$P{patternBeginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternEndDate">
+					<subreportParameterExpression><![CDATA[$P{patternEndDate}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Department Revenue_Cash.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="70">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<subreport>
 				<reportElement x="0" y="0" width="555" height="70" uuid="62c4876f-31a1-465e-ae82-ebf70cd9a177">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -186,12 +201,17 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 				<subreportParameter name="endDate">
 					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="patternBeginDate">
+					<subreportParameterExpression><![CDATA[$P{patternBeginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternEndDate">
+					<subreportParameterExpression><![CDATA[$P{patternEndDate}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Department Revenue_NHIF.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="70">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<subreport>
 				<reportElement x="0" y="0" width="555" height="70" uuid="0827a980-73eb-47e1-9c49-0af90530fe1c">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -203,12 +223,17 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 				<subreportParameter name="endDate">
 					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="patternBeginDate">
+					<subreportParameterExpression><![CDATA[$P{patternBeginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternEndDate">
+					<subreportParameterExpression><![CDATA[$P{patternEndDate}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Department Revenue_Mpesa.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="70">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<subreport>
 				<reportElement x="0" y="0" width="555" height="70" uuid="4b0541e2-a0a4-4265-968d-ff6c89fbaf05">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -220,12 +245,17 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 				<subreportParameter name="endDate">
 					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="patternBeginDate">
+					<subreportParameterExpression><![CDATA[$P{patternBeginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternEndDate">
+					<subreportParameterExpression><![CDATA[$P{patternEndDate}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Department Revenue_Insurance.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="70">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<subreport>
 				<reportElement x="0" y="0" width="555" height="70" uuid="5a23b17a-9ee8-4dc0-824e-f85a35c45506">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -237,6 +267,12 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 				<subreportParameter name="endDate">
 					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="patternBeginDate">
+					<subreportParameterExpression><![CDATA[$P{patternBeginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternEndDate">
+					<subreportParameterExpression><![CDATA[$P{patternEndDate}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Department Revenue_Institution.jasper"]]></subreportExpression>
 			</subreport>
@@ -244,7 +280,6 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 	</detail>
 	<pageFooter>
 		<band height="23">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField>
 				<reportElement x="0" y="0" width="379" height="20" uuid="f9796b18-b22c-4d77-bc2d-aa40eb165f74"/>
 				<textFieldExpression><![CDATA["Generated at " + new SimpleDateFormat("yyyy-MMM-dd HH:mm").format(new Date())]]></textFieldExpression>
