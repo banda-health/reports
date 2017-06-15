@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-04-06T10:21:37 -->
+<!-- 2017-05-30T17:05:19 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="New Patient Visit List" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="500"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker marira emr"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="beginDate" class="java.util.Date"/>
 	<parameter name="endDate" class="java.util.Date"/>
@@ -13,11 +13,14 @@
 		<![CDATA[SELECT
         pi.identifier AS FileNumber,
         concat_ws(' ', pn.given_name, pn.middle_name, pn.family_name) AS PatientName,
-        DATE_FORMAT(v.date_started, '%Y-%m-%d') AS VisitDate
+        DATE_FORMAT(v.date_started, '%Y-%m-%d') AS VisitDate,
+        person.gender AS Gender,
+        timestampdiff(year, person.birthdate,v.date_started) as Age
 
 FROM
     patient as p
 INNER JOIN person_name as pn on pn.person_id = p.patient_id
+INNER JOIN person as person on person.person_id = p.patient_id
 INNER JOIN visit as v on p.patient_id = v.patient_id
 INNER JOIN visit_attribute as va on v.visit_id = va.visit_id
 LEFT OUTER JOIN patient_identifier pi ON
@@ -33,6 +36,8 @@ ORDER BY v.date_started DESC]]>
 	<field name="FileNumber" class="java.lang.String"/>
 	<field name="PatientName" class="java.lang.String"/>
 	<field name="VisitDate" class="java.lang.String"/>
+	<field name="Gender" class="java.lang.String"/>
+	<field name="Age" class="java.lang.Long"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -79,7 +84,7 @@ ORDER BY v.date_started DESC]]>
 				<text><![CDATA[Patient Name]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="148" y="-3" width="119" height="16" uuid="3416f17b-2346-4043-b1ba-336a08d4485b"/>
+				<reportElement x="104" y="-3" width="96" height="16" uuid="3416f17b-2346-4043-b1ba-336a08d4485b"/>
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
@@ -88,6 +93,24 @@ ORDER BY v.date_started DESC]]>
 			<line>
 				<reportElement x="0" y="13" width="530" height="1" uuid="e9ae85de-7d27-47b6-9abb-dfd5c972ef8d"/>
 			</line>
+			<staticText>
+				<reportElement x="249" y="-3" width="48" height="16" uuid="d44ff67f-be90-427c-aad1-1862a404566a">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Gender]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="217" y="-3" width="27" height="16" uuid="c308b271-d9c2-4c56-b962-5429b079a6e4">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Age]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
@@ -103,8 +126,18 @@ ORDER BY v.date_started DESC]]>
 				<textFieldExpression><![CDATA[$F{PatientName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="148" y="0" width="119" height="16" uuid="29817303-1a87-45f4-9cb5-3927a9925476"/>
+				<reportElement x="104" y="0" width="96" height="16" uuid="29817303-1a87-45f4-9cb5-3927a9925476"/>
 				<textFieldExpression><![CDATA[$F{VisitDate}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="207" y="0" width="37" height="16" uuid="dcbe437c-9d3c-4284-b5cb-fdf646ba19d1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Age}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="254" y="0" width="31" height="16" uuid="d257f062-5ebb-4322-87ac-5f18c58149fd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Gender}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

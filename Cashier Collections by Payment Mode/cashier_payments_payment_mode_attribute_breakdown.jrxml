@@ -117,6 +117,8 @@ FROM
 WHERE
    cpm.payment_mode_id IN (5,6,7) 
    AND
+cb.status IN ('PAID')
+   AND 
    ((cbp.date_changed IS NULL AND cbp.date_created BETWEEN $P{patternBeginDate} AND $P{patternEndDate})
         OR
    (cbp.date_changed IS NOT NULL AND cbp.date_changed BETWEEN $P{patternBeginDate} AND $P{patternEndDate}))]]>

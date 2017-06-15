@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-11-25T12:51:39 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Patient Visit List" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
+<!-- 2017-05-24T16:18:57 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Patient Visit List" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="500"/>
 	<property name="ireport.y" value="0"/>
@@ -15,11 +15,14 @@
         concat_ws(' ', pn.given_name, pn.middle_name, pn.family_name) AS PatientName,
         DATE_FORMAT(v.date_started, '%Y-%m-%d') AS VisitDate,
         vt.name Visit_Type,
-        va.value_reference FirstVisit
+        va.value_reference FirstVisit,
+        person.gender AS Gender,
+        timestampdiff(year, person.birthdate,v.date_started) as Age
 
 FROM
     patient as p
 INNER JOIN person_name as pn on pn.person_id = p.patient_id
+INNER JOIN person as person on person.person_id = p.patient_id
 INNER JOIN visit as v on p.patient_id = v.patient_id
 LEFT OUTER JOIN visit_attribute as va on v.visit_id = va.visit_id
 AND va.attribute_type_id = 1
@@ -38,6 +41,8 @@ ORDER BY v.date_started DESC]]>
 	<field name="VisitDate" class="java.lang.String"/>
 	<field name="Visit_Type" class="java.lang.String"/>
 	<field name="FirstVisit" class="java.lang.String"/>
+	<field name="Gender" class="java.lang.String"/>
+	<field name="Age" class="java.lang.Long"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -53,7 +58,7 @@ ORDER BY v.date_started DESC]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="21" splitType="Stretch">
+		<band height="52" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="0" width="555" height="15" uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
@@ -75,7 +80,7 @@ ORDER BY v.date_started DESC]]>
 				<text><![CDATA[File Number]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="307" y="-3" width="223" height="16" uuid="08138a37-96d1-4fca-86d2-017b6d54dc6c">
+				<reportElement x="370" y="-3" width="160" height="16" uuid="08138a37-96d1-4fca-86d2-017b6d54dc6c">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement>
@@ -107,16 +112,34 @@ ORDER BY v.date_started DESC]]>
 				</textElement>
 				<text><![CDATA[First Visit]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="289" y="-3" width="48" height="16" uuid="dc924809-0c6d-4caf-9b83-328990e4d87c">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Gender]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="337" y="-3" width="27" height="16" uuid="74d84829-6ac1-4d81-ab95-301aa3f6bc37">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Age]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="23">
+		<band height="38">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="0" y="0" width="80" height="16" uuid="089ae30e-2a51-4419-ab4a-99216852769d"/>
 				<textFieldExpression><![CDATA[$F{FileNumber}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="307" y="0" width="223" height="16" uuid="b112dbde-59e8-4a99-ba20-0b1b16c22f2a">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="370" y="0" width="160" height="16" uuid="b112dbde-59e8-4a99-ba20-0b1b16c22f2a">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{PatientName}]]></textFieldExpression>
@@ -132,6 +155,16 @@ ORDER BY v.date_started DESC]]>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="226" y="1" width="70" height="16" uuid="e622a54f-2632-4d70-b822-107cb41fcdef"/>
 				<textFieldExpression><![CDATA[$F{FirstVisit}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="296" y="0" width="33" height="16" uuid="9b04a3ec-56a1-49ef-9142-ffe81280f75d"/>
+				<textFieldExpression><![CDATA[$F{Gender}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="338" y="0" width="27" height="16" uuid="a85057ca-0a3f-4e21-b86a-a54b866cda19">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{Age}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

@@ -82,6 +82,7 @@ FROM
     INNER JOIN cashier_payment_mode cpm ON cbp.payment_mode_id = cpm.payment_mode_id
     INNER JOIN provider p on cb.provider_id = p.provider_id
     INNER JOIN person_name pn on p.person_id = pn.person_id
+    AND pn.preferred = 1
 
 WHERE
    ((cbp.date_changed IS NULL AND cbp.date_created BETWEEN $P{patternBeginDate} AND $P{patternEndDate})

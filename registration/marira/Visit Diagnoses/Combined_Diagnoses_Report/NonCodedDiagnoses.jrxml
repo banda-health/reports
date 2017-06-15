@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-09-25T11:09:52 -->
+<!-- 2017-05-30T17:13:28 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NonCodedDiagnoses" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="2eade94f-29dc-4fb6-8ad4-7dd69c27140e">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
@@ -49,7 +49,6 @@
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
 		<parameter name="beginDate" class="java.util.Date"/>
 		<parameter name="endDate" class="java.util.Date"/>
-		<parameter name="gender" class="java.lang.String"/>
 		<parameter name="lowerAgeLimit" class="java.lang.Integer"/>
 		<parameter name="upperAgeLimit" class="java.lang.Integer"/>
 		<queryString>
@@ -66,8 +65,7 @@ FROM
 person as per_table
 LEFT JOIN obs as obs_table on per_table.person_id = obs_table.person_id
 where ((timestampdiff(year, per_table.birthdate,obs_table.obs_datetime) >= $P{lowerAgeLimit})
-AND (timestampdiff(year, per_table.birthdate,obs_table.obs_datetime) <= $P{upperAgeLimit}))
-AND (per_table.gender =  $P{gender}) 
+AND (timestampdiff(year, per_table.birthdate,obs_table.obs_datetime) <= $P{upperAgeLimit})) 
 AND (date(obs_table.obs_datetime) BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{endDate} AS DATE))
 ) as bday
 INNER JOIN
@@ -113,7 +111,7 @@ WHERE (cal_table.datefield BETWEEN  $P{beginDate} AND $P{endDate});]]>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Non-Coded Diagnoses for Gender " + $P{gender} + " Between Age " + $P{lowerAgeLimit} + " and Age " + $P{upperAgeLimit}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Non-Coded Diagnoses " + " Between Age " + $P{lowerAgeLimit} + " and Age " + $P{upperAgeLimit}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -126,15 +124,12 @@ WHERE (cal_table.datefield BETWEEN  $P{beginDate} AND $P{endDate});]]>
 				</reportElement>
 				<crosstabDataset>
 					<dataset>
-						<datasetRun subDataset="NonCodedDataset" uuid="20831cfb-b4dc-4d7c-8dc0-39ed4fb667d8">
+						<datasetRun subDataset="NonCodedDataset" uuid="2d8c3c45-7cca-4d0d-b9ef-992bf3de383a">
 							<datasetParameter name="beginDate">
 								<datasetParameterExpression><![CDATA[$P{beginDate}]]></datasetParameterExpression>
 							</datasetParameter>
 							<datasetParameter name="endDate">
 								<datasetParameterExpression><![CDATA[$P{endDate}]]></datasetParameterExpression>
-							</datasetParameter>
-							<datasetParameter name="gender">
-								<datasetParameterExpression><![CDATA[$P{gender}]]></datasetParameterExpression>
 							</datasetParameter>
 							<datasetParameter name="lowerAgeLimit">
 								<datasetParameterExpression><![CDATA[$P{lowerAgeLimit}]]></datasetParameterExpression>
