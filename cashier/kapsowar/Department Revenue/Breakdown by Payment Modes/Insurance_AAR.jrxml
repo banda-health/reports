@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-06-15T11:16:08 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Daily Revenue Mpesa" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="e1d662ac-bb90-449a-818e-665744ad3091">
+<!-- 2017-06-15T11:33:08 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Daily Revenue Insurance AAR" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="e1d662ac-bb90-449a-818e-665744ad3091">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -33,12 +33,17 @@ FROM
         i.department_id = d.department_id
         INNER JOIN cashier_bill_payment cbp ON
 		b.bill_id = cbp.bill_id
+		INNER JOIN cashier_bill_payment_attribute cbpa ON
+		cbp.bill_payment_id = cbpa.bill_payment_id
+		
 WHERE
     b.status = 'PAID'
 AND 
-	cbp.payment_mode_id = 2
+	cbp.payment_mode_id = 5
+AND 
+	cbpa.value_reference = 164106	
 AND
-     ((b.date_changed IS NULL AND b.date_created BETWEEN $P{patternBeginDate} AND $P{patternEndDate})
+    ((b.date_changed IS NULL AND b.date_created BETWEEN $P{patternBeginDate} AND $P{patternEndDate})
         OR
      (b.date_changed IS NOT NULL AND b.date_changed BETWEEN $P{patternBeginDate} AND $P{patternEndDate}))
 GROUP BY d.Name]]>
@@ -66,7 +71,7 @@ GROUP BY d.Name]]>
 				<textElement verticalAlignment="Top">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["M-PESA Payments"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["AAR Insurance Payments"]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -168,7 +173,7 @@ GROUP BY d.Name]]>
 				<textElement>
 					<font isBold="false"/>
 				</textElement>
-				<text><![CDATA[There are no M-PESA bills within the specified dates.]]></text>
+				<text><![CDATA[There are no AAR Insurance bills within the specified dates.]]></text>
 			</staticText>
 		</band>
 	</noData>

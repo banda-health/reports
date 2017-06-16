@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-06-15T10:55:53 -->
+<!-- 2017-06-16T09:54:45 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Daily Revenue Combined" language="groovy" pageWidth="610" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="570" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e293a027-b4d7-4ac1-b14b-b8c14891648b">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker kapsowar"/>
@@ -53,54 +53,6 @@
 			<style mode="Opaque" backcolor="#E3DEDE"/>
 		</conditionalStyle>
 	</style>
-	<subDataset name="DiagnosisDataSet" uuid="6a0b694b-0571-4e14-8c3b-c8376e0cc107">
-		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira_live"/>
-		<parameter name="beginDate" class="java.util.Date">
-			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
-		</parameter>
-		<parameter name="endDate" class="java.util.Date">
-			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
-		</parameter>
-		<queryString>
-			<![CDATA[SELECT 
-    coalesce(obsdate, cal_table.datefield) as calendar,
-    coalesce(diag.name,'No Diagnosis') as diagnosis,
-    coalesce(diag.value_coded,NULL) AS NoOfDiagnosis
-
-FROM
-	(
-    SELECT
-	distinct(per_table.person_id)
-	FROM 
-	person as per_table
-	LEFT JOIN obs as obs_table on per_table.person_id = obs_table.person_id
-	where (timestampdiff(year, per_table.birthdate,obs_table.obs_datetime) >5) 
-    AND (date(obs_table.obs_datetime) BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{endDate} AS DATE))
-    ) as bday
-    INNER JOIN
-    (
-    SELECT
-    date(obs_table.obs_datetime) as obsdate, cname.name, obs_table.value_coded, obs_table.person_id
-    FROM
-    obs as obs_table
-	LEFT JOIN concept_name as cname ON obs_table.value_coded = cname.concept_id
-	AND (cname.concept_name_type = "FULLY_SPECIFIED"
-	AND cname.locale = "en")
-	LEFT JOIN concept as concpt ON cname.concept_id = concpt.concept_id
-	AND concpt.class_id = 4
-    where (date(obs_table.obs_datetime) BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{endDate} AS DATE)) AND 
-    obs_table.value_coded NOT IN (159393,159943,159944,159392)
-    ) as diag on diag.person_id=bday.person_id 
-    RIGHT JOIN
-    calendar as cal_table ON diag.obsdate = cal_table.datefield
-	 
-where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{endDate} AS DATE))]]>
-		</queryString>
-		<field name="calendar" class="java.sql.Date"/>
-		<field name="diagnosis" class="java.lang.String"/>
-		<field name="NoOfDiagnosis" class="java.lang.Integer"/>
-	</subDataset>
 	<parameter name="beginDate" class="java.util.Date">
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
@@ -274,7 +226,117 @@ where (cal_table.datefield BETWEEN  CAST($P{beginDate} AS DATE)  AND CAST($P{end
 					<subreportParameterExpression><![CDATA[$P{patternEndDate}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Insurance_AAR.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="70">
+			<subreport>
+				<reportElement x="0" y="0" width="555" height="70" uuid="39196e96-19bb-4dc0-8733-fd3183344f0e">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<subreportParameter name="beginDate">
+					<subreportParameterExpression><![CDATA[$P{beginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="endDate">
+					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternBeginDate">
+					<subreportParameterExpression><![CDATA[$P{patternBeginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternEndDate">
+					<subreportParameterExpression><![CDATA[$P{patternEndDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Insurance_Equity.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="70">
+			<subreport>
+				<reportElement x="0" y="0" width="555" height="70" uuid="fee74c9c-c5a1-4503-8519-2a42f7b21ef0">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<subreportParameter name="beginDate">
+					<subreportParameterExpression><![CDATA[$P{beginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="endDate">
+					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternBeginDate">
+					<subreportParameterExpression><![CDATA[$P{patternBeginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternEndDate">
+					<subreportParameterExpression><![CDATA[$P{patternEndDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Department Revenue_Institution.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="70">
+			<subreport>
+				<reportElement x="0" y="0" width="555" height="70" uuid="0365d09b-5447-49b9-aa07-17d4cd9a0f55">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<subreportParameter name="beginDate">
+					<subreportParameterExpression><![CDATA[$P{beginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="endDate">
+					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternBeginDate">
+					<subreportParameterExpression><![CDATA[$P{patternBeginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternEndDate">
+					<subreportParameterExpression><![CDATA[$P{patternEndDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Institution_AIC-KapsowarGirls.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="70">
+			<subreport>
+				<reportElement x="0" y="0" width="555" height="70" uuid="3bbd97f3-fdfe-4d3f-96b3-f1463f33b6ef">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<subreportParameter name="beginDate">
+					<subreportParameterExpression><![CDATA[$P{beginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="endDate">
+					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternBeginDate">
+					<subreportParameterExpression><![CDATA[$P{patternBeginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternEndDate">
+					<subreportParameterExpression><![CDATA[$P{patternEndDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Institution_MarakwetBoys.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="70">
+			<subreport>
+				<reportElement x="0" y="0" width="555" height="70" uuid="e4c22896-5b74-4112-8a6d-c05a2ea87233">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<subreportParameter name="beginDate">
+					<subreportParameterExpression><![CDATA[$P{beginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="endDate">
+					<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternBeginDate">
+					<subreportParameterExpression><![CDATA[$P{patternBeginDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="patternEndDate">
+					<subreportParameterExpression><![CDATA[$P{patternEndDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Institution_MTC.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
