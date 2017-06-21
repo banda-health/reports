@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-06-16T09:54:45 -->
+<!-- 2017-06-21T10:19:22 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Daily Revenue Combined" language="groovy" pageWidth="610" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="570" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e293a027-b4d7-4ac1-b14b-b8c14891648b">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker kapsowar"/>
@@ -88,11 +88,11 @@
 	<pageHeader>
 		<band height="26">
 			<textField>
-				<reportElement x="0" y="0" width="555" height="25" uuid="6bbfa1f3-567e-402e-a032-5616f35f6c16"/>
+				<reportElement x="0" y="0" width="590" height="25" uuid="6bbfa1f3-567e-402e-a032-5616f35f6c16"/>
 				<textElement verticalAlignment="Bottom">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Department Revenue Breakdown between " + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " and " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Department Revenue Breakdown between " + new SimpleDateFormat("yyyy-MMM-dd HH:mm").format($P{beginDate}) + " and " + new SimpleDateFormat("yyyy-MMM-dd HH:mm").format($P{endDate})]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
