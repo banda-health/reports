@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-06-15T11:26:46 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Daily Revenue Insurance" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="e1d662ac-bb90-449a-818e-665744ad3091">
+<!-- 2017-06-15T11:33:08 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Daily Revenue Insurance AAR" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="e1d662ac-bb90-449a-818e-665744ad3091">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -31,17 +31,31 @@ FROM
         li.item_id = i.item_id
     RIGHT OUTER JOIN inv_department d ON
         i.department_id = d.department_id
-        INNER JOIN cashier_bill_payment cbp ON
-		b.bill_id = cbp.bill_id
-		
+        INNER JOIN 
+        (
+        SELECT
+		cbp.bill_id	
+		FROM
+		cashier_bill_payment cbp
+        	INNER JOIN cashier_bill_payment_attribute cbpa ON
+		cbp.bill_payment_id = cbpa.bill_payment_id
+		WHERE
+		cbp.payment_mode_id = 5
+		AND 
+		cbpa.value_reference = 164106
+		AND
+		((cbp.date_changed IS NULL AND cbp.date_created BETWEEN $P{patternBeginDate} AND $P{patternEndDate})
+        	OR
+		(cbp.date_changed IS NOT NULL AND cbp.date_changed BETWEEN $P{patternBeginDate} AND $P{patternEndDate}))
+		GROUP BY cbp.bill_id
+        ) aarinsurancepayments
+        ON b.bill_id = aarinsurancepayments.bill_id
 WHERE
     b.status = 'PAID'
-AND 
-	cbp.payment_mode_id = 5
 AND
-     ((b.date_changed IS NULL AND b.date_created BETWEEN $P{patternBeginDate} AND $P{patternEndDate})
-        OR
-     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN $P{patternBeginDate} AND $P{patternEndDate}))
+    ((b.date_changed IS NULL AND b.date_created BETWEEN $P{patternBeginDate} AND $P{patternEndDate})
+    OR
+    (b.date_changed IS NOT NULL AND b.date_changed BETWEEN $P{patternBeginDate} AND $P{patternEndDate}))
 GROUP BY d.Name]]>
 	</queryString>
 	<field name="Name" class="java.lang.String"/>
@@ -67,7 +81,7 @@ GROUP BY d.Name]]>
 				<textElement verticalAlignment="Top">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Insurance Total Payments"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["AAR Insurance Payments"]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -165,11 +179,11 @@ GROUP BY d.Name]]>
 	<noData>
 		<band height="23">
 			<staticText>
-				<reportElement x="0" y="0" width="360" height="15" uuid="78d77030-7e29-4209-a810-b6ce966e5bd6"/>
+				<reportElement x="0" y="0" width="380" height="15" uuid="78d77030-7e29-4209-a810-b6ce966e5bd6"/>
 				<textElement>
 					<font isBold="false"/>
 				</textElement>
-				<text><![CDATA[There are no Insurance bills within the specified dates.]]></text>
+				<text><![CDATA[There are no AAR Insurance bills within the specified dates.]]></text>
 			</staticText>
 		</band>
 	</noData>

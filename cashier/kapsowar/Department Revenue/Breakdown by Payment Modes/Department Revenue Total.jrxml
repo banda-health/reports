@@ -35,8 +35,8 @@ WHERE
     b.status = 'PAID'
 AND
     ((b.date_changed IS NULL AND b.date_created BETWEEN $P{patternBeginDate} AND $P{patternEndDate})
-        OR
-     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN $P{patternBeginDate} AND $P{patternEndDate}))
+    OR
+    (b.date_changed IS NOT NULL AND b.date_changed BETWEEN $P{patternBeginDate} AND $P{patternEndDate}))
 GROUP BY d.Name]]>
 	</queryString>
 	<field name="Name" class="java.lang.String"/>

@@ -31,16 +31,27 @@ FROM
         li.item_id = i.item_id
     RIGHT OUTER JOIN inv_department d ON
         i.department_id = d.department_id
-        INNER JOIN cashier_bill_payment cbp ON
-		b.bill_id = cbp.bill_id
+        INNER JOIN 
+        (
+        SELECT
+		cbp.bill_id	
+		FROM
+		cashier_bill_payment cbp
+		WHERE
+		cbp.payment_mode_id = 2
+		AND
+		((cbp.date_changed IS NULL AND cbp.date_created BETWEEN $P{patternBeginDate} AND $P{patternEndDate})
+        	OR
+		(cbp.date_changed IS NOT NULL AND cbp.date_changed BETWEEN $P{patternBeginDate} AND $P{patternEndDate}))
+		GROUP BY cbp.bill_id
+        ) mpesapayments
+        ON b.bill_id = mpesapayments.bill_id
 WHERE
     b.status = 'PAID'
-AND 
-	cbp.payment_mode_id = 2
 AND
-     ((b.date_changed IS NULL AND b.date_created BETWEEN $P{patternBeginDate} AND $P{patternEndDate})
-        OR
-     (b.date_changed IS NOT NULL AND b.date_changed BETWEEN $P{patternBeginDate} AND $P{patternEndDate}))
+    ((b.date_changed IS NULL AND b.date_created BETWEEN $P{patternBeginDate} AND $P{patternEndDate})
+    OR
+    (b.date_changed IS NOT NULL AND b.date_changed BETWEEN $P{patternBeginDate} AND $P{patternEndDate}))
 GROUP BY d.Name]]>
 	</queryString>
 	<field name="Name" class="java.lang.String"/>
@@ -66,7 +77,7 @@ GROUP BY d.Name]]>
 				<textElement verticalAlignment="Top">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["MPESA Payments"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["M-PESA Payments"]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -168,7 +179,7 @@ GROUP BY d.Name]]>
 				<textElement>
 					<font isBold="false"/>
 				</textElement>
-				<text><![CDATA[There are no mpesa bills within the specified dates.]]></text>
+				<text><![CDATA[There are no M-PESA bills within the specified dates.]]></text>
 			</staticText>
 		</band>
 	</noData>
