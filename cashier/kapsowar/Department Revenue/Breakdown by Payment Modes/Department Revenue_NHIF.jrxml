@@ -23,7 +23,7 @@
 		<![CDATA[SELECT
     d.Name,
     COUNT(b.bill_id) Cases,
-    IF(li.price IS NULL, 0.00, SUM(li.price * li.quantity)) Amount
+    nhifpayments.paymentamount Amount
 FROM
     cashier_bill b INNER JOIN cashier_bill_line_item li ON
         b.bill_id = li.bill_id
@@ -34,7 +34,8 @@ FROM
         INNER JOIN 
         (
         SELECT
-		cbp.bill_id	
+		cbp.bill_id,
+		cbp.amount as paymentamount	
 		FROM
 		cashier_bill_payment cbp
         	INNER JOIN cashier_bill_payment_attribute cbpa ON

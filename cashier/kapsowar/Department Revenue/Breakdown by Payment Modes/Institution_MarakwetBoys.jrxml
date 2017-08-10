@@ -23,7 +23,7 @@
 		<![CDATA[SELECT
     d.Name,
     COUNT(b.bill_id) Cases,
-    IF(li.price IS NULL, 0.00, SUM(li.price * li.quantity)) Amount
+    MarakwetBoysinstitutionpayments.paymentamount Amount
 FROM
     cashier_bill b INNER JOIN cashier_bill_line_item li ON
         b.bill_id = li.bill_id
@@ -34,10 +34,11 @@ FROM
         INNER JOIN 
         (
         SELECT
-		cbp.bill_id	
+		cbp.bill_id,
+		cbp.amount as paymentamount	
 		FROM
 		cashier_bill_payment cbp
-        INNER JOIN cashier_bill_payment_attribute cbpa ON
+        	INNER JOIN cashier_bill_payment_attribute cbpa ON
 		cbp.bill_payment_id = cbpa.bill_payment_id
 		WHERE
 		cbp.payment_mode_id = 6
@@ -45,7 +46,7 @@ FROM
 		cbpa.value_reference = 164109
 		AND
 		((cbp.date_changed IS NULL AND cbp.date_created BETWEEN $P{patternBeginDate} AND $P{patternEndDate})
-        OR
+        	OR
 		(cbp.date_changed IS NOT NULL AND cbp.date_changed BETWEEN $P{patternBeginDate} AND $P{patternEndDate}))
 		GROUP BY cbp.bill_id
         ) MarakwetBoysinstitutionpayments
