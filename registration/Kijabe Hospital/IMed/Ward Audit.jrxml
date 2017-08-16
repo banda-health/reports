@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-08-10T14:22:32 -->
+<!-- 2017-08-16T17:43:18 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ward Audit" pageWidth="3240" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3200" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -76,11 +76,11 @@
 	<subDataset name="tableDataset" uuid="1f62ba2a-136a-4636-975c-1b80b3a44eba">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker sandbox"/>
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<parameter name="beginDate" class="java.util.Date">
+		<parameter name="begin_Date of Discharge" class="java.util.Date">
 			<parameterDescription><![CDATA[]]></parameterDescription>
 			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 		</parameter>
-		<parameter name="endDate" class="java.util.Date">
+		<parameter name="end_Date of Discharge" class="java.util.Date">
 			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 		</parameter>
 		<queryString>
@@ -122,7 +122,7 @@ FROM
 SELECT
 	concat(ifnull(person_name.given_name,''), ' ', ifnull(person_name.middle_name,''), ' ', ifnull(person_name.family_name,'')) AS PatientName,
 	patient_identifier.identifier AS HospID,
-	visit.date_started AS startdate,
+	visit.date_stopped AS stopped,
 	cast(visit.date_started as DATE) AS DOA,
 	cast(visit.date_stopped as DATE) AS DOD,
 	timestampdiff(year, person.birthdate,visit.date_started) AS Age,
@@ -530,7 +530,7 @@ WHERE
 GROUP BY v.visit_id
 ) AS ObsDischargeDiagnosis ON PatientDemographics.visit_id = ObsDischargeDiagnosis.visit_id
 WHERE
-	(CAST(PatientDemographics.startdate AS DATE) BETWEEN CAST( $P{beginDate} AS DATE) AND CAST( $P{endDate} AS DATE))
+	(CAST(PatientDemographics.stopped AS DATE) BETWEEN CAST( $P{begin_Date of Discharge} AS DATE) AND CAST( $P{end_Date of Discharge} AS DATE))
     AND (ObsWardStay.WardStay = 'Yes' OR ObsHDUStay.HDUStay = 'Yes')
 GROUP BY PatientDemographics.visit_id
 ORDER BY PatientDemographics.DOA asc]]>
@@ -568,11 +568,11 @@ ORDER BY PatientDemographics.DOA asc]]>
 		<field name="ICU1stHeartRate" class="java.lang.String"/>
 		<field name="ICU1stGCSscore" class="java.lang.String"/>
 	</subDataset>
-	<parameter name="beginDate" class="java.util.Date">
+	<parameter name="begin_Date of Discharge" class="java.util.Date">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
-	<parameter name="endDate" class="java.util.Date">
+	<parameter name="end_Date of Discharge" class="java.util.Date">
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
 	<queryString>
@@ -597,7 +597,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Internal Medicine Ward Audit Spreadsheet  from "  + new SimpleDateFormat("yyyy-MMM-dd").format($P{beginDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{endDate})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Internal Medicine Ward Audit Spreadsheet  from "  + new SimpleDateFormat("yyyy-MMM-dd").format($P{begin_Date of Discharge}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{end_Date of Discharge})]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -622,12 +622,12 @@ ORDER BY PatientDemographics.DOA asc]]>
 					<property name="net.sf.jasperreports.export.headertoolbar.table.name" value=""/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="tableDataset" uuid="77c0f2a8-58a3-46c5-8955-8535c9a836c1">
-						<datasetParameter name="beginDate">
-							<datasetParameterExpression><![CDATA[$P{beginDate}]]></datasetParameterExpression>
+					<datasetRun subDataset="tableDataset" uuid="1583eb50-bb74-4007-857b-2f88493248b0">
+						<datasetParameter name="begin_Date of Discharge">
+							<datasetParameterExpression><![CDATA[$P{begin_Date of Discharge}]]></datasetParameterExpression>
 						</datasetParameter>
-						<datasetParameter name="endDate">
-							<datasetParameterExpression><![CDATA[$P{endDate}]]></datasetParameterExpression>
+						<datasetParameter name="end_Date of Discharge">
+							<datasetParameterExpression><![CDATA[$P{end_Date of Discharge}]]></datasetParameterExpression>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
@@ -645,7 +645,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="45" height="30" isRemoveLineWhenBlank="true" uuid="b15fce03-980c-473e-aa75-127f536b4adf"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="45" height="30" uuid="b15fce03-980c-473e-aa75-127f536b4adf"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -669,7 +669,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="200" height="30" isRemoveLineWhenBlank="true" uuid="ffdb4f44-ce1f-4b5b-9661-22959aaa024a">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="200" height="30" uuid="ffdb4f44-ce1f-4b5b-9661-22959aaa024a">
 									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 								</reportElement>
 								<box leftPadding="2"/>
@@ -695,7 +695,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="30" isRemoveLineWhenBlank="true" uuid="b1ec5b35-1bbe-403a-8bbd-dc2b152fb287"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="70" height="30" uuid="b1ec5b35-1bbe-403a-8bbd-dc2b152fb287"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -719,7 +719,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" pattern="MM/dd/yyyy" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="105" height="30" isRemoveLineWhenBlank="true" uuid="88621b84-6c26-4aca-8255-83fcd8c73152"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="105" height="30" uuid="88621b84-6c26-4aca-8255-83fcd8c73152"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -744,7 +744,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" pattern="MM/dd/yyyy" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="110" height="30" isRemoveLineWhenBlank="true" uuid="668d6cb1-859c-408f-9448-bda9ef080c04"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="110" height="30" uuid="668d6cb1-859c-408f-9448-bda9ef080c04"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -768,7 +768,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="69" height="30" isRemoveLineWhenBlank="true" uuid="19dad750-6e45-4096-8381-877164efccf1"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="69" height="30" uuid="19dad750-6e45-4096-8381-877164efccf1"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -792,7 +792,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="40" height="30" isRemoveLineWhenBlank="true" uuid="5ae5979f-b234-453e-9fe3-e5348a7d6585"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="40" height="30" uuid="5ae5979f-b234-453e-9fe3-e5348a7d6585"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -816,7 +816,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="30" isRemoveLineWhenBlank="true" uuid="2d06eeba-ae30-4067-b2b4-cd5ebf566978"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="60" height="30" uuid="2d06eeba-ae30-4067-b2b4-cd5ebf566978"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -840,7 +840,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="215" height="30" isRemoveLineWhenBlank="true" uuid="3103d27a-db88-40fc-acd3-1282834b9c19"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="215" height="30" uuid="3103d27a-db88-40fc-acd3-1282834b9c19"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -864,7 +864,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="285" height="30" isRemoveLineWhenBlank="true" uuid="123610d9-080d-45cb-a086-9bf7e51916a0"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="285" height="30" uuid="123610d9-080d-45cb-a086-9bf7e51916a0"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -888,7 +888,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="30" isRemoveLineWhenBlank="true" uuid="61c8e533-6843-4eb8-9575-30fa55247c31"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="70" height="30" uuid="61c8e533-6843-4eb8-9575-30fa55247c31"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -913,7 +913,7 @@ Consult]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="30" isRemoveLineWhenBlank="true" uuid="4bd3e452-aeba-4699-ac6d-3d3ddcde6ff7"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="70" height="30" uuid="4bd3e452-aeba-4699-ac6d-3d3ddcde6ff7"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -937,7 +937,7 @@ Consult]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="30" isRemoveLineWhenBlank="true" uuid="ed4ad03e-d478-4004-8de5-311e2be8115a"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="70" height="30" uuid="ed4ad03e-d478-4004-8de5-311e2be8115a"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -961,7 +961,7 @@ Consult]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="30" isRemoveLineWhenBlank="true" uuid="8446b532-ab17-426b-8114-dfeca17cff72"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="50" height="30" uuid="8446b532-ab17-426b-8114-dfeca17cff72"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -985,7 +985,7 @@ Consult]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="65" height="30" isRemoveLineWhenBlank="true" uuid="16be4be7-b546-4bf2-b601-52de17245a86"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="65" height="30" uuid="16be4be7-b546-4bf2-b601-52de17245a86"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1009,7 +1009,7 @@ Consult]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="30" isRemoveLineWhenBlank="true" uuid="47f70d70-7c71-472f-b352-604f8ed3cb2e"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="60" height="30" uuid="47f70d70-7c71-472f-b352-604f8ed3cb2e"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1033,7 +1033,7 @@ Consult]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="56" height="30" isRemoveLineWhenBlank="true" uuid="c0ad3fa9-55c9-41d9-b286-f8b4c57c3908"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="56" height="30" uuid="c0ad3fa9-55c9-41d9-b286-f8b4c57c3908"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1057,7 +1057,7 @@ Consult]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="30" isRemoveLineWhenBlank="true" uuid="897da4d8-1f6d-4fcb-a22f-fec42c1a8bfc"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="90" height="30" uuid="897da4d8-1f6d-4fcb-a22f-fec42c1a8bfc"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1081,7 +1081,7 @@ Consult]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="95" height="30" isRemoveLineWhenBlank="true" uuid="d70a5406-d0de-46ba-bde3-5be82e873b31"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="95" height="30" uuid="d70a5406-d0de-46ba-bde3-5be82e873b31"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1105,7 +1105,7 @@ Consult]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="471" height="30" isRemoveLineWhenBlank="true" uuid="e9c4bf5a-0306-437c-a179-e64a41028fb7"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="471" height="30" uuid="e9c4bf5a-0306-437c-a179-e64a41028fb7"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1129,7 +1129,7 @@ Consult]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="30" isRemoveLineWhenBlank="true" uuid="fd90072f-97da-43a6-9b9a-8d580a4c0b1c"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="50" height="30" uuid="fd90072f-97da-43a6-9b9a-8d580a4c0b1c"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1153,7 +1153,7 @@ Consult]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="30" isRemoveLineWhenBlank="true" uuid="339e869c-8c32-4b78-9424-98067ab708b5"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="60" height="30" uuid="339e869c-8c32-4b78-9424-98067ab708b5"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1177,7 +1177,7 @@ Consult]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="110" height="30" isRemoveLineWhenBlank="true" uuid="94c1ae09-0941-4167-9dce-dcfbe9b24ec2"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="110" height="30" uuid="94c1ae09-0941-4167-9dce-dcfbe9b24ec2"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1201,7 +1201,7 @@ Consult]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="95" height="30" isRemoveLineWhenBlank="true" uuid="0cbcb704-bc62-4781-ab30-e425f7fafab3"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="95" height="30" uuid="0cbcb704-bc62-4781-ab30-e425f7fafab3"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1225,7 +1225,7 @@ Consult]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="96" height="30" isRemoveLineWhenBlank="true" uuid="dc273ddb-2c2d-4ab5-af4d-b494f555f096"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="96" height="30" uuid="dc273ddb-2c2d-4ab5-af4d-b494f555f096"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1250,7 +1250,7 @@ Consult]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="59" height="30" isRemoveLineWhenBlank="true" uuid="07c3271c-ed1f-4d9d-9b17-57251cfa3fdc"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="59" height="30" uuid="07c3271c-ed1f-4d9d-9b17-57251cfa3fdc"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1274,7 +1274,7 @@ Consult]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="30" isRemoveLineWhenBlank="true" uuid="8123eb57-919c-4623-b066-0ac549b9adde"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="60" height="30" uuid="8123eb57-919c-4623-b066-0ac549b9adde"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1299,7 +1299,7 @@ Sedation]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="30" isRemoveLineWhenBlank="true" uuid="389bac2e-2abf-48bd-a433-ff15258b9baf"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="70" height="30" uuid="389bac2e-2abf-48bd-a433-ff15258b9baf"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1323,7 +1323,7 @@ Sedation]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="30" isRemoveLineWhenBlank="true" uuid="fd5d4e1c-d681-4fb2-86d8-a23e197f45c1"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="120" height="30" uuid="fd5d4e1c-d681-4fb2-86d8-a23e197f45c1"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1347,7 +1347,7 @@ Sedation]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="95" height="30" isRemoveLineWhenBlank="true" uuid="fe3950c4-4fb1-4fd5-9d08-4270c25b8db2"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="95" height="30" uuid="fe3950c4-4fb1-4fd5-9d08-4270c25b8db2"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1371,7 +1371,7 @@ Sedation]]></text>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="30" isRemoveLineWhenBlank="true" uuid="11580435-c478-48d4-b759-93bb5309e20e"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="90" height="30" uuid="11580435-c478-48d4-b759-93bb5309e20e"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
