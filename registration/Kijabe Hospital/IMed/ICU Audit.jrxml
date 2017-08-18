@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-08-16T17:45:33 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ICU Audit" pageWidth="3240" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3200" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
+<!-- 2017-08-18T11:13:42 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ICU Audit" pageWidth="3220" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3180" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker sandbox"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<style name="Table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -581,7 +589,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 	<title>
 		<band height="33" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="3200" height="32" uuid="3b039dec-6db3-473a-87f8-6044da5f9a56"/>
+				<reportElement x="0" y="0" width="3180" height="32" uuid="3b039dec-6db3-473a-87f8-6044da5f9a56"/>
 				<textElement textAlignment="Center">
 					<font size="24"/>
 				</textElement>
@@ -592,7 +600,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 	<pageHeader>
 		<band height="29">
 			<textField>
-				<reportElement x="0" y="1" width="3200" height="28" uuid="214598d5-fcdb-460f-9633-a5d1b1f0fd23"/>
+				<reportElement x="0" y="1" width="3180" height="28" uuid="214598d5-fcdb-460f-9633-a5d1b1f0fd23"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="false"/>
 				</textElement>
@@ -614,7 +622,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 	<summary>
 		<band height="60" splitType="Stretch">
 			<componentElement>
-				<reportElement x="0" y="0" width="3200" height="60" uuid="59829c32-146e-4821-a910-019955504e59">
+				<reportElement x="0" y="0" width="3180" height="60" uuid="59829c32-146e-4821-a910-019955504e59">
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table 1_TD"/>
@@ -753,11 +761,11 @@ ORDER BY PatientDemographics.DOA asc]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="69" uuid="a2d4ada0-f3bc-4d31-b0f2-3c6bc5457c4f">
+					<jr:column width="50" uuid="a2d4ada0-f3bc-4d31-b0f2-3c6bc5457c4f">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column23"/>
 						<jr:columnHeader style="Table 1_CH" height="30">
 							<staticText>
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="69" height="30" uuid="054fcba2-496c-43a6-a6d6-8efd5f94efb9"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="30" uuid="054fcba2-496c-43a6-a6d6-8efd5f94efb9"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12" isBold="true"/>
@@ -767,7 +775,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="69" height="30" uuid="19dad750-6e45-4096-8381-877164efccf1"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="50" height="30" uuid="19dad750-6e45-4096-8381-877164efccf1"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
