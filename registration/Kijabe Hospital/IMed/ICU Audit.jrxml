@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-08-18T18:24:25 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ICU Audit" pageWidth="2815" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="2775" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
+<!-- 2017-08-21T16:14:40 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ICU Audit" pageWidth="2795" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="2795" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker sandbox"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<style name="Table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -579,24 +571,23 @@ ORDER BY PatientDemographics.DOA asc]]>
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT 1 as One;]]>
+		<![CDATA[SELECT 
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+WHERE enc.encounter_type = 13 
+      AND (obs.concept_id = 164168 AND obs.value_coded = 1065)
+      AND obs.voided = 0
+      AND (CAST(v.date_stopped AS DATE) BETWEEN CAST( $P{begin_Date of Discharge} AS DATE) AND CAST( $P{end_Date of Discharge} AS DATE))]]>
 	</queryString>
-	<field name="One" class="java.lang.Long"/>
-	<title>
-		<band height="33" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="0" width="2795" height="32" uuid="3b039dec-6db3-473a-87f8-6044da5f9a56"/>
-				<textElement textAlignment="Center">
-					<font size="24"/>
-				</textElement>
-				<text><![CDATA[AIC Kijabe Hospital]]></text>
-			</staticText>
-		</band>
-	</title>
+	<field name="visit_id" class="java.lang.Integer"/>
 	<pageHeader>
-		<band height="29">
+		<band height="28">
 			<textField>
-				<reportElement x="0" y="1" width="2795" height="28" uuid="214598d5-fcdb-460f-9633-a5d1b1f0fd23"/>
+				<reportElement x="0" y="0" width="2795" height="28" uuid="214598d5-fcdb-460f-9633-a5d1b1f0fd23">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="false"/>
 				</textElement>
@@ -607,7 +598,11 @@ ORDER BY PatientDemographics.DOA asc]]>
 	<pageFooter>
 		<band height="18" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="2" width="580" height="16" uuid="6684cbd6-9f70-4e33-a520-072bb0b850df"/>
+				<reportElement x="0" y="0" width="2795" height="18" uuid="6684cbd6-9f70-4e33-a520-072bb0b850df">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Bottom">
 					<font isBold="false"/>
 				</textElement>
@@ -1361,10 +1356,13 @@ Consult]]></text>
 		</band>
 	</summary>
 	<noData>
-		<band height="22">
+		<band height="17">
 			<staticText>
-				<reportElement x="0" y="5" width="306" height="16" uuid="dead0bd1-4280-4e1b-b32e-8b63b5ca57cd"/>
-				<textElement textAlignment="Left">
+				<reportElement x="0" y="0" width="306" height="17" uuid="dead0bd1-4280-4e1b-b32e-8b63b5ca57cd">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="false" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[No data was found to display on the report.]]></text>

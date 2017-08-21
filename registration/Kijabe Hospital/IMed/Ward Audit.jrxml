@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-08-18T18:19:00 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ward Audit" pageWidth="2815" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="2775" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
+<!-- 2017-08-21T17:24:40 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ward Audit" pageWidth="2795" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="2795" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker sandbox"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker build server sandbox"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -580,24 +580,23 @@ ORDER BY PatientDemographics.DOA asc]]>
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT 1 as One;]]>
+		<![CDATA[SELECT 
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+WHERE enc.encounter_type = 13 
+      AND ((obs.concept_id = 164200 AND obs.value_coded = 1065) OR (obs.concept_id = 164167 AND obs.value_coded = 1065))
+      AND obs.voided = 0
+      AND (CAST(v.date_stopped AS DATE) BETWEEN CAST( $P{begin_Date of Discharge} AS DATE) AND CAST( $P{end_Date of Discharge} AS DATE))]]>
 	</queryString>
-	<field name="One" class="java.lang.Long"/>
-	<title>
-		<band height="33" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="0" width="2795" height="32" uuid="3b039dec-6db3-473a-87f8-6044da5f9a56"/>
-				<textElement textAlignment="Center">
-					<font size="24"/>
-				</textElement>
-				<text><![CDATA[AIC Kijabe Hospital]]></text>
-			</staticText>
-		</band>
-	</title>
+	<field name="visit_id" class="java.lang.Integer"/>
 	<pageHeader>
 		<band height="29">
 			<textField>
-				<reportElement x="0" y="1" width="2795" height="28" uuid="214598d5-fcdb-460f-9633-a5d1b1f0fd23"/>
+				<reportElement x="0" y="0" width="2795" height="29" uuid="214598d5-fcdb-460f-9633-a5d1b1f0fd23">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="false"/>
 				</textElement>
@@ -608,7 +607,11 @@ ORDER BY PatientDemographics.DOA asc]]>
 	<pageFooter>
 		<band height="18" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="2" width="580" height="16" uuid="6684cbd6-9f70-4e33-a520-072bb0b850df"/>
+				<reportElement x="0" y="0" width="2795" height="18" uuid="6684cbd6-9f70-4e33-a520-072bb0b850df">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Bottom">
 					<font isBold="false"/>
 				</textElement>
@@ -910,234 +913,8 @@ ORDER BY PatientDemographics.DOA asc]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="120" uuid="18338223-cdf0-4633-85a6-0d78078de871">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
-						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="30" uuid="ba9d9ccc-2eef-4377-9a05-4e45db970ff5"/>
-								<box leftPadding="2"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12" isBold="true"/>
-								</textElement>
-								<text><![CDATA[ICU Surgery]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table 1_TD" height="30">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="120" height="30" uuid="ab194789-3897-49d8-b686-d2152abf7dd8"/>
-								<box leftPadding="2"/>
-								<textElement verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12"/>
-									<paragraph leftIndent="5"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{ICUSurgery}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="110" uuid="0110c818-7e85-418c-909e-07f6fde1fa12">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
-						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="110" height="30" uuid="a1bb4e89-ed3a-46bb-8cd7-dd099d464034"/>
-								<box leftPadding="2"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12" isBold="true"/>
-								</textElement>
-								<text><![CDATA[ICU Mechanical ventilation]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table 1_TD" height="30">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="110" height="30" uuid="76ab3b72-91a7-478b-b93d-0bf0f490b57c"/>
-								<box leftPadding="2"/>
-								<textElement verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12"/>
-									<paragraph leftIndent="5"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{ICUMechanicalventilation}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="95" uuid="87d9f6c3-1569-4a04-9253-cb714e6067d9">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
-						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="95" height="30" uuid="7b45e13b-412a-4c9d-8950-762174afc010"/>
-								<box leftPadding="2"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12" isBold="true"/>
-								</textElement>
-								<text><![CDATA[ICU Received vaospressors]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table 1_TD" height="30">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="95" height="30" uuid="6c689339-1a0b-4fd7-9e88-9c54d6d27220"/>
-								<box leftPadding="2"/>
-								<textElement verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12"/>
-									<paragraph leftIndent="5"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{ICUReceivedvaospressors}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="96" uuid="c7b10def-674f-419e-835b-824bc0e80bd9">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
-						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="96" height="30" uuid="5ae8a6e2-6752-4022-9e8f-cbd010c2817a"/>
-								<box leftPadding="2"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12" isBold="true"/>
-								</textElement>
-								<text><![CDATA[ICU Infection]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table 1_TD" height="30">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="96" height="30" uuid="e8d7af8e-ebd2-4edf-aa73-f40afe0f5772"/>
-								<box leftPadding="2"/>
-								<textElement verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12"/>
-									<paragraph leftIndent="5"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{ICUInfection}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="59" uuid="205f40c4-49c6-432f-982e-3edf4acb2c33">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
-						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="59" height="30" uuid="d2309101-6b55-4808-b872-ae4995b641c2"/>
-								<box leftPadding="2"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12" isBold="true"/>
-								</textElement>
-								<text><![CDATA[ICU 
-1stSBP]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table 1_TD" height="30">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="59" height="30" uuid="7022077e-36dc-4aff-87e6-55b64e3e8843"/>
-								<box leftPadding="2"/>
-								<textElement verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12"/>
-									<paragraph leftIndent="5"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{ICU1stSBP}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="60" uuid="73cb405a-aff1-48d2-87d4-8c4986b0c1e9">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
-						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="30" uuid="725e0995-6c10-4cb2-ade1-900b4a03d996"/>
-								<box leftPadding="2"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12" isBold="true"/>
-								</textElement>
-								<text><![CDATA[ICU 1stMAP]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table 1_TD" height="30">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="60" height="30" uuid="23c1c78f-740e-4982-a86f-c50a0a5bac98"/>
-								<box leftPadding="2"/>
-								<textElement verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12"/>
-									<paragraph leftIndent="5"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{ICU1stMAP}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="95" uuid="8429bfad-2e9a-4dc1-a5f7-f82936f6d0de">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column18"/>
-						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="95" height="30" uuid="4d158acd-6d52-47eb-9581-bb595f146a56"/>
-								<box leftPadding="2"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12" isBold="true"/>
-								</textElement>
-								<text><![CDATA[ICU 1stHeartRate]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table 1_TD" height="30">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="95" height="30" uuid="369d9bf2-846c-4a43-b767-b322e4a2dcff"/>
-								<box leftPadding="2"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12"/>
-									<paragraph rightIndent="5"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{ICU1stHeartRate}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="90" uuid="85b27d58-d460-4a58-8abc-96ac2ef1ec2b">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column19"/>
-						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="30" uuid="874fb304-a7fa-47a1-a509-e6a86155b645"/>
-								<box leftPadding="2"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12" isBold="true"/>
-								</textElement>
-								<text><![CDATA[ICU 1stGCSscore]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table 1_TD" height="30">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="90" height="30" uuid="78a15e96-ea4d-4e4e-960f-f80f1a3e84c6"/>
-								<box leftPadding="2"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12"/>
-									<paragraph rightIndent="5"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{ICU1stGCSscore}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="114" uuid="4cb661d8-37b2-450f-99f6-5036101112d5">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column20"/>
-						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="114" height="30" uuid="c36eb824-3c8e-4ed0-9761-e4894058516b"/>
-								<box leftPadding="2"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12" isBold="true"/>
-								</textElement>
-								<text><![CDATA[sedation before 1st ICU GCS]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table 1_TD" height="30">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="114" height="30" uuid="94170767-12ce-4676-9dc0-14b2eedfdc26"/>
-								<box leftPadding="2"/>
-								<textElement verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12"/>
-									<paragraph leftIndent="5"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{ICUSedation}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
 					<jr:column width="90" uuid="aa90ecd4-ad08-4926-8736-a91ed39484af">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column21"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1162,7 +939,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="90" uuid="dc7f7291-9640-4408-b2b1-f1174765f9df">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column22"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1187,7 +964,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="95" uuid="116269be-b8eb-4c60-b275-5b279310c075">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column23"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1212,7 +989,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="105" uuid="91a7951a-c0a2-44f9-8340-1e63cc8a28af">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column24"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="105" height="30" uuid="11ecd834-5391-426a-a8b8-769b3e6474b8"/>
@@ -1237,7 +1014,7 @@ ORDER BY PatientDemographics.DOA asc]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="70" uuid="bb1f71a7-fba8-496e-a3a0-86ea082d2745">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column25"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="30" uuid="7f444fa7-3850-4f20-8d13-8d4774fd25a1"/>
@@ -1262,7 +1039,7 @@ Consult]]></text>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="70" uuid="d277b025-633b-4274-8c1f-41111a1b1dc6">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column26"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="30" uuid="19f269ff-0d2c-4491-b02a-8d3bece44e95"/>
@@ -1286,7 +1063,7 @@ Consult]]></text>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="50" uuid="ebdf9847-fc13-439c-9cef-bc9b31e58a40">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column27"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column18"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="30" uuid="2601e9b4-69ff-4056-a5ae-e838c5b88dfb"/>
@@ -1310,7 +1087,7 @@ Consult]]></text>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="65" uuid="13c86324-8c13-4c1a-b165-0089f4ab812e">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column28"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column19"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="65" height="30" uuid="defd7392-623a-48dd-aa6b-010d30a7fd4b"/>
@@ -1334,7 +1111,7 @@ Consult]]></text>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="60" uuid="4b158fb2-9a49-49f8-a725-f7294a8d3c87">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column29"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column20"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="30" uuid="796ccca3-c4dc-40ab-886b-6c1194d272e2"/>
@@ -1357,15 +1134,244 @@ Consult]]></text>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
+					<jr:column width="120" uuid="283beb80-e28c-4382-867c-71ace6b37060">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column21"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="30" uuid="3fc8b769-ecc6-4cdc-a128-7b0ab11fdfc4"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ICU Surgery]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="120" height="30" uuid="ff1d993c-000e-46a9-8a73-d4baff7607e9"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{ICUSurgery}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="110" uuid="e1f16438-8566-4521-b07a-259d059e7747">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column22"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="110" height="30" uuid="c74a48ba-7af8-435e-b584-40e4fb047f2a"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ICU Mechanical ventilation]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="110" height="30" uuid="c90b0507-90ff-470a-88d9-d56c5930087b"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{ICUMechanicalventilation}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="95" uuid="aa07aa6d-1c81-4d06-aff7-812023f9dc39">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column23"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="95" height="30" uuid="f93ed348-b398-4269-b947-1ea55f139ca5"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ICU Received vaospressors]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="95" height="30" uuid="a480e8aa-379c-4631-b826-6d06666aa6a6"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{ICUReceivedvaospressors}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="96" uuid="7b9beda6-cd02-4933-825d-61962a18004c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column24"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="96" height="30" uuid="7c4f035a-a68c-4eae-8722-87f0c5d73faf"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ICU Infection]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="96" height="30" uuid="09901eb2-0f32-453a-9b90-ba885c3c8b3d"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{ICUInfection}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="59" uuid="91114160-53e5-44f3-b14b-4e6a18760bb9">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column25"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="59" height="30" uuid="784e24ed-3562-4379-a32c-d1f81fdec162"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ICU 
+1stSBP]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="59" height="30" uuid="09a0bc4f-075d-41b4-b770-7d3a862e8452"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{ICU1stSBP}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="60" uuid="70755fb7-8279-498f-be55-6b0ff9cb18ac">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column26"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="30" uuid="5a77982b-d170-4fe9-b9cc-0199179c8877"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ICU 1stMAP]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="60" height="30" uuid="b112cf53-6d62-4849-bc99-c743b6c83817"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{ICU1stMAP}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="95" uuid="9ef789bd-bad4-4656-84ae-950b2817802c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column27"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="95" height="30" uuid="0385c67c-7544-4ff5-9908-3b7ea616cf5e"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ICU 1stHeartRate]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="95" height="30" uuid="447826ca-1f3c-4b9a-8745-4672f31a892d"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph rightIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{ICU1stHeartRate}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="90" uuid="f667d377-5f8c-4052-a3bf-b72e0714639c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column28"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="30" uuid="8551f567-3b55-4d38-9da4-1812f9063873"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ICU 1stGCSscore]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="90" height="30" uuid="3a2f2c1a-b0cb-4716-9b7e-01138e16b604"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph rightIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{ICU1stGCSscore}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="114" uuid="71bb7332-cb68-411d-b15f-6249a2a5dfcd">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column29"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="114" height="30" uuid="404934ae-5a27-4d4f-94f2-d705a583f089"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[sedation before 1st ICU GCS]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="114" height="30" uuid="8e3ebd41-60b6-45da-b91e-e82e29fd77ac"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{ICUSedation}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
 				</jr:table>
 			</componentElement>
 		</band>
 	</summary>
 	<noData>
-		<band height="22">
+		<band height="18">
 			<staticText>
-				<reportElement x="0" y="5" width="306" height="16" uuid="dead0bd1-4280-4e1b-b32e-8b63b5ca57cd"/>
-				<textElement textAlignment="Left">
+				<reportElement x="0" y="0" width="306" height="18" uuid="dead0bd1-4280-4e1b-b32e-8b63b5ca57cd">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="false" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[No data was found to display on the report.]]></text>
