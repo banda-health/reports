@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-08-24T15:05:44 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="IMed Diagnoses Report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="e293a027-b4d7-4ac1-b14b-b8c14891648b">
+<!-- 2017-08-29T12:51:28 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="IMed Diagnoses Report" language="groovy" pageWidth="800" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="800" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="e293a027-b4d7-4ac1-b14b-b8c14891648b">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker sandbox"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker build server sandbox"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<style name="Crosstab_CH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
@@ -55,7 +47,7 @@
 	</style>
 	<subDataset name="DiagnosisDataSet" uuid="6a0b694b-0571-4e14-8c3b-c8376e0cc107">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker sandbox"/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker build server sandbox"/>
 		<parameter name="begin_Date of Discharge" class="java.util.Date">
 			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 		</parameter>
@@ -66,8 +58,8 @@
 			<![CDATA[SELECT
 	coalesce(cname.name,obs.value_text) as diagnosis,
     v.visit_id,
-    date(v.date_stopped) as visit_datestopped,
-    date(obs.obs_datetime) as calendar,
+    date(v.date_stopped) as calendar,
+    date(obs.obs_datetime) as calendar_obs_date,
     obs.person_id,
     coalesce(obs.value_coded,obs.value_text) as NoOfDiagnosis
 FROM obs obs
@@ -85,8 +77,8 @@ WHERE
 		</queryString>
 		<field name="diagnosis" class="java.lang.String"/>
 		<field name="visit_id" class="java.lang.Integer"/>
-		<field name="visit_datestopped" class="java.sql.Date"/>
 		<field name="calendar" class="java.sql.Date"/>
+		<field name="calendar_obs_date" class="java.sql.Date"/>
 		<field name="person_id" class="java.lang.Integer"/>
 		<field name="NoOfDiagnosis" class="java.lang.String"/>
 	</subDataset>
@@ -123,10 +115,11 @@ WHERE
 	<columnHeader>
 		<band height="21">
 			<textField>
-				<reportElement x="0" y="0" width="802" height="21" uuid="abfe5881-5c19-437f-b246-5f679672a668">
+				<reportElement x="0" y="0" width="800" height="21" uuid="abfe5881-5c19-437f-b246-5f679672a668">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Internal Medicine Diagnosis Report for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{begin_Date of Discharge}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{end_Date of Discharge})]]></textFieldExpression>
@@ -149,7 +142,6 @@ WHERE
 	</columnFooter>
 	<summary>
 		<band height="70" splitType="Stretch">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<crosstab>
 				<reportElement x="0" y="0" width="800" height="70" uuid="14680491-3ff5-4691-a600-420b19af3fa7">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
@@ -200,7 +192,7 @@ WHERE
 				</rowGroup>
 				<columnGroup name="calendar1" height="30" totalPosition="End">
 					<bucket class="java.lang.String">
-						<bucketExpression><![CDATA[new SimpleDateFormat("yyyy-MMM").format($F{calendar})]]></bucketExpression>
+						<bucketExpression><![CDATA[new SimpleDateFormat("yyyy-MM").format($F{calendar})]]></bucketExpression>
 					</bucket>
 					<crosstabColumnHeader>
 						<cellContents mode="Opaque" style="Crosstab_CH">
@@ -273,7 +265,6 @@ WHERE
 	</summary>
 	<noData>
 		<band height="16">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
 				<reportElement x="0" y="0" width="306" height="16" uuid="cee93f6c-feb5-4793-8eab-eef51b8dc5b2">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
