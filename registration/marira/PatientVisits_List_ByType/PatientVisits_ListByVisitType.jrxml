@@ -11,7 +11,7 @@
 	<parameter name="endDate" class="java.util.Date"/>
 	<queryString>
 		<![CDATA[SELECT
-        pi.identifier AS FileNumber,
+        distinct(pi.identifier) AS FileNumber,
         concat_ws(' ', pn.given_name, pn.middle_name, pn.family_name) AS PatientName,
         DATE_FORMAT(v.date_started, '%Y-%m-%d') AS VisitDate,
         vt.name Visit_Type,
