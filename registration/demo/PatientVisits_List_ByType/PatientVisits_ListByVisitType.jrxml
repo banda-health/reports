@@ -53,7 +53,7 @@ ORDER BY v.date_started DESC]]>
 				<textElement textAlignment="Center">
 					<font size="24"/>
 				</textElement>
-				<text><![CDATA[AIC Marira Clinic]]></text>
+				<text><![CDATA[OpenHMIS Demo Clinic]]></text>
 			</staticText>
 		</band>
 	</title>
