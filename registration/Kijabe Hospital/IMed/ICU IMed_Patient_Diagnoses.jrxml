@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2017-08-29T12:51:28 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="IMed Diagnoses Report" language="groovy" pageWidth="800" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="800" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="e293a027-b4d7-4ac1-b14b-b8c14891648b">
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="IMed ICU Diagnoses Report" language="groovy" pageWidth="800" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="800" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="e293a027-b4d7-4ac1-b14b-b8c14891648b">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker build server sandbox"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="build server bk"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<style name="Crosstab_CH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
@@ -47,7 +46,9 @@
 	</style>
 	<subDataset name="DiagnosisDataSet" uuid="6a0b694b-0571-4e14-8c3b-c8376e0cc107">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="docker build server sandbox"/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="build server bk"/>
+		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="142"/>
+		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="847"/>
 		<parameter name="begin_Date of Discharge" class="java.util.Date">
 			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 		</parameter>
@@ -56,6 +57,15 @@
 		</parameter>
 		<queryString>
 			<![CDATA[SELECT
+    ICUDiagnosis.diagnosis as diagnosis,
+    ICUDiagnosis.visit_id as visit_id,
+    ICUDiagnosis.calendar as calendar,
+    ICUDiagnosis.calendar_obs_date as calendar_obs_date,
+    ICUDiagnosis.person_id as person_id,
+    ICUDiagnosis.NoOfDiagnosis as NoOfDiagnosis
+FROM
+(
+SELECT
 	coalesce(cname.name,obs.value_text) as diagnosis,
     v.visit_id,
     date(v.date_stopped) as calendar,
@@ -73,7 +83,24 @@ WHERE
 	  obs.concept_id IN (1284,1642,161602)
       AND obs.voided = 0
       AND
-      (CAST(v.date_stopped AS DATE) BETWEEN CAST( $P{begin_Date of Discharge} AS DATE) AND CAST( $P{end_Date of Discharge} AS DATE))]]>
+      (CAST(v.date_stopped AS DATE) BETWEEN CAST( $P{begin_Date of Discharge} AS DATE) AND CAST( $P{end_Date of Discharge} AS DATE))
+) AS ICUDiagnosis
+INNER JOIN
+(
+SELECT 
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept ICUstayQN  ON ICUstayQN.concept_id = obs.concept_id
+    AND ICUstayQN.uuid = '9446f7aa-7a1c-4246-a0a5-1ebc3560a0e0'
+WHERE 
+	  obs.value_coded = 1065
+      AND obs.voided = 0
+      AND (CAST(v.date_stopped AS DATE) BETWEEN CAST( $P{begin_Date of Discharge} AS DATE) AND CAST( $P{end_Date of Discharge} AS DATE))
+) AS ICUVisits ON ICUDiagnosis.visit_id = ICUVisits.visit_id]]>
 		</queryString>
 		<field name="diagnosis" class="java.lang.String"/>
 		<field name="visit_id" class="java.lang.Integer"/>
@@ -90,7 +117,16 @@ WHERE
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT
+   ICUDiagnosis.visit_id as visit_id,
+   ICUDiagnosis.person_id as person_id,
+    ICUDiagnosis.NoOfDiagnosis as NoOfDiagnosis
+FROM
+(
+SELECT
+	coalesce(cname.name,obs.value_text) as diagnosis,
     v.visit_id,
+    date(v.date_stopped) as calendar,
+    date(obs.obs_datetime) as calendar_obs_date,
     obs.person_id,
     coalesce(obs.value_coded,obs.value_text) as NoOfDiagnosis
 FROM obs obs
@@ -104,7 +140,24 @@ WHERE
 	  obs.concept_id IN (1284,1642,161602)
       AND obs.voided = 0
       AND
-      (CAST(v.date_stopped AS DATE) BETWEEN CAST( $P{begin_Date of Discharge} AS DATE) AND CAST( $P{end_Date of Discharge} AS DATE))]]>
+      (CAST(v.date_stopped AS DATE) BETWEEN CAST( $P{begin_Date of Discharge} AS DATE) AND CAST( $P{end_Date of Discharge} AS DATE))
+) AS ICUDiagnosis
+INNER JOIN
+(
+SELECT 
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept ICUstayQN  ON ICUstayQN.concept_id = obs.concept_id
+    AND ICUstayQN.uuid = '9446f7aa-7a1c-4246-a0a5-1ebc3560a0e0'
+WHERE 
+	  obs.value_coded = 1065
+      AND obs.voided = 0
+      AND (CAST(v.date_stopped AS DATE) BETWEEN CAST( $P{begin_Date of Discharge} AS DATE) AND CAST( $P{end_Date of Discharge} AS DATE))
+) AS ICUVisits ON ICUDiagnosis.visit_id = ICUVisits.visit_id]]>
 	</queryString>
 	<field name="visit_id" class="java.lang.Integer"/>
 	<field name="person_id" class="java.lang.Integer"/>
@@ -122,7 +175,7 @@ WHERE
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Internal Medicine Diagnosis Report for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{begin_Date of Discharge}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{end_Date of Discharge})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Internal Medicine ICU Diagnosis Report for " + new SimpleDateFormat("yyyy-MMM-dd").format($P{begin_Date of Discharge}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{end_Date of Discharge})]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
