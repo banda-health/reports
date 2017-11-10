@@ -680,35 +680,8 @@ WHERE
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="60" uuid="7aae163b-1e6d-42e0-8b50-3bbd5d91a300">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="30" uuid="fb05d377-5f7f-4b9e-a878-6b85fa837acf">
-									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-								</reportElement>
-								<box leftPadding="2"/>
-								<textElement verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12" isBold="true"/>
-								</textElement>
-								<text><![CDATA[ICU Stay]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="30" uuid="cb29b95d-775f-4cff-8431-83b63dc00627">
-									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-								</reportElement>
-								<box leftPadding="2"/>
-								<textElement verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{ICUStay}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
 					<jr:column width="200" uuid="e3510a90-22d1-465d-ac16-574a14881785">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="200" height="30" uuid="1b17b9ad-a93b-4bbb-88cf-ac5b88162e9b"/>
@@ -732,7 +705,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="70" uuid="67c43d70-2e4b-4806-a4d0-9ba20773575b">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="30" uuid="862d3c86-3467-44ad-bf81-06dd82c92e47"/>
@@ -756,7 +729,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="40" uuid="00978fed-0b5c-4671-9b59-89752e6259e2">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -780,7 +753,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="60" uuid="779bb699-0c84-4883-86dd-d9144cbf0909">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -804,7 +777,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="105" uuid="15f2d37d-5563-4125-99a8-3ff2e1917507">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -828,7 +801,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="110" uuid="61fc2980-f8cf-44f9-b613-67c46d1ff0f8">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -852,7 +825,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="50" uuid="9cc75761-2259-4808-832e-58ddec8808eb">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -876,7 +849,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="50" uuid="fab1af37-acd1-4a2e-9ac1-38673eb6225f">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -900,7 +873,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="471" uuid="8a59a1bc-5f77-45bb-8412-99eccfcdcf60">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -924,7 +897,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="90" uuid="73d728ed-4ef3-43ff-a5c4-475bcaa1272f">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -948,7 +921,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="90" uuid="1281abf4-36ef-4685-acd4-b212e1ba87ba">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -972,7 +945,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="95" uuid="e0608e7d-fe06-492c-acc3-6a5c9ed50ce9">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -996,7 +969,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="105" uuid="7b374c2b-de60-40a4-b47e-07d5f8d828a6">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1020,7 +993,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="70" uuid="3da9d431-1fc9-4f7e-bf5e-609ce9caa9d7">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1044,7 +1017,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="70" uuid="a010cd71-3a15-4664-a630-6dd8b5539835">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1068,7 +1041,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="50" uuid="ae1d2925-294f-446a-8b48-a3e866c2ed40">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column18"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1092,7 +1065,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="65" uuid="25e68ba1-24c5-4b05-8b1f-96c605f73e6f">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column19"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column18"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1116,7 +1089,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="60" uuid="a4f22952-5c27-459f-bbc7-37c40693239b">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column20"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column19"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1136,6 +1109,34 @@ WHERE
 									<font fontName="DejaVu Sans" size="12"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{A1c}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="60" uuid="a1d85be8-b74b-492e-b2e1-4af36b05623b">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column20"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="30" uuid="65644329-7e93-4b9b-91e7-1092c03fe697">
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+								</reportElement>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ICU Stay]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="30" uuid="0a68dabb-8c24-4bc3-934a-37590182c838">
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+								</reportElement>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{ICUStay}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
