@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ICU Audit" pageWidth="2795" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="2795" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ICU Audit" pageWidth="3050" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3050" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="build server bk"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="290"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="699"/>
 	<style name="Table">
@@ -54,6 +46,8 @@
 	<subDataset name="tableDataset" uuid="501d3cdf-b24e-471c-988c-262dcec1293d">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="build server bk"/>
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="361"/>
+		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="628"/>
 		<parameter name="begin_Date of Discharge" class="java.util.Date">
 			<parameterDescription><![CDATA[]]></parameterDescription>
 			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
@@ -92,7 +86,9 @@
     ObsICU1stMAP.ICU1stMAP,
     ObsICU1stHeartRate.ICU1stHeartRate,
     ObsICU1stGCSscore.ICU1stGCSscore,
-    ObsICUSedation.ICUSedation
+    ObsICUSedation.ICUSedation,
+    ObsICUIntubated.ICUIntubated,
+    ObsICU1stRespiratoryRate.ICU1stRespiratoryRate
 FROM
 (
 SELECT
@@ -549,6 +545,41 @@ GROUP BY v.visit_id
 LEFT OUTER JOIN
 (
 SELECT 
+	cname.name as ICUIntubated, 
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
+    AND cname.locale = "en"
+	INNER JOIN concept c ON cname.concept_id = c.concept_id
+    INNER JOIN concept ICUIntubatedQn ON obs.concept_id = ICUIntubatedQn.concept_id
+    AND ICUIntubatedQn.uuid = '8b6e4154-006b-4991-ab18-96c1c5357bf3'
+WHERE  
+	  obs.voided = 0
+	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+) AS ObsICUIntubated ON PatientDemographics.visit_id = ObsICUIntubated.visit_id
+LEFT OUTER JOIN
+(
+SELECT 
+	group_concat(obs.value_numeric separator ', ') as ICU1stRespiratoryRate, 
+    v.visit_id
+FROM obs obs
+    INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept c ON c.concept_id = obs.concept_id
+    AND c.uuid = '5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+WHERE 
+      obs.voided = 0
+GROUP BY v.visit_id
+) AS ObsICU1stRespiratoryRate ON PatientDemographics.visit_id = ObsICU1stRespiratoryRate.visit_id
+LEFT OUTER JOIN
+(
+SELECT 
 	group_concat(concat_ws(', ', cname.name, obs.value_text) SEPARATOR ', ')  as DischargeDiagnosis,
     v.visit_id
 FROM obs obs
@@ -599,6 +630,8 @@ ORDER BY PatientDemographics.DOA asc]]>
 		<field name="ICU1stHeartRate" class="java.lang.String"/>
 		<field name="ICU1stGCSscore" class="java.lang.String"/>
 		<field name="ICUSedation" class="java.lang.String"/>
+		<field name="ICUIntubated" class="java.lang.String"/>
+		<field name="ICU1stRespiratoryRate" class="java.lang.String"/>
 	</subDataset>
 	<parameter name="begin_Date of Discharge" class="java.util.Date">
 		<parameterDescription><![CDATA[]]></parameterDescription>
@@ -626,8 +659,9 @@ WHERE
 	<pageHeader>
 		<band height="29">
 			<textField>
-				<reportElement x="0" y="0" width="2795" height="29" uuid="0889690e-62ce-4c15-a2c4-1f7ac1ea05eb">
+				<reportElement x="0" y="0" width="3053" height="29" uuid="0889690e-62ce-4c15-a2c4-1f7ac1ea05eb">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="false"/>
@@ -639,7 +673,7 @@ WHERE
 	<summary>
 		<band height="60" splitType="Stretch">
 			<componentElement>
-				<reportElement x="0" y="0" width="2795" height="60" uuid="586bf6a6-2ee2-47f0-834f-89b31f95a1d9">
+				<reportElement x="0" y="0" width="3050" height="60" uuid="586bf6a6-2ee2-47f0-834f-89b31f95a1d9">
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
@@ -1330,8 +1364,33 @@ WHERE
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="114" uuid="1144b930-1e80-4e7d-a32d-4b4c193e7b7a">
+					<jr:column width="139" uuid="849d60fc-9ebf-405a-a621-dc773cfaa3c5">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column29"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="139" height="30" uuid="160b474d-add2-4e53-8740-f4d43d647ba2">
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+								</reportElement>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Patient Intubated at 1st GCS score]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="139" height="30" uuid="d0ee002c-6626-4f87-bfb1-88d2a8fc3366"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{ICUIntubated}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="114" uuid="1144b930-1e80-4e7d-a32d-4b4c193e7b7a">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column30"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1351,6 +1410,30 @@ WHERE
 									<font fontName="DejaVu Sans" size="12"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{ICUSedation}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="120" uuid="e41bd215-4e73-4e57-b4cb-f21664c77bbb">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column31"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="30" uuid="d99da5c3-a87b-42c7-a3a6-6adf55bfd572"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[1st Respiratory Rate in ICU]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="30" uuid="f02e83c1-6e42-435c-873f-5fe94bfb77d2"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{ICU1stRespiratoryRate}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

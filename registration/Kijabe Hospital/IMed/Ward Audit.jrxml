@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ward Audit" pageWidth="3200" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3200" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ward Audit" pageWidth="3050" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3050" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="build server bk"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="290"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="699"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<style name="Table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -96,7 +88,7 @@
     ObsICU1stGCSscore.ICU1stGCSscore,
     ObsICUSedation.ICUSedation,
     ObsICUIntubated.ICUIntubated,
-ObsICU1stRespiratoryRate.ICU1stRespiratoryRate
+    ObsICU1stRespiratoryRate.ICU1stRespiratoryRate
 FROM
 (
 SELECT
@@ -669,20 +661,21 @@ WHERE
 	<pageHeader>
 		<band height="29">
 			<textField>
-				<reportElement x="0" y="0" width="2795" height="29" uuid="0889690e-62ce-4c15-a2c4-1f7ac1ea05eb">
+				<reportElement x="0" y="0" width="3053" height="29" uuid="0889690e-62ce-4c15-a2c4-1f7ac1ea05eb">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Internal Medicine Ward Audit Spreadsheet  from "  + new SimpleDateFormat("yyyy-MMM-dd").format($P{begin_Date of Discharge}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{end_Date of Discharge})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Internal Medicine Ward and HDU Audit Spreadsheet  from "  + new SimpleDateFormat("yyyy-MMM-dd").format($P{begin_Date of Discharge}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{end_Date of Discharge})]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
 	<summary>
 		<band height="60" splitType="Stretch">
 			<componentElement>
-				<reportElement x="0" y="0" width="3100" height="60" uuid="586bf6a6-2ee2-47f0-834f-89b31f95a1d9">
+				<reportElement x="0" y="0" width="3050" height="60" uuid="586bf6a6-2ee2-47f0-834f-89b31f95a1d9">
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
@@ -1373,12 +1366,36 @@ WHERE
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="114" uuid="1144b930-1e80-4e7d-a32d-4b4c193e7b7a">
+					<jr:column width="139" uuid="1144b930-1e80-4e7d-a32d-4b4c193e7b7a">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column29"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="114" height="30" uuid="e6fba1cb-a08e-4374-827e-300f0dbd67a2"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="139" height="30" uuid="e6fba1cb-a08e-4374-827e-300f0dbd67a2"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Patient Intubated at 1st GCS score]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="139" height="30" uuid="cc3536df-9d32-4fe2-8050-97b2d1a6541e"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{ICUIntubated}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="114" uuid="20eb403e-aea4-4e3c-aaa3-229d0d0d558c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column30"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="114" height="30" uuid="46e597ff-1bd0-4318-9f7c-9f9ce36cc76d"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12" isBold="true"/>
@@ -1388,35 +1405,12 @@ WHERE
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="114" height="30" uuid="cc3536df-9d32-4fe2-8050-97b2d1a6541e"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="114" height="30" uuid="1f4fdc0d-fef5-4157-a04d-e6855fb6b5c5"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{ICUSedation}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="135" uuid="20eb403e-aea4-4e3c-aaa3-229d0d0d558c">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column30"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="135" height="30" uuid="46e597ff-1bd0-4318-9f7c-9f9ce36cc76d"/>
-								<box leftPadding="2"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12" isBold="true"/>
-								</textElement>
-								<text><![CDATA[ICU Intubated]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="135" height="30" uuid="1f4fdc0d-fef5-4157-a04d-e6855fb6b5c5"/>
-								<box leftPadding="2"/>
-								<textElement verticalAlignment="Middle">
-									<font fontName="DejaVu Sans" size="12"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{ICUIntubated}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -1429,7 +1423,7 @@ WHERE
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12" isBold="true"/>
 								</textElement>
-								<text><![CDATA[1st Respiratory Rate]]></text>
+								<text><![CDATA[1st Respiratory Rate in ICU]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
