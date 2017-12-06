@@ -124,58 +124,9 @@ FROM
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
 	<queryString language="SQL">
-		<![CDATA[SELECT 
-	PatientVisits.Patients,
-    PatientVisits.visitStartDate,
-    coalesce(ClinicVisited.Clinic,PatientVisitType.visitType) AS Clinic
-FROM
-(
-SELECT 
-    v.patient_id as Patients,
-    date(v.date_started) as visitStartDate,
-    v.visit_id
-FROM
-    visit v
-WHERE
-(DATE(v.date_started) BETWEEN CAST( $P{beginDate} AS DATE) AND CAST( $P{endDate} AS DATE))
-) AS PatientVisits
-INNER JOIN
-(
-SELECT 
-    va.visit_id
-FROM
-    visit_attribute as va
-WHERE
-    va.attribute_type_id = 1
-    AND va.value_reference = 'true'
-    AND va.voided = 0
-) AS FirstTimeVisit ON PatientVisits.visit_id = FirstTimeVisit.visit_id
-LEFT OUTER JOIN
-(
-SELECT 
-	va.visit_id,
-    cname.name AS Clinic
-FROM 
-	visit_attribute as va 
-    INNER JOIN concept_answer ca on va.value_reference = ca.uuid
-    INNER JOIN concept_name cname on ca.answer_concept = cname.concept_id
-    AND cname.locale = "en"
-	AND cname.concept_name_type = "FULLY_SPECIFIED"
-WHERE
-    va.attribute_type_id = 2
-    AND va.voided = 0
-) AS ClinicVisited ON FirstTimeVisit.visit_id = ClinicVisited.visit_id
-LEFT OUTER JOIN
-(
-SELECT 
-    vt.name as visitType,
-    v.visit_id
-FROM
-    visit v
-    INNER JOIN visit_type vt ON v.visit_type_id = vt.visit_type_id
-) AS PatientVisitType ON FirstTimeVisit.visit_id = PatientVisitType.visit_id]]>
+		<![CDATA[select 1 as one;]]>
 	</queryString>
-	<field name="Patients" class="java.lang.Integer"/>
+	<field name="one" class="java.lang.Long"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
