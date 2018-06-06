@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="monthlyClinicalReport" pageWidth="2100" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="2100" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="monthlyClinicalReport" pageWidth="2100" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="2100" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="307"/>
@@ -53,18 +53,27 @@
 	</style>
 	<subDataset name="tableDataset" uuid="9c1e1904-d2de-4ea1-991e-c9fc676a4ca2">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="bethanyKids"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="242"/>
+		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="750"/>
+		<parameter name="begin_TreatmentDate" class="java.sql.Date">
+			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+		</parameter>
+		<parameter name="end_TreatmentDate" class="java.sql.Date">
+			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+		</parameter>
 		<queryString language="SQL">
 			<![CDATA[SELECT
 	PatientDemographics.HospID,
 	PatientDemographics.FirstName,
 	PatientDemographics.LastName,
   PatientDemographics.dateFirstSeen,
-  ObsOR1Procedure.OR1Procedure1,
+  ObsOR1Procedure.OR1Procedure,
   ObsPostOpDiagnosis.PostOpDiagnosis,
   EncDateOfOperation.DateOfOperation,
 	PatientDemographics.birthdate,
 	PatientDemographics.Gender,
-  ObsOR2Procedure.OR1Procedure2,
+  ObsOR2Procedure.OR2Procedure,
   PatientDemographics.clinicLocation,
   PatientDemographics.City,
   surg.operating_surgeon as surgeon,
@@ -99,38 +108,53 @@ GROUP BY visit.visit_id
 ) AS PatientDemographics
 LEFT OUTER JOIN
 (
-  SELECT
-    cname.name as OR1Procedure1,
+  select
+  ORProcedure1GroupID.name as OR1Procedure,
+  ORProcedure1GroupID.visit_id
+from
+(
+  select
+    obsORProcedure1ConceptWithGroupID.value_coded,
+    obsORProcedure1ConceptWithGroupID.obs_group_id,
+    cname.name,
     v.visit_id
-  FROM obs obs
-	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-  LEFT OUTER JOIN concept_name cname ON obs.value_coded = cname.concept_id
-  AND cname.locale = "en"
-	AND cname.concept_name_type = "FULLY_SPECIFIED"
-	LEFT OUTER JOIN concept c ON cname.concept_id = c.concept_id
-  and c.uuid = 'c5029fad-bc7f-4678-83b9-5e3120e0ee0a'
-  WHERE
-	  obs.concept_id IN (164940)
-    AND obs.voided = 0
-  GROUP BY v.visit_id
+  from obs obsORProcedure1ConceptWithGroupID
+    inner join concept_name cname ON obsORProcedure1ConceptWithGroupID.value_coded = cname.concept_id
+    and cname.locale = "en"
+	  inner join concept c ON cname.concept_id = c.concept_id
+    inner join concept ORProcedure1Ans ON obsORProcedure1ConceptWithGroupID.concept_id = ORProcedure1Ans.concept_id
+    and ORProcedure1Ans.uuid = '1651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    inner join encounter enc on obsORProcedure1ConceptWithGroupID.encounter_id = enc.encounter_id
+	  inner join visit v on enc.visit_id = v.visit_id
+  where
+	  obsORProcedure1ConceptWithGroupID.voided = 0
+    and cname.concept_name_type = "FULLY_SPECIFIED"
+) ORProcedure1GroupID
+  inner join
+(
+  select obsORProcedure1obs.concept_id, obsORProcedure1obs.obs_id
+  from obs obsORProcedure1obs
+  inner join concept ORProcedure1Concept on obsORProcedure1obs.concept_id = ORProcedure1Concept.concept_id
+    and ORProcedure1Concept.uuid = 'd681e30a-c152-4dfb-a0f1-a967fc5ffcc5'
+  where
+    obsORProcedure1obs.voided = 0
+ ) ORProcedure1obsID on ORProcedure1GroupID.obs_group_id = ORProcedure1obsID.obs_id
 ) AS ObsOR1Procedure ON PatientDemographics.visit_id = ObsOR1Procedure.visit_id
 LEFT OUTER JOIN
 (
-  SELECT
+SELECT
 	  cname.name as PostOpDiagnosis,
     v.visit_id
   FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
 	INNER JOIN visit v on enc.visit_id = v.visit_id
-  LEFT OUTER JOIN concept_name cname ON obs.value_coded = cname.concept_id
+  inner join concept_name cname ON obs.value_coded = cname.concept_id
   AND cname.locale = "en"
-	AND cname.concept_name_type = "FULLY_SPECIFIED"
-	LEFT OUTER JOIN concept c ON cname.concept_id = c.concept_id
-  and c.uuid = '163035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+	inner join concept opDiagnosis ON obs.concept_id = opDiagnosis.concept_id
+  and opDiagnosis.uuid = '163035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
   WHERE
-	  obs.concept_id IN (163035)
-    AND obs.voided = 0
+	  obs.voided = 0
+    AND cname.concept_name_type = "FULLY_SPECIFIED"
   GROUP BY v.visit_id
 ) AS ObsPostOpDiagnosis ON PatientDemographics.visit_id = ObsPostOpDiagnosis.visit_id
 LEFT OUTER JOIN
@@ -148,40 +172,38 @@ LEFT OUTER JOIN
 ) AS EncDateOfOperation ON PatientDemographics.visit_id = EncDateOfOperation.visit_id
 LEFT OUTER JOIN
 (
-   SELECT
-    cname.name as OR1Procedure2,
-    v.visit_id
-  FROM obs obs
-	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-  LEFT OUTER JOIN concept_name cname ON obs.value_coded = cname.concept_id
-  AND cname.locale = "en"
-	AND cname.concept_name_type = "FULLY_SPECIFIED"
-	LEFT OUTER JOIN concept c ON cname.concept_id = c.concept_id
-  and c.uuid = '560a5ef3-31d5-4d4a-9f38-163ef0d818e1'
-  WHERE
-	  obs.concept_id IN (164941)
-    AND obs.voided = 0
-  GROUP BY v.visit_id
-) AS ObsOR2Procedure ON PatientDemographics.visit_id = ObsOR2Procedure.visit_id
-LEFT OUTER JOIN
+   select
+  ORProcedure2GroupID.name as OR2Procedure,
+  ORProcedure2GroupID.visit_id
+from
 (
-  SELECT
-	  cname.name as PostOpDiagnosis,
+  select
+    obsORProcedure2ConceptWithGroupID.value_coded,
+    obsORProcedure2ConceptWithGroupID.obs_group_id,
+    cname.name,
     v.visit_id
-  FROM obs obs
-	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-  LEFT OUTER JOIN concept_name cname ON obs.value_coded = cname.concept_id
-  AND cname.locale = "en"
-	AND cname.concept_name_type = "FULLY_SPECIFIED"
-	LEFT OUTER JOIN concept c ON cname.concept_id = c.concept_id
-  and c.uuid = '163035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-  WHERE
-	  obs.concept_id IN (163035)
-    AND obs.voided = 0
-  GROUP BY v.visit_id
-) AS ObsHDUStay ON PatientDemographics.visit_id = ObsHDUStay.visit_id
+  from obs obsORProcedure2ConceptWithGroupID
+    inner join concept_name cname ON obsORProcedure2ConceptWithGroupID.value_coded = cname.concept_id
+    and cname.locale = "en"
+	  inner join concept c ON cname.concept_id = c.concept_id
+    inner join concept ORProcedure2Ans ON obsORProcedure2ConceptWithGroupID.concept_id = ORProcedure2Ans.concept_id
+    and ORProcedure2Ans.uuid = '1651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    inner join encounter enc on obsORProcedure2ConceptWithGroupID.encounter_id = enc.encounter_id
+	  inner join visit v on enc.visit_id = v.visit_id
+  where
+	  obsORProcedure2ConceptWithGroupID.voided = 0
+    and cname.concept_name_type = "FULLY_SPECIFIED"
+) ORProcedure2GroupID
+  inner join
+(
+  select obsORProcedure2obs.concept_id, obsORProcedure2obs.obs_id
+  from obs obsORProcedure2obs
+  inner join concept ORProcedure2Concept on obsORProcedure2obs.concept_id = ORProcedure2Concept.concept_id
+    and ORProcedure2Concept.uuid = '5b149b13-4709-4f37-8f63-a183fd0c3511'
+  where
+    obsORProcedure2obs.voided = 0
+ ) ORProcedure2obsID on ORProcedure2GroupID.obs_group_id = ORProcedure2obsID.obs_id
+) AS ObsOR2Procedure ON PatientDemographics.visit_id = ObsOR2Procedure.visit_id
 left outer join (
 select
 o.patient, o.encounter_id,
@@ -207,25 +229,25 @@ group by o.encounter_id
 ) surg on surg.encounter_id = EncDateOfOperation.encounter_id
 LEFT OUTER JOIN
 (
-  SELECT
+SELECT
 	  cname.name as SpecialityofCase,
     v.visit_id
   FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
 	INNER JOIN visit v on enc.visit_id = v.visit_id
-  LEFT OUTER JOIN concept_name cname ON obs.value_coded = cname.concept_id
+  inner join concept_name cname ON obs.value_coded = cname.concept_id
   AND cname.locale = "en"
-	AND cname.concept_name_type = "FULLY_SPECIFIED"
-	LEFT OUTER JOIN concept c ON cname.concept_id = c.concept_id
-  and c.uuid = '161630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+	inner join concept c ON cname.concept_id = c.concept_id
+  inner join concept specialityCase on obs.concept_id = specialityCase.concept_id
+  and specialityCase.uuid = '161630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
   WHERE
-	  obs.concept_id IN (161630)
+    cname.concept_name_type = "FULLY_SPECIFIED"
     AND obs.voided = 0
   GROUP BY v.visit_id
 ) AS ObsSpecialityofCase ON PatientDemographics.visit_id = ObsSpecialityofCase.visit_id
 
 WHERE
-	(CAST(EncDateOfOperation.DateOfOperation AS DATE) BETWEEN CAST( '2018-05-19' AS DATE) AND CAST( '2018-05-29' AS DATE))
+	(CAST(EncDateOfOperation.DateOfOperation AS DATE) BETWEEN CAST( $P{begin_TreatmentDate} AS DATE) AND CAST($P{end_TreatmentDate} AS DATE))
 GROUP BY PatientDemographics.visit_id
 ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 		</queryString>
@@ -245,8 +267,8 @@ ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 			<property name="com.jaspersoft.studio.field.label" value="dateFirstSeen"/>
 			<property name="com.jaspersoft.studio.field.tree.path" value="person_attribute"/>
 		</field>
-		<field name="OR1Procedure1" class="java.lang.String">
-			<property name="com.jaspersoft.studio.field.label" value="OR1Procedure1"/>
+		<field name="OR1Procedure" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="OR1Procedure"/>
 			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
 		</field>
 		<field name="PostOpDiagnosis" class="java.lang.String">
@@ -264,8 +286,8 @@ ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 			<property name="com.jaspersoft.studio.field.label" value="Gender"/>
 			<property name="com.jaspersoft.studio.field.tree.path" value="person"/>
 		</field>
-		<field name="OR1Procedure2" class="java.lang.String">
-			<property name="com.jaspersoft.studio.field.label" value="OR1Procedure2"/>
+		<field name="OR2Procedure" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="OR2Procedure"/>
 			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
 		</field>
 		<field name="clinicLocation" class="java.lang.String">
@@ -287,23 +309,53 @@ ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
 		</field>
 	</subDataset>
+	<parameter name="begin_TreatmentDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="end_TreatmentDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
 	<queryString>
-		<![CDATA[]]>
+		<![CDATA[SELECT
+	  date(enc.encounter_datetime) as DateOfOperation,
+    enc.encounter_id,
+    v.visit_id
+  FROM encounter enc
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+  WHERE
+	  enc.encounter_type = 16
+    AND enc.voided = 0
+    AND
+	(CAST(enc.encounter_datetime AS DATE) BETWEEN CAST( $P{begin_TreatmentDate} AS DATE) AND CAST($P{end_TreatmentDate} AS DATE))
+GROUP BY v.visit_id;]]>
 	</queryString>
+	<field name="DateOfOperation" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="DateOfOperation"/>
+	</field>
+	<field name="encounter_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="encounter_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="encounter"/>
+	</field>
+	<field name="visit_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="visit_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="visit"/>
+	</field>
 	<pageHeader>
-		<band height="52">
-			<staticText>
-				<reportElement x="0" y="0" width="2100" height="52" uuid="0208f2af-a482-4ef4-bd55-177902b9be62"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="24"/>
+		<band height="30">
+			<textField>
+				<reportElement key="" x="0" y="0" width="2100" height="30" uuid="49116181-b94b-42cf-bced-cdf423f91c04">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Monthly Clinical Report BK]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA["Monthly Clinical Report from "  + new SimpleDateFormat("yyyy-MMM-dd").format($P{begin_TreatmentDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{end_TreatmentDate})]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<summary>
 		<band height="60" splitType="Stretch">
-			<property name="local_mesure_unitheight" value="pixel"/>
 			<componentElement>
 				<reportElement x="0" y="0" width="2100" height="60" uuid="e7333a18-f7d4-4c25-8fc9-f208834a45dc">
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
@@ -311,7 +363,13 @@ ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="tableDataset" uuid="8160461d-23ac-4dad-ba37-35bb50473094">
+					<datasetRun subDataset="tableDataset" uuid="141381d3-8305-475e-a580-486c63500d3f">
+						<datasetParameter name="begin_TreatmentDate">
+							<datasetParameterExpression><![CDATA[$P{begin_TreatmentDate}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="end_TreatmentDate">
+							<datasetParameterExpression><![CDATA[$P{end_TreatmentDate}]]></datasetParameterExpression>
+						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
 					<jr:column width="90" uuid="4f5ce3e6-0b23-412b-a54b-10b7c5fdf786">
@@ -429,7 +487,7 @@ ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{OR1Procedure1}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{OR1Procedure}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -480,11 +538,11 @@ ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="a5a1f456-2a98-4bf4-8744-20df2ca36188">
+					<jr:column width="80" uuid="a5a1f456-2a98-4bf4-8744-20df2ca36188">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="70" height="30" uuid="d5c66886-025d-4470-8317-f5a8d4c95b6d"/>
+								<reportElement x="0" y="0" width="80" height="30" uuid="d5c66886-025d-4470-8317-f5a8d4c95b6d"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12" isBold="true"/>
@@ -494,7 +552,7 @@ ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isStretchWithOverflow="true" pattern="MM/dd/yyyy" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="30" uuid="d6762f6a-a178-49b8-9745-16bdfc14e5bd"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="80" height="30" uuid="d6762f6a-a178-49b8-9745-16bdfc14e5bd"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -504,11 +562,11 @@ ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="30" uuid="76049e6f-51bc-43a6-9794-855e2ce7dcc1">
+					<jr:column width="40" uuid="76049e6f-51bc-43a6-9794-855e2ce7dcc1">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="30" height="30" uuid="caa7fef9-4843-4ebd-b960-a30401c2c237"/>
+								<reportElement x="0" y="0" width="40" height="30" uuid="caa7fef9-4843-4ebd-b960-a30401c2c237"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12" isBold="true"/>
@@ -518,7 +576,7 @@ ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="30" height="30" uuid="7ca22f28-6a76-4a8c-ba88-5451ee21549e"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="40" height="30" uuid="7ca22f28-6a76-4a8c-ba88-5451ee21549e"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -547,7 +605,7 @@ ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{OR1Procedure2}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{OR2Procedure}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -575,11 +633,11 @@ ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="120" uuid="0d094d17-8755-4dc9-800c-4fe1f20e10a7">
+					<jr:column width="110" uuid="0d094d17-8755-4dc9-800c-4fe1f20e10a7">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="120" height="30" uuid="1b7b042b-5f4e-4a8a-b7a5-b5cd994b4d8e"/>
+								<reportElement x="0" y="0" width="110" height="30" uuid="1b7b042b-5f4e-4a8a-b7a5-b5cd994b4d8e"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12" isBold="true"/>
@@ -589,7 +647,7 @@ ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="30" uuid="550bff38-a269-4559-9262-243635d39f7d"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="110" height="30" uuid="550bff38-a269-4559-9262-243635d39f7d"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -623,11 +681,11 @@ ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="139" uuid="3dbabc47-eefd-4691-ab2d-0f4c349d5644">
+					<jr:column width="130" uuid="3dbabc47-eefd-4691-ab2d-0f4c349d5644">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="139" height="30" uuid="def56a7e-195e-448a-a2f7-ad1fe8c22825"/>
+								<reportElement x="0" y="0" width="130" height="30" uuid="def56a7e-195e-448a-a2f7-ad1fe8c22825"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12" isBold="true"/>
@@ -637,7 +695,7 @@ ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="139" height="30" uuid="18c07100-349a-4e01-beab-af34b3888e1b"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="130" height="30" uuid="18c07100-349a-4e01-beab-af34b3888e1b"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -675,4 +733,18 @@ ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 			</componentElement>
 		</band>
 	</summary>
+	<noData>
+		<band height="18">
+			<staticText>
+				<reportElement x="0" y="0" width="306" height="18" uuid="f8b5b84b-c885-4b48-abb8-bcba6bc1bada">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[No data was found to display on the report.]]></text>
+			</staticText>
+		</band>
+	</noData>
 </jasperReport>
