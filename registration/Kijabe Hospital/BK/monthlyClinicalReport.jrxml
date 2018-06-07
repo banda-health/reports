@@ -76,8 +76,8 @@
   ObsOR2Procedure.OR2Procedure,
   PatientDemographics.clinicLocation,
   PatientDemographics.City,
-  surg.operating_surgeon as surgeon,
-  surg.surgeon_assistant as surgeon_assistant,
+  ObsOperatingSurgeon.OperatingSurgeon as surgeon,
+  ObsAssistantSurgeon.AssistantSurgeon as surgeon_assistant,
   ObsSpecialityofCase.SpecialityofCase
 FROM
 (
@@ -204,29 +204,68 @@ from
     obsORProcedure2obs.voided = 0
  ) ORProcedure2obsID on ORProcedure2GroupID.obs_group_id = ORProcedure2obsID.obs_id
 ) AS ObsOR2Procedure ON PatientDemographics.visit_id = ObsOR2Procedure.visit_id
-left outer join (
+LEFT OUTER JOIN
+(
 select
-o.patient, o.encounter_id,
-max(case o.grouping_concept when 164919 then o.surgeon else '' end) as operating_surgeon,
-max(case o.grouping_concept when 163194 then o.surgeon else '' end) as surgeon_assistant,
-max(case o.grouping_concept when 163588 then o.surgeon else '' end) as attending_surgeon
-from (
-select a.obs_id, b.encounter_id, a.patient, a.concept_id as grouping_concept, b.surgeon, b.concept_id as concept_question
+  SurgeonNameGroupID.value_text as OperatingSurgeon,
+  SurgeonNameGroupID.visit_id,
+  SurgeonNameGroupID.encounter_id
 from
-(select
-o.obs_id,e.patient_id as patient,o.concept_id, o.value_text as surgeon, o.obs_group_id, e.encounter_id
-from obs o inner join encounter e on e.encounter_id = o.encounter_id and e.voided =0 and e.encounter_type=16
-where (o.concept_id = 1473 and o.voided = 0 and o.obs_group_id is not null) or (o.concept_id in (164919,163194, 163588) and o.obs_group_id is null)
-) a
-inner join
-(select
-o.obs_id,e.patient_id as patient,o.concept_id, o.value_text as surgeon, o.obs_group_id, e.encounter_id
-from obs o inner join encounter e on e.encounter_id = o.encounter_id and e.voided =0 and e.encounter_type=16
-where (o.concept_id = 1473 and o.voided = 0 and o.obs_group_id is not null) or (o.concept_id in (164919,163194, 163588) and o.obs_group_id is null)
-) b on a.patient = b.patient and a.obs_id = b.obs_group_id
-) o
-group by o.encounter_id
-) surg on surg.encounter_id = EncDateOfOperation.encounter_id
+(
+  select
+    obsSurgeonNameConceptWithGroupID.value_text,
+    obsSurgeonNameConceptWithGroupID.obs_group_id,
+    v.visit_id,
+    enc.encounter_id
+  from obs obsSurgeonNameConceptWithGroupID
+    inner join concept SurgeonName ON obsSurgeonNameConceptWithGroupID.concept_id = SurgeonName.concept_id
+    and SurgeonName.uuid = '1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    inner join encounter enc on obsSurgeonNameConceptWithGroupID.encounter_id = enc.encounter_id
+	  inner join visit v on enc.visit_id = v.visit_id
+  where
+	  obsSurgeonNameConceptWithGroupID.voided = 0
+) SurgeonNameGroupID
+  inner join
+(
+  select obsSurgeonName.concept_id, obsSurgeonName.obs_id
+  from obs obsSurgeonName
+  inner join concept SurgeonNameConcept on obsSurgeonName.concept_id = SurgeonNameConcept.concept_id
+    and SurgeonNameConcept.uuid = '164919AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+  where
+    obsSurgeonName.voided = 0
+ ) SurgeonNameobsID on SurgeonNameGroupID.obs_group_id = SurgeonNameobsID.obs_id
+) ObsOperatingSurgeon on ObsOperatingSurgeon.encounter_id = EncDateOfOperation.encounter_id
+LEFT OUTER JOIN
+(
+select
+  AssistantSurgeonNameGroupID.value_text as AssistantSurgeon,
+  AssistantSurgeonNameGroupID.visit_id,
+  AssistantSurgeonNameGroupID.encounter_id
+from
+(
+  select
+    obsAssistantSurgeonNameConceptWithGroupID.value_text,
+    obsAssistantSurgeonNameConceptWithGroupID.obs_group_id,
+    v.visit_id,
+    enc.encounter_id
+  from obs obsAssistantSurgeonNameConceptWithGroupID
+    inner join concept AssistantSurgeonName ON obsAssistantSurgeonNameConceptWithGroupID.concept_id = AssistantSurgeonName.concept_id
+    and AssistantSurgeonName.uuid = '1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    inner join encounter enc on obsAssistantSurgeonNameConceptWithGroupID.encounter_id = enc.encounter_id
+	  inner join visit v on enc.visit_id = v.visit_id
+  where
+	  obsAssistantSurgeonNameConceptWithGroupID.voided = 0
+) AssistantSurgeonNameGroupID
+  inner join
+(
+  select obsAssistantSurgeonName.concept_id, obsAssistantSurgeonName.obs_id
+  from obs obsAssistantSurgeonName
+  inner join concept AssistantSurgeonNameConcept on obsAssistantSurgeonName.concept_id = AssistantSurgeonNameConcept.concept_id
+    and AssistantSurgeonNameConcept.uuid = '269879d8-c629-4c27-b87c-0c341bd80c66'
+  where
+    obsAssistantSurgeonName.voided = 0
+ ) AssistantSurgeonNameobsID on AssistantSurgeonNameGroupID.obs_group_id = AssistantSurgeonNameobsID.obs_id
+) ObsAssistantSurgeon on ObsAssistantSurgeon.encounter_id = EncDateOfOperation.encounter_id
 LEFT OUTER JOIN
 (
 SELECT
@@ -249,7 +288,7 @@ SELECT
 WHERE
 	(CAST(EncDateOfOperation.DateOfOperation AS DATE) BETWEEN CAST( $P{begin_TreatmentDate} AS DATE) AND CAST($P{end_TreatmentDate} AS DATE))
 GROUP BY PatientDemographics.visit_id
-ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
+ORDER BY EncDateOfOperation.DateOfOperation asc]]>
 		</queryString>
 		<field name="HospID" class="java.lang.String">
 			<property name="com.jaspersoft.studio.field.label" value="HospID"/>
@@ -300,9 +339,11 @@ ORDER BY EncDateOfOperation.DateOfOperation asc;]]>
 		</field>
 		<field name="surgeon" class="java.lang.String">
 			<property name="com.jaspersoft.studio.field.label" value="surgeon"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="obs"/>
 		</field>
 		<field name="surgeon_assistant" class="java.lang.String">
 			<property name="com.jaspersoft.studio.field.label" value="surgeon_assistant"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="obs"/>
 		</field>
 		<field name="SpecialityofCase" class="java.lang.String">
 			<property name="com.jaspersoft.studio.field.label" value="SpecialityofCase"/>
