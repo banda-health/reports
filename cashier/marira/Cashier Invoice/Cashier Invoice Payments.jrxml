@@ -1,26 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.3.final using JasperReports Library version 6.4.3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Cashier Invoice Payments" language="groovy" pageWidth="555" pageHeight="802" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e20cdf52-c6fb-42de-8efc-83a37f653514">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<parameter name="billId" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kap"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="fileNumber" class="java.lang.String"/>
+	<parameter name="paymentDate" class="java.util.Date"/>
 	<queryString>
 		<![CDATA[SELECT
     b.bill_id,
     p.amount,
-    pm.name
+    pm.name,
+    cname.name as `Type`
 FROM
-    cashier_bill b INNER JOIN cashier_bill_payment p ON
+    cashier_bill b 
+    INNER JOIN cashier_bill_payment p ON
         b.bill_id = p.bill_id
     INNER JOIN cashier_payment_mode pm ON
         p.payment_mode_id = pm.payment_mode_id
-WHERE b.bill_id = $P{billId}]]>
+	LEFT OUTER JOIN cashier_bill_payment_attribute cbpa on p.bill_payment_id = cbpa.bill_payment_id
+    LEFT OUTER JOIN concept_name as cname ON cbpa.value_reference = cname.concept_id
+	AND (cname.concept_name_type = "FULLY_SPECIFIED"
+	AND cname.locale = "en")
+	LEFT JOIN concept as concpt ON cname.concept_id = concpt.concept_id
+	AND concpt.class_id = 4
+WHERE b.bill_id = 
+	(
+    SELECT
+    cashier_bill.bill_id  
+FROM
+	cashier_bill
+	INNER JOIN patient ON
+		cashier_bill.patient_id = patient.patient_id
+	LEFT OUTER JOIN patient_identifier ON
+        patient.patient_id = patient_identifier.patient_id AND
+        patient_identifier.preferred = 1
+    LEFT OUTER JOIN cashier_bill_payment bp ON
+        cashier_bill.bill_id = bp.bill_id
+WHERE
+    patient_identifier.identifier =  $P{fileNumber}
+    and date(bp.date_created) = date( $P{paymentDate})
+    )]]>
 	</queryString>
-	<field name="bill_id" class="java.lang.Integer"/>
-	<field name="amount" class="java.math.BigDecimal"/>
-	<field name="name" class="java.lang.String"/>
+	<field name="bill_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="bill_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="cashier_bill"/>
+	</field>
+	<field name="amount" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="amount"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="cashier_bill_payment"/>
+	</field>
+	<field name="name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="cashier_payment_mode"/>
+	</field>
+	<field name="Type" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Type"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+	</field>
 	<variable name="totalPaid" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{amount}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
@@ -31,70 +70,77 @@ WHERE b.bill_id = $P{billId}]]>
 	<columnHeader>
 		<band height="20" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="ebfa0726-da0a-4e46-98a8-dd0e9503d604" x="0" y="0" width="178" height="20"/>
+				<reportElement x="0" y="0" width="178" height="20" uuid="ebfa0726-da0a-4e46-98a8-dd0e9503d604"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Payment Mode]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1c6d18e4-b80c-4ada-b2f6-9092cf2e7286" x="414" y="0" width="141" height="20"/>
+				<reportElement x="414" y="0" width="141" height="20" uuid="1c6d18e4-b80c-4ada-b2f6-9092cf2e7286"/>
 				<textElement textAlignment="Right">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Amount]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="c2d98d50-1bdf-49af-93ca-f1045b8183bf" x="0" y="19" width="555" height="1"/>
+				<reportElement x="0" y="19" width="555" height="1" uuid="c2d98d50-1bdf-49af-93ca-f1045b8183bf"/>
 			</line>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="25" splitType="Stretch">
 			<textField>
-				<reportElement uuid="310ce42b-0706-41d2-b01d-c68613f92c93" x="0" y="0" width="414" height="20"/>
+				<reportElement x="0" y="0" width="200" height="20" uuid="310ce42b-0706-41d2-b01d-c68613f92c93"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement uuid="3e8c326c-800e-4d7e-8c55-8e9c9e71eb45" x="414" y="0" width="141" height="20"/>
+				<reportElement x="414" y="0" width="141" height="20" uuid="3e8c326c-800e-4d7e-8c55-8e9c9e71eb45"/>
 				<textElement textAlignment="Right">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="206" y="0" width="200" height="20" uuid="726a0c41-d38d-4925-bef6-466b13a92d95"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Type}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<summary>
 		<band height="32" splitType="Stretch">
 			<textField>
-				<reportElement uuid="d9c44068-3797-4c38-9512-9f47ac111c56" x="319" y="8" width="236" height="20"/>
+				<reportElement x="319" y="8" width="236" height="20" uuid="d9c44068-3797-4c38-9512-9f47ac111c56"/>
 				<textElement textAlignment="Right">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Total Payments: " + new java.text.DecimalFormat("#,##0.00").format($V{totalPaid})]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement uuid="c2d98d50-1bdf-49af-93ca-f1045b8183bf" x="0" y="4" width="555" height="1"/>
+				<reportElement x="0" y="4" width="555" height="1" uuid="c2d98d50-1bdf-49af-93ca-f1045b8183bf"/>
 			</line>
 		</band>
 	</summary>
 	<noData>
 		<band height="29">
 			<staticText>
-				<reportElement uuid="6592639a-3325-4ca7-b625-12bae2f81b1d" x="0" y="4" width="319" height="20"/>
+				<reportElement x="0" y="4" width="319" height="20" uuid="6592639a-3325-4ca7-b625-12bae2f81b1d"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<text><![CDATA[No payments have been made on this bill.]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="c2d98d50-1bdf-49af-93ca-f1045b8183bf" x="0" y="3" width="555" height="1"/>
+				<reportElement x="0" y="3" width="555" height="1" uuid="c2d98d50-1bdf-49af-93ca-f1045b8183bf"/>
 			</line>
 			<line>
-				<reportElement uuid="c2d98d50-1bdf-49af-93ca-f1045b8183bf" x="0" y="28" width="555" height="1"/>
+				<reportElement x="0" y="28" width="555" height="1" uuid="c2d98d50-1bdf-49af-93ca-f1045b8183bf"/>
 			</line>
 		</band>
 	</noData>
