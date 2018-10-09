@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.4.3.final using JasperReports Library version 6.4.3  -->
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Cashier Receipt" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a91a13d8-3137-4712-8b7e-4d8f0f0523e9">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kap"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
@@ -16,7 +16,7 @@
      cashier_bill.bill_id,
      cashier_bill.receipt_number,
      cashier_bill.status AS `Status`,
-     bp.date_created as `bill_date`,
+     cashier_bill.date_created as `bill_date`,
      IFNULL(upn.given_name, "") cashier_given_name,
      IFNULL(upn.family_name,"") cashier_family_name,
      patient_person_name.given_name patient_given_name,
@@ -60,11 +60,10 @@ FROM
     ) ON
         patient_person.person_id = pa.person_id AND
         pat.person_attribute_type_id = 9
-    LEFT OUTER JOIN cashier_bill_payment bp ON
-        cashier_bill.bill_id = bp.bill_id
-WHERE
+   WHERE
     patient_identifier.identifier =  $P{fileNumber}
-    and date(bp.date_created) = date( $P{paymentDate})]]>
+    and date(cashier_bill.date_created) = date( $P{paymentDate})
+    and cashier_bill.status IN ('PAID','POSTED')]]>
 	</queryString>
 	<field name="bill_id" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="bill_id"/>
@@ -80,7 +79,7 @@ WHERE
 	</field>
 	<field name="bill_date" class="java.sql.Timestamp">
 		<property name="com.jaspersoft.studio.field.label" value="bill_date"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="cashier_bill_payment"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="cashier_bill"/>
 	</field>
 	<field name="cashier_given_name" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="cashier_given_name"/>
@@ -163,7 +162,7 @@ Tel: 020-324 6500]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA["Phone: " + $F{phone}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="319" y="115" width="236" height="20" uuid="e689e17d-8fb0-4124-9e48-8d668c208db4"/>
 				<textElement>
 					<font size="12"/>

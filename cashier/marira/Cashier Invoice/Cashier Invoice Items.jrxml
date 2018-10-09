@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.4.3.final using JasperReports Library version 6.4.3  -->
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Cashier Receipt Items" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e2f41223-372e-4046-a3fd-fff317f8db2d">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kap"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="fileNumber" class="java.lang.String"/>
 	<parameter name="paymentDate" class="java.util.Date"/>
@@ -23,7 +23,7 @@ WHERE
     b.bill_id = 
     (
     SELECT
-    cashier_bill.bill_id  
+    cashier_bill.bill_id as bill_id 
 FROM
 	cashier_bill
 	INNER JOIN patient ON
@@ -31,11 +31,10 @@ FROM
 	LEFT OUTER JOIN patient_identifier ON
         patient.patient_id = patient_identifier.patient_id AND
         patient_identifier.preferred = 1
-    LEFT OUTER JOIN cashier_bill_payment bp ON
-        cashier_bill.bill_id = bp.bill_id
 WHERE
     patient_identifier.identifier =  $P{fileNumber}
-    and date(bp.date_created) = date( $P{paymentDate})
+    and date(cashier_bill.date_created) = date( $P{paymentDate})
+    and cashier_bill.status IN ('PAID','POSTED')
     )
 ORDER BY
     bi.line_item_order ASC]]>

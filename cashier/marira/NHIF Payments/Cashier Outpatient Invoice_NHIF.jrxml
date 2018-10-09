@@ -94,7 +94,7 @@ and (cast(cbp.date_created as date) BETWEEN CAST( $P{beginDate}  AS DATE) AND CA
 	<parameter name="endDate" class="java.util.Date">
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
-	<parameter name="paymentModeID" class="java.lang.Integer"/>
+	<parameter name="NHIF_Scheme" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[SELECT
   cname.name as 'NHIFScheme'
@@ -113,7 +113,7 @@ inner join patient_identifier pi on pn.person_id = pi.patient_id
 and pi.identifier_type = 3
 
 where cbp.payment_mode_id = 7
-  and cname.concept_id =  $P{paymentModeID}
+  and cname.concept_id =  $P{NHIF_Scheme}
 and (cast(cbp.date_created as date) BETWEEN CAST( $P{beginDate}  AS DATE) AND CAST( $P{endDate} AS DATE))
 Limit 1;]]>
 	</queryString>
@@ -185,7 +185,7 @@ Limit 1;]]>
 							<datasetParameterExpression><![CDATA[$P{endDate}]]></datasetParameterExpression>
 						</datasetParameter>
 						<datasetParameter name="paymentModeID">
-							<datasetParameterExpression><![CDATA[$P{paymentModeID}]]></datasetParameterExpression>
+							<datasetParameterExpression><![CDATA[$P{NHIF_Scheme}]]></datasetParameterExpression>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>

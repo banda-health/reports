@@ -61,7 +61,7 @@
   cname.name as 'Type',
   cb.receipt_number as 'InvoiceNumber',
   pi.identifier as 'HospitalId',
-  concat(ifnull(pn.given_name,''), ' ', ifnull(pn.middle_name,''), ' ', ifnull(pn.family_name,'')) as 'Name',
+  concat(ifnull(pn.given_name,''), ' ', ifnull(pn.middle_name,''), ' ', ifnull(pn.family_name,'')) as 'PatientName',
   cbp.amount as 'Total Amount'
 FROM cashier_bill cb
 inner join cashier_bill_payment cbp on cb.bill_id = cbp.bill_id
@@ -95,8 +95,8 @@ and (cast(cbp.date_created as date) BETWEEN CAST( $P{begin_Date}  AS DATE) AND C
 			<property name="com.jaspersoft.studio.field.label" value="HospitalId"/>
 			<property name="com.jaspersoft.studio.field.tree.path" value="patient_identifier"/>
 		</field>
-		<field name="Name" class="java.lang.String">
-			<property name="com.jaspersoft.studio.field.label" value="Name"/>
+		<field name="PatientName" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="PatientName"/>
 		</field>
 		<field name="Total Amount" class="java.math.BigDecimal">
 			<property name="com.jaspersoft.studio.field.label" value="Total Amount"/>
@@ -200,7 +200,7 @@ and (cast(cbp.date_created as date) BETWEEN CAST( $P{begin_Date} AS DATE) AND CA
 									<font fontName="DejaVu Sans" size="12"/>
 									<paragraph leftIndent="5"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{Name}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{PatientName}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
