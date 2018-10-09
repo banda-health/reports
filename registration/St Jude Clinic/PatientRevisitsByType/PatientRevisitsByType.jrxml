@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-11-24T12:44:23 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Patient ReVisits by Visit Type" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b72be3f-d755-462a-8a67-0282dc90d574">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira_live"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="beginDate" class="java.util.Date"/>
+	<parameter name="endDate" class="java.util.Date"/>
+	<queryString>
+		<![CDATA[SELECT 
+	vt.name Visit_Type,
+    COUNT(v.visit_id) VisitCount
+FROM
+    visit v
+        INNER JOIN
+    visit_type vt ON v.visit_type_id = vt.visit_type_id
+    	INNER JOIN
+    visit_attribute va ON v.visit_id = va.visit_id	
+WHERE
+	va.attribute_type_id = 1
+	AND va.value_reference = 'false'
+	AND va.voided = 0
+    AND 
+    (CAST(v.date_started AS DATE) BETWEEN CAST($P{beginDate} AS DATE) AND CAST($P{endDate} AS DATE))
+GROUP BY vt.name]]>
+	</queryString>
+	<field name="Visit_Type" class="java.lang.String"/>
+	<field name="VisitCount" class="java.lang.Long"/>
+	<variable name="totalVisits" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{VisitCount}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="555" height="20" uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Patient Revisits"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="19" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="16" width="251" height="1" uuid="cb1cd48d-2326-4d6f-9d88-77dc197bedf1"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="0" width="137" height="16" uuid="25f7443e-bf82-4d37-aab1-7e6cd5418ed9"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Visit Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="151" y="0" width="100" height="16" uuid="e8da193c-2a64-44be-96ca-7416132f7400"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Visits]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="151" height="16" uuid="11e9c05b-f751-45d8-af21-7544e86563c7"/>
+				<textFieldExpression><![CDATA[$F{Visit_Type}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="151" y="0" width="100" height="16" uuid="444d40f8-8e3a-42bb-a937-b76075751e3e"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{VisitCount}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="23" splitType="Stretch">
+			<textField pattern="#,##0">
+				<reportElement x="151" y="3" width="100" height="16" uuid="e43cd9a7-06a0-4004-b5b7-df77f12929ab"/>
+				<textElement textAlignment="Right">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalVisits}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="51" y="3" width="100" height="16" uuid="e8da193c-2a64-44be-96ca-7416132f7400"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<line>
+				<reportElement x="110" y="0" width="141" height="1" uuid="4a7f5ff7-4533-45bc-9e4b-1ab21201037a"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,43 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Cashier Receipt" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a91a13d8-3137-4712-8b7e-4d8f0f0523e9">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<parameter name="billId" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
 	</parameter>
+	<parameter name="fileNumber" class="java.lang.String"/>
+	<parameter name="paymentDate" class="java.util.Date"/>
 	<queryString>
 		<![CDATA[SELECT
      cashier_bill.bill_id,
      cashier_bill.receipt_number,
-     CASE cashier_bill.status
-        WHEN 0 THEN 'PENDING'
-        WHEN 1 THEN 'PAID'
-        WHEN 2 THEN 'ADJUSTED'
-     END AS `Status`,
-     bill_date.bill_date,
-
-     cashier_person_name.given_name cashier_given_name,
-     cashier_person_name.family_name cashier_family_name,
-
+     cashier_bill.status AS `Status`,
+     cashier_bill.date_created as `bill_date`,
+     IFNULL(upn.given_name, "") cashier_given_name,
+     IFNULL(upn.family_name,"") cashier_family_name,
      patient_person_name.given_name patient_given_name,
      patient_person_name.family_name patient_family_name,
-     person_address.address1,
-     person_address.address2,
-     person_address.city_village city,
-     pa.value phone,
+     IFNULL(person_address.address1, "") address1,
+     IFNULL(person_address.state_province, "") address2,
+     IFNULL(person_address.city_village,"") city,
+     IFNULL(pa.value,"") phone,
      patient_identifier.identifier
 FROM
-	provider INNER JOIN cashier_bill ON
-		provider.provider_id = cashier_bill.provider_id
-	INNER JOIN person cashier_person ON
-		provider.person_id = cashier_person .person_id
-LEFT OUTER JOIN person_name cashier_person_name ON
-		cashier_person.person_id = cashier_person_name.person_id AND
-        cashier_person_name.preferred = 1
+	cashier_bill cashier_bill
+    
+    INNER JOIN users u ON
+      CASE
+	WHEN cashier_bill.changed_by IS NULL THEN
+        cashier_bill.creator = u.user_id
+       WHEN cashier_bill.changed_by IS NOT NULL AND cashier_bill.creator IS NOT NULL THEN
+        cashier_bill.changed_by = u.user_id
+        ELSE
+        cashier_bill.changed_by = u.user_id
+        END
+	LEFT OUTER JOIN person_name upn ON
+        u.person_id = upn.person_id
+        AND upn.voided = 0
 	INNER JOIN patient ON
 		cashier_bill.patient_id = patient.patient_id
 	INNER JOIN person patient_person ON
@@ -56,27 +59,64 @@ LEFT OUTER JOIN person_name cashier_person_name ON
             pa.person_attribute_type_id = pat.person_attribute_type_id
     ) ON
         patient_person.person_id = pa.person_id AND
-        pat.name = "phone number"
-    LEFT OUTER JOIN (
-        SELECT $P{billId} bill_id, MAX(bp.date_created) bill_date FROM cashier_bill_payment bp WHERE bp.bill_id = $P{billId}
-    ) bill_date ON
-        cashier_bill.bill_id = bill_date.bill_id
-WHERE
-    cashier_bill.bill_id = $P{billId}]]>
+        pat.person_attribute_type_id = 9
+   WHERE
+    patient_identifier.identifier =  $P{fileNumber}
+    and date(cashier_bill.date_created) = date( $P{paymentDate})
+    and cashier_bill.status IN ('PAID','POSTED')]]>
 	</queryString>
-	<field name="bill_id" class="java.lang.Integer"/>
-	<field name="receipt_number" class="java.lang.String"/>
-	<field name="Status" class="java.lang.String"/>
-	<field name="bill_date" class="java.sql.Timestamp"/>
-	<field name="cashier_given_name" class="java.lang.String"/>
-	<field name="cashier_family_name" class="java.lang.String"/>
-	<field name="patient_given_name" class="java.lang.String"/>
-	<field name="patient_family_name" class="java.lang.String"/>
-	<field name="address1" class="java.lang.String"/>
-	<field name="address2" class="java.lang.String"/>
-	<field name="city" class="java.lang.String"/>
-	<field name="phone" class="java.lang.String"/>
-	<field name="identifier" class="java.lang.String"/>
+	<field name="bill_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="bill_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="cashier_bill"/>
+	</field>
+	<field name="receipt_number" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="receipt_number"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="cashier_bill"/>
+	</field>
+	<field name="Status" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="cashier_bill"/>
+	</field>
+	<field name="bill_date" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="bill_date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="cashier_bill"/>
+	</field>
+	<field name="cashier_given_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cashier_given_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="person_name"/>
+	</field>
+	<field name="cashier_family_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cashier_family_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="person_name"/>
+	</field>
+	<field name="patient_given_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="patient_given_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="person_name"/>
+	</field>
+	<field name="patient_family_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="patient_family_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="person_name"/>
+	</field>
+	<field name="address1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="address1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="person_address"/>
+	</field>
+	<field name="address2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="address2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="person_address"/>
+	</field>
+	<field name="city" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="city"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="person_address"/>
+	</field>
+	<field name="phone" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="phone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="person_attribute"/>
+	</field>
+	<field name="identifier" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="identifier"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="patient_identifier"/>
+	</field>
 	<variable name="totalInvoiced" class="java.math.BigDecimal"/>
 	<variable name="totalPaid" class="java.math.BigDecimal">
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
@@ -87,7 +127,7 @@ WHERE
 	<title>
 		<band height="155" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="61b9bfa4-ffad-4f61-bd33-285e26c27ef3" x="0" y="32" width="555" height="42"/>
+				<reportElement x="0" y="32" width="555" height="42" uuid="61b9bfa4-ffad-4f61-bd33-285e26c27ef3"/>
 				<textElement textAlignment="Center">
 					<font size="16"/>
 				</textElement>
@@ -95,66 +135,66 @@ WHERE
 Tel: 020-324 6500]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="659a0528-d1be-4efe-9099-e0d9026f29c2" x="0" y="95" width="319" height="20"/>
+				<reportElement x="0" y="95" width="230" height="20" uuid="659a0528-d1be-4efe-9099-e0d9026f29c2"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Id: " + $F{identifier}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="a334a322-2426-4915-ac87-2fc6a0d5d573" x="0" y="0" width="555" height="32"/>
+				<reportElement x="0" y="0" width="555" height="32" uuid="a334a322-2426-4915-ac87-2fc6a0d5d573"/>
 				<textElement textAlignment="Center">
 					<font size="24"/>
 				</textElement>
 				<text><![CDATA[AIC Marira Clinic]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="7b2e440f-7554-4c7d-9026-24e120ed9d6b" x="0" y="135" width="555" height="20"/>
+				<reportElement x="0" y="135" width="555" height="20" uuid="7b2e440f-7554-4c7d-9026-24e120ed9d6b"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Address: " + $F{address1} + " " + $F{address2} + " " + $F{city}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="bb99c657-1e64-4c83-a6bb-a3608b19352c" x="0" y="115" width="319" height="20"/>
+				<reportElement x="0" y="115" width="319" height="20" uuid="bb99c657-1e64-4c83-a6bb-a3608b19352c"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Phone: " + $F{phone}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="e689e17d-8fb0-4124-9e48-8d668c208db4" x="319" y="115" width="236" height="20"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="319" y="115" width="236" height="20" uuid="e689e17d-8fb0-4124-9e48-8d668c208db4"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Status: " + $F{Status}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="b8d5cd5e-cd83-4167-972e-bf52582e010a" x="319" y="95" width="236" height="20"/>
+				<reportElement x="260" y="95" width="295" height="20" uuid="b8d5cd5e-cd83-4167-972e-bf52582e010a"/>
 				<textElement textAlignment="Left">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Receipt Number: " + $F{receipt_number}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement uuid="c2d98d50-1bdf-49af-93ca-f1045b8183bf" x="0" y="75" width="555" height="1"/>
+				<reportElement x="0" y="75" width="555" height="1" uuid="c2d98d50-1bdf-49af-93ca-f1045b8183bf"/>
 			</line>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="b4faf1c5-3341-4170-8a83-1880c3d48af2" x="0" y="76" width="319" height="20"/>
+				<reportElement x="0" y="76" width="319" height="20" uuid="b4faf1c5-3341-4170-8a83-1880c3d48af2"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Patient Name: " + $F{patient_family_name} + ", " + $F{patient_given_name}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="fb01426c-2aec-4bff-b5d1-d2419de61693" x="391" y="76" width="164" height="20"/>
+				<reportElement x="391" y="76" width="164" height="20" uuid="fb01426c-2aec-4bff-b5d1-d2419de61693"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-dd-MM").format($F{bill_date})]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="2a45100b-ebb4-4c6b-88e0-98e7a3be23f6" x="319" y="76" width="72" height="20"/>
+				<reportElement x="319" y="76" width="72" height="20" uuid="2a45100b-ebb4-4c6b-88e0-98e7a3be23f6"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
@@ -166,14 +206,14 @@ Tel: 020-324 6500]]></text>
 		<band height="25" splitType="Stretch">
 			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} > 1]]></printWhenExpression>
 			<textField>
-				<reportElement uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf" x="0" y="0" width="319" height="20"/>
+				<reportElement x="0" y="0" width="319" height="20" uuid="833f8d94-32f0-4b30-9c56-995682b3e0bf"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Patient Invoice for " + $F{patient_given_name} + " " + $F{patient_family_name}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="b8d5cd5e-cd83-4167-972e-bf52582e010a" x="319" y="0" width="236" height="20"/>
+				<reportElement x="319" y="0" width="236" height="20" uuid="b8d5cd5e-cd83-4167-972e-bf52582e010a"/>
 				<textElement textAlignment="Left">
 					<font size="10" isBold="true"/>
 				</textElement>
@@ -184,16 +224,19 @@ Tel: 020-324 6500]]></text>
 	<detail>
 		<band height="64" splitType="Stretch">
 			<subreport>
-				<reportElement uuid="02cdd829-966d-401d-a66f-bdda0adcd5e2" x="0" y="20" width="555" height="39"/>
-				<subreportParameter name="billId">
-					<subreportParameterExpression><![CDATA[$P{billId}]]></subreportParameterExpression>
+				<reportElement x="0" y="20" width="555" height="39" uuid="02cdd829-966d-401d-a66f-bdda0adcd5e2"/>
+				<subreportParameter name="fileNumber">
+					<subreportParameterExpression><![CDATA[$P{fileNumber}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="paymentDate">
+					<subreportParameterExpression><![CDATA[$P{paymentDate}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<returnValue subreportVariable="totalInvoiced" toVariable="totalInvoiced"/>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Cashier Invoice Items.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement uuid="6b0ba532-9b3b-45fc-9bc3-2fa28cd96060" x="0" y="0" width="115" height="20"/>
+				<reportElement x="0" y="0" width="115" height="20" uuid="6b0ba532-9b3b-45fc-9bc3-2fa28cd96060"/>
 				<textElement>
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -202,16 +245,19 @@ Tel: 020-324 6500]]></text>
 		</band>
 		<band height="66">
 			<subreport>
-				<reportElement uuid="af9d36fc-bc2d-49d1-8f95-88dce069cb9d" x="0" y="21" width="555" height="41"/>
-				<subreportParameter name="billId">
-					<subreportParameterExpression><![CDATA[$P{billId}]]></subreportParameterExpression>
+				<reportElement x="0" y="21" width="555" height="41" uuid="af9d36fc-bc2d-49d1-8f95-88dce069cb9d"/>
+				<subreportParameter name="fileNumber">
+					<subreportParameterExpression><![CDATA[$P{fileNumber}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="paymentDate">
+					<subreportParameterExpression><![CDATA[$P{paymentDate}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<returnValue subreportVariable="totalPaid" toVariable="totalPaid"/>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Cashier Invoice Payments.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement uuid="6b0ba532-9b3b-45fc-9bc3-2fa28cd96060" x="0" y="1" width="100" height="20"/>
+				<reportElement x="0" y="1" width="100" height="20" uuid="6b0ba532-9b3b-45fc-9bc3-2fa28cd96060"/>
 				<textElement>
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -220,7 +266,7 @@ Tel: 020-324 6500]]></text>
 		</band>
 		<band height="23">
 			<textField>
-				<reportElement uuid="f2d8cf65-1a64-4998-a25b-8b4502e4b3ed" x="276" y="3" width="279" height="20"/>
+				<reportElement x="276" y="3" width="279" height="20" uuid="f2d8cf65-1a64-4998-a25b-8b4502e4b3ed"/>
 				<textElement textAlignment="Right">
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -231,15 +277,14 @@ Tel: 020-324 6500]]></text>
 	<pageFooter>
 		<band height="20" splitType="Stretch">
 			<textField>
-				<reportElement uuid="6f2f1b9b-4cb3-40fd-96dc-1b3ecbb4ec68" x="379" y="0" width="176" height="20"/>
+				<reportElement x="379" y="0" width="176" height="20" uuid="6f2f1b9b-4cb3-40fd-96dc-1b3ecbb4ec68"/>
 				<textElement textAlignment="Right">
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of " + $V{PAGE_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="6c430987-cd11-40be-bd9d-2077e233745f" x="0" y="0" width="379" height="20"/>
-				<textElement/>
+				<reportElement x="0" y="0" width="379" height="20" uuid="6c430987-cd11-40be-bd9d-2077e233745f"/>
 				<textFieldExpression><![CDATA["Invoice Generated at " + new SimpleDateFormat("yyyy-dd-MM HH:mm").format(new Date())]]></textFieldExpression>
 			</textField>
 		</band>

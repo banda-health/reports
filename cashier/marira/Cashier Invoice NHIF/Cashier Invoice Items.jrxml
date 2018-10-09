@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Cashier Receipt Items" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e2f41223-372e-4046-a3fd-fff317f8db2d">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="marira"/>
-	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<parameter name="fileNumber" class="java.lang.String"/>
-	<parameter name="paymentDate" class="java.util.Date"/>
+	<parameter name="billId" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[SELECT
     b.bill_id,
@@ -20,41 +16,14 @@ FROM
     INNER JOIN inv_item i ON
         bi.item_id = i.item_id
 WHERE
-    b.bill_id = 
-    (
-    SELECT
-    cashier_bill.bill_id as bill_id 
-FROM
-	cashier_bill
-	INNER JOIN patient ON
-		cashier_bill.patient_id = patient.patient_id
-	LEFT OUTER JOIN patient_identifier ON
-        patient.patient_id = patient_identifier.patient_id AND
-        patient_identifier.preferred = 1
-WHERE
-    patient_identifier.identifier =  $P{fileNumber}
-    and date(cashier_bill.date_created) = date( $P{paymentDate})
-    and cashier_bill.status IN ('PAID','POSTED')
-    )
+    b.bill_id = $P{billId}
 ORDER BY
     bi.line_item_order ASC]]>
 	</queryString>
-	<field name="bill_id" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.label" value="bill_id"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="cashier_bill"/>
-	</field>
-	<field name="name" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="name"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="inv_item"/>
-	</field>
-	<field name="quantity" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.label" value="quantity"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="cashier_bill_line_item"/>
-	</field>
-	<field name="price" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.label" value="price"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="cashier_bill_line_item"/>
-	</field>
+	<field name="bill_id" class="java.lang.Integer"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="quantity" class="java.lang.Integer"/>
+	<field name="price" class="java.math.BigDecimal"/>
 	<variable name="totalInvoiced" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{quantity} * $F{price}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
@@ -65,24 +34,24 @@ ORDER BY
 	<columnHeader>
 		<band height="20" splitType="Stretch">
 			<line>
-				<reportElement x="0" y="19" width="555" height="1" uuid="c2d98d50-1bdf-49af-93ca-f1045b8183bf"/>
+				<reportElement uuid="c2d98d50-1bdf-49af-93ca-f1045b8183bf" x="0" y="19" width="555" height="1"/>
 			</line>
 			<staticText>
-				<reportElement x="406" y="0" width="35" height="20" uuid="90e75e73-7e15-4b36-b0c1-1af8fb7dd2ae"/>
+				<reportElement uuid="90e75e73-7e15-4b36-b0c1-1af8fb7dd2ae" x="406" y="0" width="35" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Qty]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="441" y="0" width="114" height="20" uuid="a7d647bb-3580-4140-b8e5-8e828af194c9"/>
+				<reportElement uuid="a7d647bb-3580-4140-b8e5-8e828af194c9" x="441" y="0" width="114" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Amount]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="0" width="406" height="20" uuid="e7bda61e-127d-43e7-b311-f14e795f90a5"/>
+				<reportElement uuid="e7bda61e-127d-43e7-b311-f14e795f90a5" x="0" y="0" width="406" height="20"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -93,21 +62,21 @@ ORDER BY
 	<detail>
 		<band height="20" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="406" height="20" uuid="fcd1e513-efd0-458d-a94f-a903462f0aa3"/>
+				<reportElement uuid="fcd1e513-efd0-458d-a94f-a903462f0aa3" x="0" y="0" width="406" height="20"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="406" y="0" width="35" height="20" uuid="e70a7f9e-ff3c-48e9-a884-9e0609b7270f"/>
+				<reportElement uuid="e70a7f9e-ff3c-48e9-a884-9e0609b7270f" x="406" y="0" width="35" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement x="441" y="0" width="114" height="20" uuid="d028df36-7e12-4c36-9255-813e5e885711"/>
+				<reportElement uuid="d028df36-7e12-4c36-9255-813e5e885711" x="441" y="0" width="114" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="12"/>
 				</textElement>
@@ -118,14 +87,14 @@ ORDER BY
 	<summary>
 		<band height="34">
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement x="319" y="8" width="236" height="20" uuid="d9c44068-3797-4c38-9512-9f47ac111c56"/>
+				<reportElement uuid="d9c44068-3797-4c38-9512-9f47ac111c56" x="319" y="8" width="236" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Invoice Total: " + new java.text.DecimalFormat("#,##0.00").format($V{totalInvoiced})]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="4" width="555" height="1" uuid="c2d98d50-1bdf-49af-93ca-f1045b8183bf"/>
+				<reportElement uuid="c2d98d50-1bdf-49af-93ca-f1045b8183bf" x="0" y="4" width="555" height="1"/>
 			</line>
 		</band>
 	</summary>

@@ -1,0 +1,791 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="monthlyClinicalReport" pageWidth="2100" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="2100" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
+	<property name="template.engine" value="tabular_template"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="307"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="681"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="bethanyKids"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<style name="Table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+			<topPen lineWidth="1.0" lineColor="#000000"/>
+			<leftPen lineWidth="1.0" lineColor="#000000"/>
+			<bottomPen lineWidth="1.0" lineColor="#000000"/>
+			<rightPen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#EFEFEF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="tableDataset" uuid="9c1e1904-d2de-4ea1-991e-c9fc676a4ca2">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="bethanyKids"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="242"/>
+		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="750"/>
+		<parameter name="begin_TreatmentDate" class="java.sql.Date">
+			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+		</parameter>
+		<parameter name="end_TreatmentDate" class="java.sql.Date">
+			<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+		</parameter>
+		<queryString language="SQL">
+			<![CDATA[SELECT
+	PatientDemographics.HospID,
+	PatientDemographics.FirstName,
+	PatientDemographics.LastName,
+  PatientDemographics.dateFirstSeen,
+  ObsOR1Procedure.OR1Procedure,
+  ObsPostOpDiagnosis.PostOpDiagnosis,
+  EncDateOfOperation.DateOfOperation,
+	PatientDemographics.birthdate,
+	PatientDemographics.Gender,
+  ObsOR2Procedure.OR2Procedure,
+  PatientDemographics.clinicLocation,
+  PatientDemographics.City,
+  ObsOperatingSurgeon.OperatingSurgeon as surgeon,
+  ObsAssistantSurgeon.AssistantSurgeon as surgeon_assistant,
+  ObsSpecialityofCase.SpecialityofCase
+FROM
+(
+SELECT
+	patient_identifier.identifier AS HospID,
+	person_name.given_name AS FirstName,
+	person_name.family_name AS LastName,
+  dateFirstSeen.value AS dateFirstSeen,
+	person.birthdate AS birthdate,
+	person.gender AS Gender,
+  loc.name AS clinicLocation,
+  person_address.city_village as City,
+	visit.visit_id
+FROM
+	visit visit
+	INNER JOIN patient patient ON visit.patient_id = patient.patient_id
+	INNER JOIN person person ON patient.patient_id = person.person_id
+	INNER JOIN person_name person_name ON person.person_id = person_name.person_id
+	LEFT JOIN patient_identifier patient_identifier ON patient.patient_id = patient_identifier.patient_id
+    AND patient_identifier.identifier_type = 4
+  left join person_attribute dateFirstSeen on person.person_id = dateFirstSeen.person_id
+    and dateFirstSeen.person_attribute_type_id = 17
+  left join encounter enc on patient.patient_id = enc.patient_id
+  left join location loc on enc.location_id = loc.location_id
+  left join person_address person_address on person.person_id = person_address.person_id
+
+GROUP BY visit.visit_id
+) AS PatientDemographics
+LEFT OUTER JOIN
+(
+  select
+  ORProcedure1GroupID.name as OR1Procedure,
+  ORProcedure1GroupID.visit_id
+from
+(
+  select
+    obsORProcedure1ConceptWithGroupID.value_coded,
+    obsORProcedure1ConceptWithGroupID.obs_group_id,
+    cname.name,
+    v.visit_id
+  from obs obsORProcedure1ConceptWithGroupID
+    inner join concept_name cname ON obsORProcedure1ConceptWithGroupID.value_coded = cname.concept_id
+    and cname.locale = "en"
+	  inner join concept c ON cname.concept_id = c.concept_id
+    inner join concept ORProcedure1Ans ON obsORProcedure1ConceptWithGroupID.concept_id = ORProcedure1Ans.concept_id
+    and ORProcedure1Ans.uuid = '1651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    inner join encounter enc on obsORProcedure1ConceptWithGroupID.encounter_id = enc.encounter_id
+	  inner join visit v on enc.visit_id = v.visit_id
+  where
+	  obsORProcedure1ConceptWithGroupID.voided = 0
+    and cname.concept_name_type = "FULLY_SPECIFIED"
+) ORProcedure1GroupID
+  inner join
+(
+  select obsORProcedure1obs.concept_id, obsORProcedure1obs.obs_id
+  from obs obsORProcedure1obs
+  inner join concept ORProcedure1Concept on obsORProcedure1obs.concept_id = ORProcedure1Concept.concept_id
+    and ORProcedure1Concept.uuid = 'd681e30a-c152-4dfb-a0f1-a967fc5ffcc5'
+  where
+    obsORProcedure1obs.voided = 0
+ ) ORProcedure1obsID on ORProcedure1GroupID.obs_group_id = ORProcedure1obsID.obs_id
+) AS ObsOR1Procedure ON PatientDemographics.visit_id = ObsOR1Procedure.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+	  cname.name as PostOpDiagnosis,
+    v.visit_id
+  FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+  inner join concept_name cname ON obs.value_coded = cname.concept_id
+  AND cname.locale = "en"
+	inner join concept opDiagnosis ON obs.concept_id = opDiagnosis.concept_id
+  and opDiagnosis.uuid = '163035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+  WHERE
+	  obs.voided = 0
+    AND cname.concept_name_type = "FULLY_SPECIFIED"
+  GROUP BY v.visit_id
+) AS ObsPostOpDiagnosis ON PatientDemographics.visit_id = ObsPostOpDiagnosis.visit_id
+LEFT OUTER JOIN
+(
+  SELECT
+	  date(enc.encounter_datetime) as DateOfOperation,
+    enc.encounter_id,
+    v.visit_id
+  FROM encounter enc
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+  WHERE
+	  enc.encounter_type = 16
+    AND enc.voided = 0
+  GROUP BY v.visit_id
+) AS EncDateOfOperation ON PatientDemographics.visit_id = EncDateOfOperation.visit_id
+LEFT OUTER JOIN
+(
+   select
+  ORProcedure2GroupID.name as OR2Procedure,
+  ORProcedure2GroupID.visit_id
+from
+(
+  select
+    obsORProcedure2ConceptWithGroupID.value_coded,
+    obsORProcedure2ConceptWithGroupID.obs_group_id,
+    cname.name,
+    v.visit_id
+  from obs obsORProcedure2ConceptWithGroupID
+    inner join concept_name cname ON obsORProcedure2ConceptWithGroupID.value_coded = cname.concept_id
+    and cname.locale = "en"
+	  inner join concept c ON cname.concept_id = c.concept_id
+    inner join concept ORProcedure2Ans ON obsORProcedure2ConceptWithGroupID.concept_id = ORProcedure2Ans.concept_id
+    and ORProcedure2Ans.uuid = '1651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    inner join encounter enc on obsORProcedure2ConceptWithGroupID.encounter_id = enc.encounter_id
+	  inner join visit v on enc.visit_id = v.visit_id
+  where
+	  obsORProcedure2ConceptWithGroupID.voided = 0
+    and cname.concept_name_type = "FULLY_SPECIFIED"
+) ORProcedure2GroupID
+  inner join
+(
+  select obsORProcedure2obs.concept_id, obsORProcedure2obs.obs_id
+  from obs obsORProcedure2obs
+  inner join concept ORProcedure2Concept on obsORProcedure2obs.concept_id = ORProcedure2Concept.concept_id
+    and ORProcedure2Concept.uuid = '5b149b13-4709-4f37-8f63-a183fd0c3511'
+  where
+    obsORProcedure2obs.voided = 0
+ ) ORProcedure2obsID on ORProcedure2GroupID.obs_group_id = ORProcedure2obsID.obs_id
+) AS ObsOR2Procedure ON PatientDemographics.visit_id = ObsOR2Procedure.visit_id
+LEFT OUTER JOIN
+(
+select
+  SurgeonNameGroupID.value_text as OperatingSurgeon,
+  SurgeonNameGroupID.visit_id,
+  SurgeonNameGroupID.encounter_id
+from
+(
+  select
+    obsSurgeonNameConceptWithGroupID.value_text,
+    obsSurgeonNameConceptWithGroupID.obs_group_id,
+    v.visit_id,
+    enc.encounter_id
+  from obs obsSurgeonNameConceptWithGroupID
+    inner join concept SurgeonName ON obsSurgeonNameConceptWithGroupID.concept_id = SurgeonName.concept_id
+    and SurgeonName.uuid = '1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    inner join encounter enc on obsSurgeonNameConceptWithGroupID.encounter_id = enc.encounter_id
+	  inner join visit v on enc.visit_id = v.visit_id
+  where
+	  obsSurgeonNameConceptWithGroupID.voided = 0
+) SurgeonNameGroupID
+  inner join
+(
+  select obsSurgeonName.concept_id, obsSurgeonName.obs_id
+  from obs obsSurgeonName
+  inner join concept SurgeonNameConcept on obsSurgeonName.concept_id = SurgeonNameConcept.concept_id
+    and SurgeonNameConcept.uuid = '164919AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+  where
+    obsSurgeonName.voided = 0
+ ) SurgeonNameobsID on SurgeonNameGroupID.obs_group_id = SurgeonNameobsID.obs_id
+) ObsOperatingSurgeon on ObsOperatingSurgeon.encounter_id = EncDateOfOperation.encounter_id
+LEFT OUTER JOIN
+(
+select
+  AssistantSurgeonNameGroupID.value_text as AssistantSurgeon,
+  AssistantSurgeonNameGroupID.visit_id,
+  AssistantSurgeonNameGroupID.encounter_id
+from
+(
+  select
+    obsAssistantSurgeonNameConceptWithGroupID.value_text,
+    obsAssistantSurgeonNameConceptWithGroupID.obs_group_id,
+    v.visit_id,
+    enc.encounter_id
+  from obs obsAssistantSurgeonNameConceptWithGroupID
+    inner join concept AssistantSurgeonName ON obsAssistantSurgeonNameConceptWithGroupID.concept_id = AssistantSurgeonName.concept_id
+    and AssistantSurgeonName.uuid = '1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    inner join encounter enc on obsAssistantSurgeonNameConceptWithGroupID.encounter_id = enc.encounter_id
+	  inner join visit v on enc.visit_id = v.visit_id
+  where
+	  obsAssistantSurgeonNameConceptWithGroupID.voided = 0
+) AssistantSurgeonNameGroupID
+  inner join
+(
+  select obsAssistantSurgeonName.concept_id, obsAssistantSurgeonName.obs_id
+  from obs obsAssistantSurgeonName
+  inner join concept AssistantSurgeonNameConcept on obsAssistantSurgeonName.concept_id = AssistantSurgeonNameConcept.concept_id
+    and AssistantSurgeonNameConcept.uuid = '269879d8-c629-4c27-b87c-0c341bd80c66'
+  where
+    obsAssistantSurgeonName.voided = 0
+ ) AssistantSurgeonNameobsID on AssistantSurgeonNameGroupID.obs_group_id = AssistantSurgeonNameobsID.obs_id
+) ObsAssistantSurgeon on ObsAssistantSurgeon.encounter_id = EncDateOfOperation.encounter_id
+LEFT OUTER JOIN
+(
+SELECT
+	  cname.name as SpecialityofCase,
+    v.visit_id
+  FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+  inner join concept_name cname ON obs.value_coded = cname.concept_id
+  AND cname.locale = "en"
+	inner join concept c ON cname.concept_id = c.concept_id
+  inner join concept specialityCase on obs.concept_id = specialityCase.concept_id
+  and specialityCase.uuid = '161630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+  WHERE
+    cname.concept_name_type = "FULLY_SPECIFIED"
+    AND obs.voided = 0
+  GROUP BY v.visit_id
+) AS ObsSpecialityofCase ON PatientDemographics.visit_id = ObsSpecialityofCase.visit_id
+
+WHERE
+	(CAST(EncDateOfOperation.DateOfOperation AS DATE) BETWEEN CAST( $P{begin_TreatmentDate} AS DATE) AND CAST($P{end_TreatmentDate} AS DATE))
+GROUP BY PatientDemographics.visit_id
+ORDER BY EncDateOfOperation.DateOfOperation asc]]>
+		</queryString>
+		<field name="HospID" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="HospID"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="patient_identifier"/>
+		</field>
+		<field name="FirstName" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="FirstName"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="person_name"/>
+		</field>
+		<field name="LastName" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="LastName"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="person_name"/>
+		</field>
+		<field name="dateFirstSeen" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="dateFirstSeen"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="person_attribute"/>
+		</field>
+		<field name="OR1Procedure" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="OR1Procedure"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="PostOpDiagnosis" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="PostOpDiagnosis"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="DateOfOperation" class="java.sql.Date">
+			<property name="com.jaspersoft.studio.field.label" value="DateOfOperation"/>
+		</field>
+		<field name="birthdate" class="java.sql.Date">
+			<property name="com.jaspersoft.studio.field.label" value="birthdate"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="person"/>
+		</field>
+		<field name="Gender" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="Gender"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="person"/>
+		</field>
+		<field name="OR2Procedure" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="OR2Procedure"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="clinicLocation" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="clinicLocation"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="location"/>
+		</field>
+		<field name="City" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="City"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="person_address"/>
+		</field>
+		<field name="surgeon" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="surgeon"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="obs"/>
+		</field>
+		<field name="surgeon_assistant" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="surgeon_assistant"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="obs"/>
+		</field>
+		<field name="SpecialityofCase" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="SpecialityofCase"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+	</subDataset>
+	<parameter name="begin_TreatmentDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="end_TreatmentDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+	  date(enc.encounter_datetime) as DateOfOperation,
+    enc.encounter_id,
+    v.visit_id
+  FROM encounter enc
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+  WHERE
+	  enc.encounter_type = 16
+    AND enc.voided = 0
+    AND
+	(CAST(enc.encounter_datetime AS DATE) BETWEEN CAST( $P{begin_TreatmentDate} AS DATE) AND CAST($P{end_TreatmentDate} AS DATE))
+GROUP BY v.visit_id;]]>
+	</queryString>
+	<field name="DateOfOperation" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="DateOfOperation"/>
+	</field>
+	<field name="encounter_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="encounter_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="encounter"/>
+	</field>
+	<field name="visit_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="visit_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="visit"/>
+	</field>
+	<pageHeader>
+		<band height="30">
+			<textField>
+				<reportElement key="" x="0" y="0" width="2100" height="30" uuid="49116181-b94b-42cf-bced-cdf423f91c04">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Monthly Clinical Report from "  + new SimpleDateFormat("yyyy-MMM-dd").format($P{begin_TreatmentDate}) + " to " + new SimpleDateFormat("yyyy-MMM-dd").format($P{end_TreatmentDate})]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<summary>
+		<band height="60" splitType="Stretch">
+			<componentElement>
+				<reportElement x="0" y="0" width="2100" height="60" uuid="e7333a18-f7d4-4c25-8fc9-f208834a45dc">
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="tableDataset" uuid="141381d3-8305-475e-a580-486c63500d3f">
+						<datasetParameter name="begin_TreatmentDate">
+							<datasetParameterExpression><![CDATA[$P{begin_TreatmentDate}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="end_TreatmentDate">
+							<datasetParameterExpression><![CDATA[$P{end_TreatmentDate}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="90" uuid="4f5ce3e6-0b23-412b-a54b-10b7c5fdf786">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30" uuid="89da7aa5-6452-4017-90c5-a025f989a98b"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[HospID# KH]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="30" uuid="f40d0014-2ad5-41af-ab76-73a559990272"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph rightIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{HospID}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="130" uuid="49025e89-8d83-465c-b6d6-d954958f5af6">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="130" height="30" uuid="cf6f4572-eeee-46dc-9318-d560c93bab0e"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[PatientFirstName]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="130" height="30" uuid="f2146ca2-9639-428c-8ec1-b84d1bea1484"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{FirstName}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="120" uuid="a48f6b5a-5a56-421f-94eb-e60fd70b86cd">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="120" height="30" uuid="6d1846d5-d470-4d4c-9e53-1279c6e839d6"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[PatientLastName]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="30" uuid="52461961-9ad8-44e0-89c4-03b3b992e101"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{LastName}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="100" uuid="6d43ae84-ec1b-4a79-811d-02c11ffc2173">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="100" height="30" uuid="ed9edd24-d0da-4210-948f-664c90704069"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[DateFirstSeen]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="100" height="30" uuid="b6f4fea0-a455-4cc0-ad73-e830c867b646"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph rightIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{dateFirstSeen}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="240" uuid="0ddf994b-b5d5-4f6e-92fe-5325c706dbed">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="240" height="30" uuid="c3cdd079-7d47-45e1-a619-ff807d9ebd99"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[TreatmentOne]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="240" height="30" uuid="5477cbad-4255-4025-8dcf-887dea8b41dd"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{OR1Procedure}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="220" uuid="7d6bdbb9-9620-4964-b779-bd44e7f11e0a">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="220" height="30" uuid="bc0561e1-82e3-4e6b-8799-cc9bc7d21115"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Diag]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="220" height="30" uuid="642a16b6-9ebe-4f86-af3a-3605c6a0fbb7"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{PostOpDiagnosis}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="100" uuid="bd5b1746-6520-4e22-8ab2-087bbbbd0c72">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="100" height="30" uuid="5726c135-fa06-4bb7-9deb-52b2ca4a26e6"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[TreatDateOne]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" pattern="MM/dd/yyyy" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="100" height="30" uuid="fa6b10b3-9396-4ace-abe1-9b8f62c62be0"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph rightIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{DateOfOperation}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="80" uuid="a5a1f456-2a98-4bf4-8744-20df2ca36188">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="80" height="30" uuid="d5c66886-025d-4470-8317-f5a8d4c95b6d"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Birthdate]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" pattern="MM/dd/yyyy" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="80" height="30" uuid="d6762f6a-a178-49b8-9745-16bdfc14e5bd"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph rightIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{birthdate}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="40" uuid="76049e6f-51bc-43a6-9794-855e2ce7dcc1">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="40" height="30" uuid="caa7fef9-4843-4ebd-b960-a30401c2c237"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Sex]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="40" height="30" uuid="7ca22f28-6a76-4a8c-ba88-5451ee21549e"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{Gender}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="300" uuid="abc966b8-7c50-4ade-8b0d-a89224f8bc82">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="300" height="30" uuid="8dd3d5bf-2426-48e5-8a55-405d38fad686"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Treatment2]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="300" height="30" uuid="138d7686-8dd2-4cb5-a29c-4586bd7f881d"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{OR2Procedure}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="120" uuid="e060da81-1501-4868-916d-14a48130c74a">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="120" height="30" uuid="c78b9e9f-0578-4de2-8cc9-3cbb10a8fe33"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ClinicLocation]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="30" uuid="bed23c5c-a260-472d-968d-2d5a08017f2f"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{clinicLocation}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="110" uuid="0d094d17-8755-4dc9-800c-4fe1f20e10a7">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="110" height="30" uuid="1b7b042b-5f4e-4a8a-b7a5-b5cd994b4d8e"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[City]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="110" height="30" uuid="550bff38-a269-4559-9262-243635d39f7d"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{City}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="140" uuid="696ab3fa-82b6-4a95-a5ef-839d79e1d214">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="140" height="30" uuid="a52f68d5-0240-4e4c-8226-8a8a422e97c5"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[SurgOne]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="140" height="30" uuid="d921c0c6-ed50-4199-bb59-a387b828c4a9"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{surgeon}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="130" uuid="3dbabc47-eefd-4691-ab2d-0f4c349d5644">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="130" height="30" uuid="def56a7e-195e-448a-a2f7-ad1fe8c22825"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[SurgTwo]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="130" height="30" uuid="18c07100-349a-4e01-beab-af34b3888e1b"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{surgeon_assistant}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="181" uuid="d518391a-6722-491b-9cac-2f707f00a07a">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="181" height="30" uuid="76dc0b6d-1aa3-4067-b031-ade25c1e29cb"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Surgical Speciality]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="181" height="30" uuid="71269a7a-57d5-4d77-8a9a-6086363d59e1"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{SpecialityofCase}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</summary>
+	<noData>
+		<band height="18">
+			<staticText>
+				<reportElement x="0" y="0" width="306" height="18" uuid="f8b5b84b-c885-4b48-abb8-bcba6bc1bada">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[No data was found to display on the report.]]></text>
+			</staticText>
+		</band>
+	</noData>
+</jasperReport>
