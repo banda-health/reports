@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ward Audit" pageWidth="3050" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3050" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ward Audit" pageWidth="3200" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3200" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="build server bk"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Kijabe IMed"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="290"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="699"/>
@@ -44,7 +44,7 @@
 		</box>
 	</style>
 	<subDataset name="tableDataset" uuid="501d3cdf-b24e-471c-988c-262dcec1293d">
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="build server bk"/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Kijabe IMed"/>
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="372"/>
 		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="617"/>
@@ -88,7 +88,8 @@
     ObsICU1stGCSscore.ICU1stGCSscore,
     ObsICUSedation.ICUSedation,
     ObsICUIntubated.ICUIntubated,
-    ObsICU1stRespiratoryRate.ICU1stRespiratoryRate
+    ObsICU1stRespiratoryRate.ICU1stRespiratoryRate,
+    ObsSignedOffConsult.SignedOffConsult
 FROM
 (
 SELECT
@@ -100,15 +101,15 @@ SELECT
 	timestampdiff(year, person.birthdate,visit.date_started) AS Age,
 	person.gender AS Gender,
 	visit.visit_id
-FROM 
-	visit 
+FROM
+	visit
 	INNER JOIN patient ON visit.patient_id = patient.patient_id
 	INNER JOIN person ON patient.patient_id = person.person_id
 	INNER JOIN person_name ON person.person_id = person_name.person_id
 	LEFT OUTER JOIN patient_identifier ON patient.patient_id = patient_identifier.patient_id
     AND
-    patient_identifier.identifier_type = 4
-GROUP BY visit.visit_id	 	 
+    patient_identifier.identifier_type = 5
+GROUP BY visit.visit_id
 ) AS PatientDemographics
 LEFT OUTER JOIN
 (
@@ -116,7 +117,7 @@ SELECT
 	group_concat(cname.name separator ', ') AS Location,
     ca_ward.answer_concept as Ward,
     va.visit_id
-FROM 
+FROM
 	visit_attribute va
 	INNER JOIN concept_answer ca_ward ON va.value_reference = ca_ward.uuid
     INNER JOIN concept_name cname ON ca_ward.answer_concept = cname.concept_id
@@ -130,8 +131,8 @@ GROUP BY va.visit_id
 ) AS IMedWard ON PatientDemographics.visit_id = IMedWard.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	cname.name as CompleteAuditData, 
+SELECT
+	cname.name as CompleteAuditData,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -143,14 +144,33 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept completeAuditQn ON obs.concept_id = completeAuditQn.concept_id
     AND completeAuditQn.uuid = '98f0f043-bdb1-40c6-8c81-6a094056e981'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsCompleteAuditData ON PatientDemographics.visit_id = ObsCompleteAuditData.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	cname.name as DeathHospital, 
+SELECT
+	cname.name as SignedOffConsult,
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
+    AND cname.locale = "en"
+	INNER JOIN concept c ON cname.concept_id = c.concept_id
+    INNER JOIN concept SignedOffConsult ON obs.concept_id = SignedOffConsult.concept_id
+    AND SignedOffConsult.uuid = '62c2aab1-0801-4875-9eeb-ee62d9767df4'
+WHERE
+	  obs.voided = 0
+	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+) AS ObsSignedOffConsult ON PatientDemographics.visit_id = ObsSignedOffConsult.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+	cname.name as DeathHospital,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -162,14 +182,14 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept DeathHospitalQn ON obs.concept_id = DeathHospitalQn.concept_id
     AND DeathHospitalQn.uuid = 'ec559b53-8cc9-4b54-a34e-95a605919365'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsDeathHospital ON PatientDemographics.visit_id = ObsDeathHospital.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	cname.name as PalliativeConsult, 
+SELECT
+	cname.name as PalliativeConsult,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -181,14 +201,14 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept PalliativeConsultQn ON obs.concept_id = PalliativeConsultQn.concept_id
     AND PalliativeConsultQn.uuid = 'a9ae21a2-2631-49d6-928c-d23001812729'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsPalliativeConsult ON PatientDemographics.visit_id = ObsPalliativeConsult.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	cname.name as PreOP, 
+SELECT
+	cname.name as PreOP,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -200,14 +220,14 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept PreOPQn ON obs.concept_id = PreOPQn.concept_id
     AND PreOPQn.uuid = 'eadfe47c-7988-42ea-97d0-e21ce71db7e0'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsPreOP ON PatientDemographics.visit_id = ObsPreOP.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	cname.name as HDUStay, 
+SELECT
+	cname.name as HDUStay,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -219,14 +239,14 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept HDUStayQn ON obs.concept_id = HDUStayQn.concept_id
     AND HDUStayQn.uuid = '46d4283e-3275-4c6e-9d52-cfd858889f4b'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsHDUStay ON PatientDemographics.visit_id = ObsHDUStay.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	cname.name as HDUCoMngt, 
+SELECT
+	cname.name as HDUCoMngt,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -238,15 +258,15 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept HDUCoMngtQn ON obs.concept_id = HDUCoMngtQn.concept_id
     AND HDUCoMngtQn.uuid = 'dd61d87f-3398-46c2-8108-00db2e49bab6'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 GROUP BY v.visit_id
 ) AS ObsHDUCoMngt ON PatientDemographics.visit_id = ObsHDUCoMngt.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	cname.name as HIV, 
+SELECT
+	cname.name as HIV,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -258,15 +278,15 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept HIVQn ON obs.concept_id = HIVQn.concept_id
     AND HIVQn.uuid = '1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 GROUP BY v.visit_id
 ) AS ObsHIV ON PatientDemographics.visit_id = ObsHIV.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	group_concat(obs.value_numeric separator ', ') AS CD4, 
+SELECT
+	group_concat(obs.value_numeric separator ', ') AS CD4,
     v.visit_id
 FROM obs obs
     INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -275,15 +295,15 @@ FROM obs obs
 	INNER JOIN visit v on enc.visit_id = v.visit_id
     INNER JOIN concept c ON c.concept_id = obs.concept_id
     AND c.uuid = '5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-WHERE 
+WHERE
       obs.voided = 0
 GROUP BY v.visit_id
 ) AS ObsCD4 ON PatientDemographics.visit_id = ObsCD4.visit_id
 #
 LEFT OUTER JOIN
 (
-SELECT 
-    cname.name as PatientDiabetic, 
+SELECT
+    cname.name as PatientDiabetic,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -295,15 +315,15 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept PatientDiabeticQn ON obs.concept_id = PatientDiabeticQn.concept_id
     AND PatientDiabeticQn.uuid = 'a424ed50-5f94-4296-a91c-73ebbc1ccca1'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsPatientDiabetic ON PatientDemographics.visit_id = ObsPatientDiabetic.visit_id
 #
 LEFT OUTER JOIN
 (
-SELECT 
-	group_concat(obs.value_numeric separator ', ') as A1c, 
+SELECT
+	group_concat(obs.value_numeric separator ', ') as A1c,
     v.visit_id
 FROM obs obs
     INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -312,15 +332,15 @@ FROM obs obs
 	INNER JOIN visit v on enc.visit_id = v.visit_id
     INNER JOIN concept c ON c.concept_id = obs.concept_id
     AND c.uuid = '159644AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-WHERE 
+WHERE
       obs.voided = 0
 GROUP BY v.visit_id
 ) AS ObsA1c ON PatientDemographics.visit_id = ObsA1c.visit_id
 #
 LEFT OUTER JOIN
 (
-SELECT 
-    cname.name as WardStay, 
+SELECT
+    cname.name as WardStay,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -332,7 +352,7 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept WardStayQn ON obs.concept_id = WardStayQn.concept_id
     AND WardStayQn.uuid = '59073230-e0d9-4cbc-bebc-4bf91a42f3bb'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsWardStay ON PatientDemographics.visit_id = ObsWardStay.visit_id
@@ -340,8 +360,8 @@ WHERE
 ##
 LEFT OUTER JOIN
 (
-SELECT 
-	cname.name as ICUStay, 
+SELECT
+	cname.name as ICUStay,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -353,14 +373,14 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept ICUStayQn ON obs.concept_id = ICUStayQn.concept_id
     AND ICUStayQn.uuid = '9446f7aa-7a1c-4246-a0a5-1ebc3560a0e0'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsICUStay ON PatientDemographics.visit_id = ObsICUStay.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	cname.name as ICUMechanicalventilation, 
+SELECT
+	cname.name as ICUMechanicalventilation,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -372,14 +392,14 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept ICUMechanicalventilationQn ON obs.concept_id = ICUMechanicalventilationQn.concept_id
     AND ICUMechanicalventilationQn.uuid = '99f47aa5-827c-4472-9884-fbbc094f70bd'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsICUMechanicalventilation ON PatientDemographics.visit_id = ObsICUMechanicalventilation.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	cname.name as ICUReceivedvaospressors, 
+SELECT
+	cname.name as ICUReceivedvaospressors,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -391,14 +411,14 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept ICUReceivedvaospressorsQn ON obs.concept_id = ICUReceivedvaospressorsQn.concept_id
     AND ICUReceivedvaospressorsQn.uuid = '611cfa95-0685-4c76-bf9c-981647a085e6'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsICUReceivedvaospressors ON PatientDemographics.visit_id = ObsICUReceivedvaospressors.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	cname.name as ICUInfection, 
+SELECT
+	cname.name as ICUInfection,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -410,14 +430,14 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept ICUInfectionQn ON obs.concept_id = ICUInfectionQn.concept_id
     AND ICUInfectionQn.uuid = '8284a6a3-0445-4a23-96cd-8c6767397051'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsICUInfection ON PatientDemographics.visit_id = ObsICUInfection.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	cname.name as ICU1stSBP, 
+SELECT
+	cname.name as ICU1stSBP,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -429,14 +449,14 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept ICU1stSBPQn ON obs.concept_id = ICU1stSBPQn.concept_id
     AND ICU1stSBPQn.uuid = '8f7ad9c2-aca6-458e-9362-963b4d391a7c'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsICU1stSBP ON PatientDemographics.visit_id = ObsICU1stSBP.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	cname.name as ICU1stMAP, 
+SELECT
+	cname.name as ICU1stMAP,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -448,14 +468,14 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept ICU1stMAPQn ON obs.concept_id = ICU1stMAPQn.concept_id
     AND ICU1stMAPQn.uuid = '0b19946c-63a6-41e8-b3af-a87fc6addab4'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsICU1stMAP ON PatientDemographics.visit_id = ObsICU1stMAP.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	cname.name as ICUSedation, 
+SELECT
+	cname.name as ICUSedation,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -467,14 +487,14 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept ICUSedationQn ON obs.concept_id = ICUSedationQn.concept_id
     AND ICUSedationQn.uuid = '7cccf308-edca-4c3e-afde-e7a3f1155ec6'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsICUSedation ON PatientDemographics.visit_id = ObsICUSedation.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	cname.name as ICUSurgery, 
+SELECT
+	cname.name as ICUSurgery,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -486,14 +506,14 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept ICUSurgeryQn ON obs.concept_id = ICUSurgeryQn.concept_id
     AND ICUSurgeryQn.uuid = '8b1d25f9-2f2e-4dfa-a5a1-87e2f7a3bb52'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsICUSurgery ON PatientDemographics.visit_id = ObsICUSurgery.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-    group_concat(obs.value_numeric separator ', ') as ICU1stHeartRate, 
+SELECT
+    group_concat(obs.value_numeric separator ', ') as ICU1stHeartRate,
     v.visit_id
 FROM obs obs
     INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -502,14 +522,14 @@ FROM obs obs
 	INNER JOIN visit v on enc.visit_id = v.visit_id
     INNER JOIN concept c ON c.concept_id = obs.concept_id
     AND c.uuid = '9360b4f4-4456-4bc2-97fd-68e661a19d78'
-WHERE 
+WHERE
       obs.voided = 0
 GROUP BY v.visit_id
 ) AS ObsICU1stHeartRate ON PatientDemographics.visit_id = ObsICU1stHeartRate.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	group_concat(obs.value_numeric separator ', ') as ICU1stGCSscore, 
+SELECT
+	group_concat(obs.value_numeric separator ', ') as ICU1stGCSscore,
     v.visit_id
 FROM obs obs
     INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -518,13 +538,13 @@ FROM obs obs
 	INNER JOIN visit v on enc.visit_id = v.visit_id
     INNER JOIN concept c ON c.concept_id = obs.concept_id
     AND c.uuid = '99659fa6-fe39-41d7-ac6b-f183d9231310'
-WHERE 
+WHERE
       obs.voided = 0
 GROUP BY v.visit_id
 ) AS ObsICU1stGCSscore ON PatientDemographics.visit_id = ObsICU1stGCSscore.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
+SELECT
 	group_concat(cname.name separator ', ') AS InpatientService,
     v.visit_id
 FROM obs obs
@@ -537,15 +557,15 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept InpatientServiceQn ON obs.concept_id = InpatientServiceQn.concept_id
     AND InpatientServiceQn.uuid = '161630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 GROUP BY v.visit_id
 ) AS ObsInpatientService ON PatientDemographics.visit_id = ObsInpatientService.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	cname.name as ICUIntubated, 
+SELECT
+	cname.name as ICUIntubated,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -557,14 +577,14 @@ FROM obs obs
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
     INNER JOIN concept ICUIntubatedQn ON obs.concept_id = ICUIntubatedQn.concept_id
     AND ICUIntubatedQn.uuid = '8b6e4154-006b-4991-ab18-96c1c5357bf3'
-WHERE  
+WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsICUIntubated ON PatientDemographics.visit_id = ObsICUIntubated.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
-	group_concat(obs.value_numeric separator ', ') as ICU1stRespiratoryRate, 
+SELECT
+	group_concat(obs.value_numeric separator ', ') as ICU1stRespiratoryRate,
     v.visit_id
 FROM obs obs
     INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -573,13 +593,13 @@ FROM obs obs
 	INNER JOIN visit v on enc.visit_id = v.visit_id
     INNER JOIN concept c ON c.concept_id = obs.concept_id
     AND c.uuid = '5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-WHERE 
+WHERE
       obs.voided = 0
 GROUP BY v.visit_id
 ) AS ObsICU1stRespiratoryRate ON PatientDemographics.visit_id = ObsICU1stRespiratoryRate.visit_id
 LEFT OUTER JOIN
 (
-SELECT 
+SELECT
 	group_concat(concat_ws(', ', cname.name, obs.value_text) SEPARATOR ', ')  as DischargeDiagnosis,
     v.visit_id
 FROM obs obs
@@ -589,49 +609,138 @@ FROM obs obs
     AND cname.locale = "en"
 	AND cname.concept_name_type = "FULLY_SPECIFIED"
 	LEFT OUTER JOIN concept c ON cname.concept_id = c.concept_id
-WHERE 
+WHERE
 	  obs.concept_id IN (1284,1642,161602)
       AND obs.voided = 0
 GROUP BY v.visit_id
 ) AS ObsDischargeDiagnosis ON PatientDemographics.visit_id = ObsDischargeDiagnosis.visit_id
 WHERE
-	(CAST(PatientDemographics.stopped AS DATE) BETWEEN CAST( $P{begin_Date of Discharge} AS DATE) AND CAST( $P{end_Date of Discharge} AS DATE))
+	(CAST(PatientDemographics.stopped AS DATE) BETWEEN CAST($P{begin_Date of Discharge} AS DATE) AND CAST( $P{end_Date of Discharge} AS DATE))
     AND (ObsWardStay.WardStay = 'Yes' OR ObsHDUStay.HDUStay = 'Yes')
 GROUP BY PatientDemographics.visit_id
 ORDER BY PatientDemographics.DOA asc]]>
 		</queryString>
-		<field name="visit_id" class="java.lang.Integer"/>
-		<field name="CompleteAuditData" class="java.lang.String"/>
-		<field name="ICUStay" class="java.lang.String"/>
-		<field name="PatientName" class="java.lang.String"/>
-		<field name="HospID" class="java.lang.String"/>
-		<field name="Age" class="java.lang.Long"/>
-		<field name="Gender" class="java.lang.String"/>
-		<field name="DOA" class="java.sql.Date"/>
-		<field name="DOD" class="java.sql.Date"/>
-		<field name="LOS (DAYS)" class="java.lang.Integer"/>
-		<field name="DeathHospital" class="java.lang.String"/>
-		<field name="DischargeDiagnosis" class="java.lang.String"/>
-		<field name="WardStay" class="java.lang.String"/>
-		<field name="HDUStay" class="java.lang.String"/>
-		<field name="HDUCoMngt" class="java.lang.String"/>
-		<field name="PreOP" class="java.lang.String"/>
-		<field name="PalliativeConsult" class="java.lang.String"/>
-		<field name="HIV" class="java.lang.String"/>
-		<field name="CD4" class="java.lang.String"/>
-		<field name="PatientDiabetic" class="java.lang.String"/>
-		<field name="A1c" class="java.lang.String"/>
-		<field name="ICUSurgery" class="java.lang.String"/>
-		<field name="ICUMechanicalventilation" class="java.lang.String"/>
-		<field name="ICUReceivedvaospressors" class="java.lang.String"/>
-		<field name="ICUInfection" class="java.lang.String"/>
-		<field name="ICU1stSBP" class="java.lang.String"/>
-		<field name="ICU1stMAP" class="java.lang.String"/>
-		<field name="ICU1stHeartRate" class="java.lang.String"/>
-		<field name="ICU1stGCSscore" class="java.lang.String"/>
-		<field name="ICUSedation" class="java.lang.String"/>
-		<field name="ICUIntubated" class="java.lang.String"/>
-		<field name="ICU1stRespiratoryRate" class="java.lang.String"/>
+		<field name="visit_id" class="java.lang.Integer">
+			<property name="com.jaspersoft.studio.field.label" value="visit_id"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="visit"/>
+		</field>
+		<field name="CompleteAuditData" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="CompleteAuditData"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICUStay" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICUStay"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="PatientName" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="PatientName"/>
+		</field>
+		<field name="HospID" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="HospID"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="patient_identifier"/>
+		</field>
+		<field name="Age" class="java.lang.Long">
+			<property name="com.jaspersoft.studio.field.label" value="Age"/>
+		</field>
+		<field name="Gender" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="Gender"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="person"/>
+		</field>
+		<field name="DOA" class="java.sql.Date">
+			<property name="com.jaspersoft.studio.field.label" value="DOA"/>
+		</field>
+		<field name="DOD" class="java.sql.Date">
+			<property name="com.jaspersoft.studio.field.label" value="DOD"/>
+		</field>
+		<field name="LOS (DAYS)" class="java.lang.Integer">
+			<property name="com.jaspersoft.studio.field.label" value="LOS (DAYS)"/>
+		</field>
+		<field name="DeathHospital" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="DeathHospital"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="DischargeDiagnosis" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="DischargeDiagnosis"/>
+		</field>
+		<field name="WardStay" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="WardStay"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="HDUStay" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="HDUStay"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="HDUCoMngt" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="HDUCoMngt"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="PreOP" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="PreOP"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="PalliativeConsult" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="PalliativeConsult"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="HIV" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="HIV"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="CD4" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="CD4"/>
+		</field>
+		<field name="PatientDiabetic" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="PatientDiabetic"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="A1c" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="A1c"/>
+		</field>
+		<field name="ICUSurgery" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICUSurgery"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICUMechanicalventilation" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICUMechanicalventilation"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICUReceivedvaospressors" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICUReceivedvaospressors"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICUInfection" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICUInfection"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICU1stSBP" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICU1stSBP"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICU1stMAP" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICU1stMAP"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICU1stHeartRate" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICU1stHeartRate"/>
+		</field>
+		<field name="ICU1stGCSscore" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICU1stGCSscore"/>
+		</field>
+		<field name="ICUSedation" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICUSedation"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICUIntubated" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICUIntubated"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICU1stRespiratoryRate" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICU1stRespiratoryRate"/>
+		</field>
+		<field name="SignedOffConsult" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="SignedOffConsult"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
 	</subDataset>
 	<parameter name="begin_Date of Discharge" class="java.util.Date">
 		<parameterDescription><![CDATA[]]></parameterDescription>
@@ -661,7 +770,7 @@ WHERE
 	<pageHeader>
 		<band height="29">
 			<textField>
-				<reportElement x="0" y="0" width="3053" height="29" uuid="0889690e-62ce-4c15-a2c4-1f7ac1ea05eb">
+				<reportElement x="0" y="0" width="3200" height="29" uuid="0889690e-62ce-4c15-a2c4-1f7ac1ea05eb">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
@@ -675,7 +784,7 @@ WHERE
 	<summary>
 		<band height="60" splitType="Stretch">
 			<componentElement>
-				<reportElement x="0" y="0" width="3050" height="60" uuid="586bf6a6-2ee2-47f0-834f-89b31f95a1d9">
+				<reportElement x="0" y="0" width="3200" height="60" uuid="586bf6a6-2ee2-47f0-834f-89b31f95a1d9">
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
@@ -1434,6 +1543,29 @@ WHERE
 									<font fontName="DejaVu Sans" size="12"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{ICU1stRespiratoryRate}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="146" uuid="948f7eea-efe4-4ba9-90d8-cbab6ed159d5">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column32"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="146" height="30" uuid="7b462a3e-7154-4295-a83e-d1604a79f515"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Signed off consult before discharge]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="146" height="30" uuid="eb8b579b-7851-49eb-b089-40299563c854"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{SignedOffConsult}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
