@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ICU Audit" pageWidth="3050" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3050" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ICU Audit" pageWidth="3200" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3200" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="build server bk"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Kijabe IMed"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="290"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="699"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<style name="Table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -44,7 +52,7 @@
 		</box>
 	</style>
 	<subDataset name="tableDataset" uuid="501d3cdf-b24e-471c-988c-262dcec1293d">
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="build server bk"/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Kijabe IMed"/>
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="361"/>
 		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="628"/>
@@ -88,7 +96,8 @@
     ObsICU1stGCSscore.ICU1stGCSscore,
     ObsICUSedation.ICUSedation,
     ObsICUIntubated.ICUIntubated,
-    ObsICU1stRespiratoryRate.ICU1stRespiratoryRate
+    ObsICU1stRespiratoryRate.ICU1stRespiratoryRate,
+    ObsSignedOffConsult.SignedOffConsult
 FROM
 (
 SELECT
@@ -107,7 +116,7 @@ FROM
 	INNER JOIN person_name ON person.person_id = person_name.person_id
 	LEFT OUTER JOIN patient_identifier ON patient.patient_id = patient_identifier.patient_id
     AND
-    patient_identifier.identifier_type = 4
+    patient_identifier.identifier_type = 5
 GROUP BY visit.visit_id	 	 
 ) AS PatientDemographics
 LEFT OUTER JOIN
@@ -147,6 +156,25 @@ WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
 ) AS ObsCompleteAuditData ON PatientDemographics.visit_id = ObsCompleteAuditData.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+	cname.name as SignedOffConsult,
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
+    AND cname.locale = "en"
+	INNER JOIN concept c ON cname.concept_id = c.concept_id
+    INNER JOIN concept SignedOffConsult ON obs.concept_id = SignedOffConsult.concept_id
+    AND SignedOffConsult.uuid = '62c2aab1-0801-4875-9eeb-ee62d9767df4'
+WHERE
+	  obs.voided = 0
+	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+) AS ObsSignedOffConsult ON PatientDemographics.visit_id = ObsSignedOffConsult.visit_id
 LEFT OUTER JOIN
 (
 SELECT 
@@ -600,38 +628,127 @@ WHERE
 GROUP BY PatientDemographics.visit_id
 ORDER BY PatientDemographics.DOA asc]]>
 		</queryString>
-		<field name="visit_id" class="java.lang.Integer"/>
-		<field name="CompleteAuditData" class="java.lang.String"/>
-		<field name="ICUStay" class="java.lang.String"/>
-		<field name="PatientName" class="java.lang.String"/>
-		<field name="HospID" class="java.lang.String"/>
-		<field name="Age" class="java.lang.Long"/>
-		<field name="Gender" class="java.lang.String"/>
-		<field name="DOA" class="java.sql.Date"/>
-		<field name="DOD" class="java.sql.Date"/>
-		<field name="LOS (DAYS)" class="java.lang.Integer"/>
-		<field name="DeathHospital" class="java.lang.String"/>
-		<field name="DischargeDiagnosis" class="java.lang.String"/>
-		<field name="WardStay" class="java.lang.String"/>
-		<field name="HDUStay" class="java.lang.String"/>
-		<field name="HDUCoMngt" class="java.lang.String"/>
-		<field name="PreOP" class="java.lang.String"/>
-		<field name="PalliativeConsult" class="java.lang.String"/>
-		<field name="HIV" class="java.lang.String"/>
-		<field name="CD4" class="java.lang.String"/>
-		<field name="PatientDiabetic" class="java.lang.String"/>
-		<field name="A1c" class="java.lang.String"/>
-		<field name="ICUSurgery" class="java.lang.String"/>
-		<field name="ICUMechanicalventilation" class="java.lang.String"/>
-		<field name="ICUReceivedvaospressors" class="java.lang.String"/>
-		<field name="ICUInfection" class="java.lang.String"/>
-		<field name="ICU1stSBP" class="java.lang.String"/>
-		<field name="ICU1stMAP" class="java.lang.String"/>
-		<field name="ICU1stHeartRate" class="java.lang.String"/>
-		<field name="ICU1stGCSscore" class="java.lang.String"/>
-		<field name="ICUSedation" class="java.lang.String"/>
-		<field name="ICUIntubated" class="java.lang.String"/>
-		<field name="ICU1stRespiratoryRate" class="java.lang.String"/>
+		<field name="visit_id" class="java.lang.Integer">
+			<property name="com.jaspersoft.studio.field.label" value="visit_id"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="visit"/>
+		</field>
+		<field name="CompleteAuditData" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="CompleteAuditData"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICUStay" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICUStay"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="PatientName" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="PatientName"/>
+		</field>
+		<field name="HospID" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="HospID"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="patient_identifier"/>
+		</field>
+		<field name="Age" class="java.lang.Long">
+			<property name="com.jaspersoft.studio.field.label" value="Age"/>
+		</field>
+		<field name="Gender" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="Gender"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="person"/>
+		</field>
+		<field name="DOA" class="java.sql.Date">
+			<property name="com.jaspersoft.studio.field.label" value="DOA"/>
+		</field>
+		<field name="DOD" class="java.sql.Date">
+			<property name="com.jaspersoft.studio.field.label" value="DOD"/>
+		</field>
+		<field name="LOS (DAYS)" class="java.lang.Integer">
+			<property name="com.jaspersoft.studio.field.label" value="LOS (DAYS)"/>
+		</field>
+		<field name="DeathHospital" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="DeathHospital"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="DischargeDiagnosis" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="DischargeDiagnosis"/>
+		</field>
+		<field name="WardStay" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="WardStay"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="HDUStay" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="HDUStay"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="HDUCoMngt" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="HDUCoMngt"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="PreOP" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="PreOP"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="PalliativeConsult" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="PalliativeConsult"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="HIV" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="HIV"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="CD4" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="CD4"/>
+		</field>
+		<field name="PatientDiabetic" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="PatientDiabetic"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="A1c" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="A1c"/>
+		</field>
+		<field name="ICUSurgery" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICUSurgery"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICUMechanicalventilation" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICUMechanicalventilation"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICUReceivedvaospressors" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICUReceivedvaospressors"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICUInfection" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICUInfection"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICU1stSBP" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICU1stSBP"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICU1stMAP" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICU1stMAP"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICU1stHeartRate" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICU1stHeartRate"/>
+		</field>
+		<field name="ICU1stGCSscore" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICU1stGCSscore"/>
+		</field>
+		<field name="ICUSedation" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICUSedation"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICUIntubated" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICUIntubated"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
+		<field name="ICU1stRespiratoryRate" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="ICU1stRespiratoryRate"/>
+		</field>
+		<field name="SignedOffConsult" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="SignedOffConsult"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
 	</subDataset>
 	<parameter name="begin_Date of Discharge" class="java.util.Date">
 		<parameterDescription><![CDATA[]]></parameterDescription>
@@ -659,7 +776,7 @@ WHERE
 	<pageHeader>
 		<band height="29">
 			<textField>
-				<reportElement x="0" y="0" width="3053" height="29" uuid="0889690e-62ce-4c15-a2c4-1f7ac1ea05eb">
+				<reportElement x="0" y="0" width="3200" height="29" uuid="0889690e-62ce-4c15-a2c4-1f7ac1ea05eb">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
@@ -673,7 +790,7 @@ WHERE
 	<summary>
 		<band height="60" splitType="Stretch">
 			<componentElement>
-				<reportElement x="0" y="0" width="3050" height="60" uuid="586bf6a6-2ee2-47f0-834f-89b31f95a1d9">
+				<reportElement x="0" y="0" width="3200" height="60" uuid="586bf6a6-2ee2-47f0-834f-89b31f95a1d9">
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
@@ -1434,6 +1551,29 @@ WHERE
 									<font fontName="DejaVu Sans" size="12"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{ICU1stRespiratoryRate}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="146" uuid="a5ad07c3-5e1c-4152-93de-e32f167a0136">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column32"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="146" height="30" uuid="7ef4ab54-56c3-4bb8-bc81-2f5e05763ce3"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Signed off consult before discharge]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="146" height="30" uuid="f6011676-b01c-4c14-85aa-8aad9f497642"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{SignedOffConsult}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
