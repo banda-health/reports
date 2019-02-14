@@ -1084,7 +1084,7 @@ WHERE
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="90" height="30" uuid="5c2128c8-e532-4157-9353-dc0c302e0000"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="30" uuid="5c2128c8-e532-4157-9353-dc0c302e0000"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1108,7 +1108,7 @@ WHERE
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="95" height="30" uuid="2eaebf8d-927a-47d0-82a2-819948e114b2"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="95" height="30" uuid="2eaebf8d-927a-47d0-82a2-819948e114b2"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1132,7 +1132,7 @@ WHERE
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="105" height="30" uuid="aadeadeb-b8d9-48b2-9eb8-17591c14dcc6"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="105" height="30" uuid="aadeadeb-b8d9-48b2-9eb8-17591c14dcc6"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
