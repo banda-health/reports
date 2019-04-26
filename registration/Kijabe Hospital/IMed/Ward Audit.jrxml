@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ward Audit" pageWidth="3200" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3200" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ward Audit" pageWidth="3490" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3490" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Kijabe IMed"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="290"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="699"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<style name="Table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -89,7 +97,8 @@
     ObsICUSedation.ICUSedation,
     ObsICUIntubated.ICUIntubated,
     ObsICU1stRespiratoryRate.ICU1stRespiratoryRate,
-    ObsSignedOffConsult.SignedOffConsult
+    ObsSignedOffConsult.SignedOffConsult,
+    ObsDeathClassification.DeathClassification
 FROM
 (
 SELECT
@@ -111,6 +120,25 @@ FROM
     patient_identifier.identifier_type = 5
 GROUP BY visit.visit_id
 ) AS PatientDemographics
+LEFT OUTER JOIN
+(
+SELECT
+	cname.name as DeathClassification,
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
+    AND cname.locale = "en"
+	INNER JOIN concept c ON cname.concept_id = c.concept_id
+    INNER JOIN concept DeathClassification ON obs.concept_id = DeathClassification.concept_id
+    AND DeathClassification.uuid = '84540b74-9984-4895-b770-9745c9e72390'
+WHERE
+	  obs.voided = 0
+	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+) AS ObsDeathClassification ON PatientDemographics.visit_id = ObsDeathClassification.visit_id
 LEFT OUTER JOIN
 (
 SELECT
@@ -698,6 +726,10 @@ ORDER BY PatientDemographics.DOA asc;]]>
 			<property name="com.jaspersoft.studio.field.label" value="SignedOffConsult"/>
 			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
 		</field>
+		<field name="DeathClassification" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="DeathClassification"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
 	</subDataset>
 	<parameter name="begin_Date of Discharge" class="java.util.Date">
 		<parameterDescription><![CDATA[]]></parameterDescription>
@@ -727,7 +759,7 @@ WHERE
 	<pageHeader>
 		<band height="29">
 			<textField>
-				<reportElement x="0" y="0" width="3200" height="29" uuid="0889690e-62ce-4c15-a2c4-1f7ac1ea05eb">
+				<reportElement x="0" y="0" width="3490" height="29" uuid="0889690e-62ce-4c15-a2c4-1f7ac1ea05eb">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
@@ -741,7 +773,7 @@ WHERE
 	<summary>
 		<band height="60" splitType="Stretch">
 			<componentElement>
-				<reportElement x="0" y="0" width="3200" height="60" uuid="586bf6a6-2ee2-47f0-834f-89b31f95a1d9">
+				<reportElement x="0" y="0" width="3490" height="60" uuid="586bf6a6-2ee2-47f0-834f-89b31f95a1d9">
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
@@ -972,8 +1004,31 @@ WHERE
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="471" uuid="8a59a1bc-5f77-45bb-8412-99eccfcdcf60">
+					<jr:column width="290" uuid="6f876553-a7ff-4735-81aa-fca2f3b89c45">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="290" height="30" uuid="b59873e8-220c-4bb8-a938-92952d613afd"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Classification of Death]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="290" height="30" uuid="7f070a15-12a6-4658-acb7-50ca2e9c8cb4"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{DeathClassification}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="471" uuid="8a59a1bc-5f77-45bb-8412-99eccfcdcf60">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -997,7 +1052,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="90" uuid="73d728ed-4ef3-43ff-a5c4-475bcaa1272f">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1021,7 +1076,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="90" uuid="1281abf4-36ef-4685-acd4-b212e1ba87ba">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1045,7 +1100,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="95" uuid="e0608e7d-fe06-492c-acc3-6a5c9ed50ce9">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1069,7 +1124,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="105" uuid="7b374c2b-de60-40a4-b47e-07d5f8d828a6">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1093,7 +1148,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="70" uuid="3da9d431-1fc9-4f7e-bf5e-609ce9caa9d7">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1117,7 +1172,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="70" uuid="a010cd71-3a15-4664-a630-6dd8b5539835">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1141,7 +1196,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="50" uuid="ae1d2925-294f-446a-8b48-a3e866c2ed40">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column18"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1165,7 +1220,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="65" uuid="25e68ba1-24c5-4b05-8b1f-96c605f73e6f">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column18"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column19"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1189,7 +1244,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="60" uuid="a4f22952-5c27-459f-bbc7-37c40693239b">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column19"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column20"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1213,7 +1268,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="60" uuid="a1d85be8-b74b-492e-b2e1-4af36b05623b">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column20"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column21"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1241,7 +1296,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="120" uuid="3f429c68-cff4-49f2-8828-ffc62e08ca40">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column21"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column22"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1265,7 +1320,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="110" uuid="1cf0e6e9-8c73-46e9-bb98-13dcdbbf854e">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column22"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column23"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1289,7 +1344,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="95" uuid="b4b758a3-75ac-4425-841c-6096e8f37e7e">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column23"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column24"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1313,7 +1368,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="96" uuid="d71d35c3-2b0b-4939-ae9b-c5f18ce4a864">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column24"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column25"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1337,7 +1392,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="59" uuid="4e640e2e-91de-4565-b25d-5220a336a17e">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column25"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column26"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1361,7 +1416,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="60" uuid="93f27db8-d4c3-4e3a-814a-b8bba09cc3ab">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column26"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column27"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1385,7 +1440,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="95" uuid="b44fbad3-1814-4d6a-b415-89f03caf8871">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column27"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column28"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1409,7 +1464,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="90" uuid="d9afa87d-a55a-41c4-8754-2ed73c5c4e75">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column28"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column29"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1433,7 +1488,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="139" uuid="1144b930-1e80-4e7d-a32d-4b4c193e7b7a">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column29"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column30"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1457,7 +1512,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="114" uuid="20eb403e-aea4-4e3c-aaa3-229d0d0d558c">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column30"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column31"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1481,7 +1536,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="120" uuid="b69a3af5-1534-4f26-845a-be48fc63c3f3">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column31"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column32"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="30" uuid="ec746d9d-8632-4e41-9a78-4cd69f13a618"/>
@@ -1504,7 +1559,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="146" uuid="948f7eea-efe4-4ba9-90d8-cbab6ed159d5">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column32"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column33"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="146" height="30" uuid="7b462a3e-7154-4295-a83e-d1604a79f515"/>
