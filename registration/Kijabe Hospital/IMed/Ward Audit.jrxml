@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ward Audit" pageWidth="3200" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3200" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ward Audit" pageWidth="3490" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3490" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Kijabe IMed"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="290"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="699"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<style name="Table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -89,7 +97,8 @@
     ObsICUSedation.ICUSedation,
     ObsICUIntubated.ICUIntubated,
     ObsICU1stRespiratoryRate.ICU1stRespiratoryRate,
-    ObsSignedOffConsult.SignedOffConsult
+    ObsSignedOffConsult.SignedOffConsult,
+    ObsDeathClassification.DeathClassification
 FROM
 (
 SELECT
@@ -114,25 +123,7 @@ GROUP BY visit.visit_id
 LEFT OUTER JOIN
 (
 SELECT
-	group_concat(cname.name separator ', ') AS Location,
-    ca_ward.answer_concept as Ward,
-    va.visit_id
-FROM
-	visit_attribute va
-	INNER JOIN concept_answer ca_ward ON va.value_reference = ca_ward.uuid
-    INNER JOIN concept_name cname ON ca_ward.answer_concept = cname.concept_id
-    AND cname.locale = 'en'
-WHERE cname.concept_name_type = "FULLY_SPECIFIED"
-      AND va.value_reference IN ('0f604753-3b1e-4396-8c65-129fbcb9fd9f','90ebd638-c928-426b-9427-b25e1fa70f91',
-	'4eff276b-8369-4933-bdad-105986977264','44ff45ba-38ec-44e7-b6cd-9350b2b3a16d',
-	'403c4533-c598-4483-bf8c-ad8eb405ebdf','7e63ac76-3479-41b6-ad68-ac3259cbdbd4',
-	'26b283b1-0639-4d15-9716-6364257d9966','aa1146dd-230d-42c8-8530-daecf62cfbc5')
-GROUP BY va.visit_id
-) AS IMedWard ON PatientDemographics.visit_id = IMedWard.visit_id
-LEFT OUTER JOIN
-(
-SELECT
-	cname.name as CompleteAuditData,
+	cname.name as DeathClassification,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -142,12 +133,12 @@ FROM obs obs
     INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
     AND cname.locale = "en"
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
-    INNER JOIN concept completeAuditQn ON obs.concept_id = completeAuditQn.concept_id
-    AND completeAuditQn.uuid = '98f0f043-bdb1-40c6-8c81-6a094056e981'
+    INNER JOIN concept DeathClassification ON obs.concept_id = DeathClassification.concept_id
+    AND DeathClassification.uuid = '84540b74-9984-4895-b770-9745c9e72390'
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
-) AS ObsCompleteAuditData ON PatientDemographics.visit_id = ObsCompleteAuditData.visit_id
+) AS ObsDeathClassification ON PatientDemographics.visit_id = ObsDeathClassification.visit_id
 LEFT OUTER JOIN
 (
 SELECT
@@ -170,7 +161,23 @@ WHERE
 LEFT OUTER JOIN
 (
 SELECT
-	cname.name as DeathHospital,
+	group_concat(obs.value_numeric separator ', ') as ICU1stRespiratoryRate,
+    v.visit_id
+FROM obs obs
+    INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept c ON c.concept_id = obs.concept_id
+    AND c.uuid = '5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+WHERE
+      obs.voided = 0
+GROUP BY v.visit_id
+) AS ObsICU1stRespiratoryRate ON PatientDemographics.visit_id = ObsICU1stRespiratoryRate.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+	cname.name as ICUIntubated,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -180,12 +187,248 @@ FROM obs obs
     INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
     AND cname.locale = "en"
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
-    INNER JOIN concept DeathHospitalQn ON obs.concept_id = DeathHospitalQn.concept_id
-    AND DeathHospitalQn.uuid = 'ec559b53-8cc9-4b54-a34e-95a605919365'
+    INNER JOIN concept ICUIntubatedQn ON obs.concept_id = ICUIntubatedQn.concept_id
+    AND ICUIntubatedQn.uuid = '8b6e4154-006b-4991-ab18-96c1c5357bf3'
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
-) AS ObsDeathHospital ON PatientDemographics.visit_id = ObsDeathHospital.visit_id
+) AS ObsICUIntubated ON PatientDemographics.visit_id = ObsICUIntubated.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+	cname.name as ICUSedation,
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
+    AND cname.locale = "en"
+	INNER JOIN concept c ON cname.concept_id = c.concept_id
+    INNER JOIN concept ICUSedationQn ON obs.concept_id = ICUSedationQn.concept_id
+    AND ICUSedationQn.uuid = '7cccf308-edca-4c3e-afde-e7a3f1155ec6'
+WHERE
+	  obs.voided = 0
+	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+) AS ObsICUSedation ON PatientDemographics.visit_id = ObsICUSedation.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+	group_concat(obs.value_numeric separator ', ') as ICU1stGCSscore,
+    v.visit_id
+FROM obs obs
+    INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept c ON c.concept_id = obs.concept_id
+    AND c.uuid = '99659fa6-fe39-41d7-ac6b-f183d9231310'
+WHERE
+      obs.voided = 0
+GROUP BY v.visit_id
+) AS ObsICU1stGCSscore ON PatientDemographics.visit_id = ObsICU1stGCSscore.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+    group_concat(obs.value_numeric separator ', ') as ICU1stHeartRate,
+    v.visit_id
+FROM obs obs
+    INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept c ON c.concept_id = obs.concept_id
+    AND c.uuid = '9360b4f4-4456-4bc2-97fd-68e661a19d78'
+WHERE
+      obs.voided = 0
+GROUP BY v.visit_id
+) AS ObsICU1stHeartRate ON PatientDemographics.visit_id = ObsICU1stHeartRate.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+	cname.name as ICU1stMAP,
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
+    AND cname.locale = "en"
+	INNER JOIN concept c ON cname.concept_id = c.concept_id
+    INNER JOIN concept ICU1stMAPQn ON obs.concept_id = ICU1stMAPQn.concept_id
+    AND ICU1stMAPQn.uuid = '0b19946c-63a6-41e8-b3af-a87fc6addab4'
+WHERE
+	  obs.voided = 0
+	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+) AS ObsICU1stMAP ON PatientDemographics.visit_id = ObsICU1stMAP.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+	cname.name as ICU1stSBP,
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
+    AND cname.locale = "en"
+	INNER JOIN concept c ON cname.concept_id = c.concept_id
+    INNER JOIN concept ICU1stSBPQn ON obs.concept_id = ICU1stSBPQn.concept_id
+    AND ICU1stSBPQn.uuid = '8f7ad9c2-aca6-458e-9362-963b4d391a7c'
+WHERE
+	  obs.voided = 0
+	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+) AS ObsICU1stSBP ON PatientDemographics.visit_id = ObsICU1stSBP.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+	cname.name as ICUInfection,
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
+    AND cname.locale = "en"
+	INNER JOIN concept c ON cname.concept_id = c.concept_id
+    INNER JOIN concept ICUInfectionQn ON obs.concept_id = ICUInfectionQn.concept_id
+    AND ICUInfectionQn.uuid = '8284a6a3-0445-4a23-96cd-8c6767397051'
+WHERE
+	  obs.voided = 0
+	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+) AS ObsICUInfection ON PatientDemographics.visit_id = ObsICUInfection.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+	cname.name as ICUReceivedvaospressors,
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
+    AND cname.locale = "en"
+	INNER JOIN concept c ON cname.concept_id = c.concept_id
+    INNER JOIN concept ICUReceivedvaospressorsQn ON obs.concept_id = ICUReceivedvaospressorsQn.concept_id
+    AND ICUReceivedvaospressorsQn.uuid = '611cfa95-0685-4c76-bf9c-981647a085e6'
+WHERE
+	  obs.voided = 0
+	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+) AS ObsICUReceivedvaospressors ON PatientDemographics.visit_id = ObsICUReceivedvaospressors.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+	cname.name as ICUMechanicalventilation,
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
+    AND cname.locale = "en"
+	INNER JOIN concept c ON cname.concept_id = c.concept_id
+    INNER JOIN concept ICUMechanicalventilationQn ON obs.concept_id = ICUMechanicalventilationQn.concept_id
+    AND ICUMechanicalventilationQn.uuid = '99f47aa5-827c-4472-9884-fbbc094f70bd'
+WHERE
+	  obs.voided = 0
+	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+) AS ObsICUMechanicalventilation ON PatientDemographics.visit_id = ObsICUMechanicalventilation.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+	cname.name as ICUSurgery,
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
+    AND cname.locale = "en"
+	INNER JOIN concept c ON cname.concept_id = c.concept_id
+    INNER JOIN concept ICUSurgeryQn ON obs.concept_id = ICUSurgeryQn.concept_id
+    AND ICUSurgeryQn.uuid = '8b1d25f9-2f2e-4dfa-a5a1-87e2f7a3bb52'
+WHERE
+	  obs.voided = 0
+	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+) AS ObsICUSurgery ON PatientDemographics.visit_id = ObsICUSurgery.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+	group_concat(obs.value_numeric separator ', ') as A1c,
+    v.visit_id
+FROM obs obs
+    INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept c ON c.concept_id = obs.concept_id
+    AND c.uuid = '159644AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+WHERE
+      obs.voided = 0
+GROUP BY v.visit_id
+) AS ObsA1c ON PatientDemographics.visit_id = ObsA1c.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+    cname.name as PatientDiabetic,
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
+    AND cname.locale = "en"
+	INNER JOIN concept c ON cname.concept_id = c.concept_id
+    INNER JOIN concept PatientDiabeticQn ON obs.concept_id = PatientDiabeticQn.concept_id
+    AND PatientDiabeticQn.uuid = 'a424ed50-5f94-4296-a91c-73ebbc1ccca1'
+WHERE
+	  obs.voided = 0
+	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+) AS ObsPatientDiabetic ON PatientDemographics.visit_id = ObsPatientDiabetic.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+	group_concat(obs.value_numeric separator ', ') AS CD4,
+    v.visit_id
+FROM obs obs
+    INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept c ON c.concept_id = obs.concept_id
+    AND c.uuid = '5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+WHERE
+      obs.voided = 0
+GROUP BY v.visit_id
+) AS ObsCD4 ON PatientDemographics.visit_id = ObsCD4.visit_id
+LEFT OUTER JOIN
+(
+SELECT
+	cname.name as HIV,
+    v.visit_id
+FROM obs obs
+	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+	INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
+    AND cname.locale = "en"
+	INNER JOIN concept c ON cname.concept_id = c.concept_id
+    INNER JOIN concept HIVQn ON obs.concept_id = HIVQn.concept_id
+    AND HIVQn.uuid = '1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+WHERE
+	  obs.voided = 0
+	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
+) AS ObsHIV ON PatientDemographics.visit_id = ObsHIV.visit_id
 LEFT OUTER JOIN
 (
 SELECT
@@ -227,25 +470,6 @@ WHERE
 LEFT OUTER JOIN
 (
 SELECT
-	cname.name as HDUStay,
-    v.visit_id
-FROM obs obs
-	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
-    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
-    AND cname.locale = "en"
-	INNER JOIN concept c ON cname.concept_id = c.concept_id
-    INNER JOIN concept HDUStayQn ON obs.concept_id = HDUStayQn.concept_id
-    AND HDUStayQn.uuid = '46d4283e-3275-4c6e-9d52-cfd858889f4b'
-WHERE
-	  obs.voided = 0
-	  AND cname.concept_name_type = "FULLY_SPECIFIED"
-) AS ObsHDUStay ON PatientDemographics.visit_id = ObsHDUStay.visit_id
-LEFT OUTER JOIN
-(
-SELECT
 	cname.name as HDUCoMngt,
     v.visit_id
 FROM obs obs
@@ -266,7 +490,7 @@ GROUP BY v.visit_id
 LEFT OUTER JOIN
 (
 SELECT
-	cname.name as HIV,
+	cname.name as DeathHospital,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -276,88 +500,12 @@ FROM obs obs
     INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
     AND cname.locale = "en"
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
-    INNER JOIN concept HIVQn ON obs.concept_id = HIVQn.concept_id
-    AND HIVQn.uuid = '1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    INNER JOIN concept DeathHospitalQn ON obs.concept_id = DeathHospitalQn.concept_id
+    AND DeathHospitalQn.uuid = 'ec559b53-8cc9-4b54-a34e-95a605919365'
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
-GROUP BY v.visit_id
-) AS ObsHIV ON PatientDemographics.visit_id = ObsHIV.visit_id
-LEFT OUTER JOIN
-(
-SELECT
-	group_concat(obs.value_numeric separator ', ') AS CD4,
-    v.visit_id
-FROM obs obs
-    INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
-    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-    INNER JOIN concept c ON c.concept_id = obs.concept_id
-    AND c.uuid = '5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-WHERE
-      obs.voided = 0
-GROUP BY v.visit_id
-) AS ObsCD4 ON PatientDemographics.visit_id = ObsCD4.visit_id
-#
-LEFT OUTER JOIN
-(
-SELECT
-    cname.name as PatientDiabetic,
-    v.visit_id
-FROM obs obs
-	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
-    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
-    AND cname.locale = "en"
-	INNER JOIN concept c ON cname.concept_id = c.concept_id
-    INNER JOIN concept PatientDiabeticQn ON obs.concept_id = PatientDiabeticQn.concept_id
-    AND PatientDiabeticQn.uuid = 'a424ed50-5f94-4296-a91c-73ebbc1ccca1'
-WHERE
-	  obs.voided = 0
-	  AND cname.concept_name_type = "FULLY_SPECIFIED"
-) AS ObsPatientDiabetic ON PatientDemographics.visit_id = ObsPatientDiabetic.visit_id
-#
-LEFT OUTER JOIN
-(
-SELECT
-	group_concat(obs.value_numeric separator ', ') as A1c,
-    v.visit_id
-FROM obs obs
-    INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
-    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-    INNER JOIN concept c ON c.concept_id = obs.concept_id
-    AND c.uuid = '159644AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-WHERE
-      obs.voided = 0
-GROUP BY v.visit_id
-) AS ObsA1c ON PatientDemographics.visit_id = ObsA1c.visit_id
-#
-LEFT OUTER JOIN
-(
-SELECT
-    cname.name as WardStay,
-    v.visit_id
-FROM obs obs
-	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
-    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
-    AND cname.locale = "en"
-	INNER JOIN concept c ON cname.concept_id = c.concept_id
-    INNER JOIN concept WardStayQn ON obs.concept_id = WardStayQn.concept_id
-    AND WardStayQn.uuid = '59073230-e0d9-4cbc-bebc-4bf91a42f3bb'
-WHERE
-	  obs.voided = 0
-	  AND cname.concept_name_type = "FULLY_SPECIFIED"
-) AS ObsWardStay ON PatientDemographics.visit_id = ObsWardStay.visit_id
-#
-##
+) AS ObsDeathHospital ON PatientDemographics.visit_id = ObsDeathHospital.visit_id
 LEFT OUTER JOIN
 (
 SELECT
@@ -380,7 +528,7 @@ WHERE
 LEFT OUTER JOIN
 (
 SELECT
-	cname.name as ICUMechanicalventilation,
+	cname.name as CompleteAuditData,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -390,16 +538,16 @@ FROM obs obs
     INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
     AND cname.locale = "en"
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
-    INNER JOIN concept ICUMechanicalventilationQn ON obs.concept_id = ICUMechanicalventilationQn.concept_id
-    AND ICUMechanicalventilationQn.uuid = '99f47aa5-827c-4472-9884-fbbc094f70bd'
+    INNER JOIN concept completeAuditQn ON obs.concept_id = completeAuditQn.concept_id
+    AND completeAuditQn.uuid = '98f0f043-bdb1-40c6-8c81-6a094056e981'
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
-) AS ObsICUMechanicalventilation ON PatientDemographics.visit_id = ObsICUMechanicalventilation.visit_id
+) AS ObsCompleteAuditData ON PatientDemographics.visit_id = ObsCompleteAuditData.visit_id
 LEFT OUTER JOIN
 (
 SELECT
-	cname.name as ICUReceivedvaospressors,
+    cname.name as WardStay,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -409,16 +557,16 @@ FROM obs obs
     INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
     AND cname.locale = "en"
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
-    INNER JOIN concept ICUReceivedvaospressorsQn ON obs.concept_id = ICUReceivedvaospressorsQn.concept_id
-    AND ICUReceivedvaospressorsQn.uuid = '611cfa95-0685-4c76-bf9c-981647a085e6'
+    INNER JOIN concept WardStayQn ON obs.concept_id = WardStayQn.concept_id
+    AND WardStayQn.uuid = '59073230-e0d9-4cbc-bebc-4bf91a42f3bb'
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
-) AS ObsICUReceivedvaospressors ON PatientDemographics.visit_id = ObsICUReceivedvaospressors.visit_id
+) AS ObsWardStay ON PatientDemographics.visit_id = ObsWardStay.visit_id
 LEFT OUTER JOIN
 (
 SELECT
-	cname.name as ICUInfection,
+	cname.name as HDUStay,
     v.visit_id
 FROM obs obs
 	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
@@ -428,175 +576,12 @@ FROM obs obs
     INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
     AND cname.locale = "en"
 	INNER JOIN concept c ON cname.concept_id = c.concept_id
-    INNER JOIN concept ICUInfectionQn ON obs.concept_id = ICUInfectionQn.concept_id
-    AND ICUInfectionQn.uuid = '8284a6a3-0445-4a23-96cd-8c6767397051'
+    INNER JOIN concept HDUStayQn ON obs.concept_id = HDUStayQn.concept_id
+    AND HDUStayQn.uuid = '46d4283e-3275-4c6e-9d52-cfd858889f4b'
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
-) AS ObsICUInfection ON PatientDemographics.visit_id = ObsICUInfection.visit_id
-LEFT OUTER JOIN
-(
-SELECT
-	cname.name as ICU1stSBP,
-    v.visit_id
-FROM obs obs
-	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
-    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
-    AND cname.locale = "en"
-	INNER JOIN concept c ON cname.concept_id = c.concept_id
-    INNER JOIN concept ICU1stSBPQn ON obs.concept_id = ICU1stSBPQn.concept_id
-    AND ICU1stSBPQn.uuid = '8f7ad9c2-aca6-458e-9362-963b4d391a7c'
-WHERE
-	  obs.voided = 0
-	  AND cname.concept_name_type = "FULLY_SPECIFIED"
-) AS ObsICU1stSBP ON PatientDemographics.visit_id = ObsICU1stSBP.visit_id
-LEFT OUTER JOIN
-(
-SELECT
-	cname.name as ICU1stMAP,
-    v.visit_id
-FROM obs obs
-	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
-    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
-    AND cname.locale = "en"
-	INNER JOIN concept c ON cname.concept_id = c.concept_id
-    INNER JOIN concept ICU1stMAPQn ON obs.concept_id = ICU1stMAPQn.concept_id
-    AND ICU1stMAPQn.uuid = '0b19946c-63a6-41e8-b3af-a87fc6addab4'
-WHERE
-	  obs.voided = 0
-	  AND cname.concept_name_type = "FULLY_SPECIFIED"
-) AS ObsICU1stMAP ON PatientDemographics.visit_id = ObsICU1stMAP.visit_id
-LEFT OUTER JOIN
-(
-SELECT
-	cname.name as ICUSedation,
-    v.visit_id
-FROM obs obs
-	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
-    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
-    AND cname.locale = "en"
-	INNER JOIN concept c ON cname.concept_id = c.concept_id
-    INNER JOIN concept ICUSedationQn ON obs.concept_id = ICUSedationQn.concept_id
-    AND ICUSedationQn.uuid = '7cccf308-edca-4c3e-afde-e7a3f1155ec6'
-WHERE
-	  obs.voided = 0
-	  AND cname.concept_name_type = "FULLY_SPECIFIED"
-) AS ObsICUSedation ON PatientDemographics.visit_id = ObsICUSedation.visit_id
-LEFT OUTER JOIN
-(
-SELECT
-	cname.name as ICUSurgery,
-    v.visit_id
-FROM obs obs
-	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
-    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
-    AND cname.locale = "en"
-	INNER JOIN concept c ON cname.concept_id = c.concept_id
-    INNER JOIN concept ICUSurgeryQn ON obs.concept_id = ICUSurgeryQn.concept_id
-    AND ICUSurgeryQn.uuid = '8b1d25f9-2f2e-4dfa-a5a1-87e2f7a3bb52'
-WHERE
-	  obs.voided = 0
-	  AND cname.concept_name_type = "FULLY_SPECIFIED"
-) AS ObsICUSurgery ON PatientDemographics.visit_id = ObsICUSurgery.visit_id
-LEFT OUTER JOIN
-(
-SELECT
-    group_concat(obs.value_numeric separator ', ') as ICU1stHeartRate,
-    v.visit_id
-FROM obs obs
-    INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
-    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-    INNER JOIN concept c ON c.concept_id = obs.concept_id
-    AND c.uuid = '9360b4f4-4456-4bc2-97fd-68e661a19d78'
-WHERE
-      obs.voided = 0
-GROUP BY v.visit_id
-) AS ObsICU1stHeartRate ON PatientDemographics.visit_id = ObsICU1stHeartRate.visit_id
-LEFT OUTER JOIN
-(
-SELECT
-	group_concat(obs.value_numeric separator ', ') as ICU1stGCSscore,
-    v.visit_id
-FROM obs obs
-    INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
-    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-    INNER JOIN concept c ON c.concept_id = obs.concept_id
-    AND c.uuid = '99659fa6-fe39-41d7-ac6b-f183d9231310'
-WHERE
-      obs.voided = 0
-GROUP BY v.visit_id
-) AS ObsICU1stGCSscore ON PatientDemographics.visit_id = ObsICU1stGCSscore.visit_id
-LEFT OUTER JOIN
-(
-SELECT
-	group_concat(cname.name separator ', ') AS InpatientService,
-    v.visit_id
-FROM obs obs
-	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
-    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
-    AND cname.locale = "en"
-	INNER JOIN concept c ON cname.concept_id = c.concept_id
-    INNER JOIN concept InpatientServiceQn ON obs.concept_id = InpatientServiceQn.concept_id
-    AND InpatientServiceQn.uuid = '161630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-WHERE
-	  obs.voided = 0
-	  AND cname.concept_name_type = "FULLY_SPECIFIED"
-GROUP BY v.visit_id
-) AS ObsInpatientService ON PatientDemographics.visit_id = ObsInpatientService.visit_id
-LEFT OUTER JOIN
-(
-SELECT
-	cname.name as ICUIntubated,
-    v.visit_id
-FROM obs obs
-	INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
-    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
-    AND cname.locale = "en"
-	INNER JOIN concept c ON cname.concept_id = c.concept_id
-    INNER JOIN concept ICUIntubatedQn ON obs.concept_id = ICUIntubatedQn.concept_id
-    AND ICUIntubatedQn.uuid = '8b6e4154-006b-4991-ab18-96c1c5357bf3'
-WHERE
-	  obs.voided = 0
-	  AND cname.concept_name_type = "FULLY_SPECIFIED"
-) AS ObsICUIntubated ON PatientDemographics.visit_id = ObsICUIntubated.visit_id
-LEFT OUTER JOIN
-(
-SELECT
-	group_concat(obs.value_numeric separator ', ') as ICU1stRespiratoryRate,
-    v.visit_id
-FROM obs obs
-    INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
-    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
-    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
-	INNER JOIN visit v on enc.visit_id = v.visit_id
-    INNER JOIN concept c ON c.concept_id = obs.concept_id
-    AND c.uuid = '5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-WHERE
-      obs.voided = 0
-GROUP BY v.visit_id
-) AS ObsICU1stRespiratoryRate ON PatientDemographics.visit_id = ObsICU1stRespiratoryRate.visit_id
+) AS ObsHDUStay ON PatientDemographics.visit_id = ObsHDUStay.visit_id
 LEFT OUTER JOIN
 (
 SELECT
@@ -615,10 +600,10 @@ WHERE
 GROUP BY v.visit_id
 ) AS ObsDischargeDiagnosis ON PatientDemographics.visit_id = ObsDischargeDiagnosis.visit_id
 WHERE
-	(CAST(PatientDemographics.stopped AS DATE) BETWEEN CAST($P{begin_Date of Discharge} AS DATE) AND CAST( $P{end_Date of Discharge} AS DATE))
+	(CAST(PatientDemographics.stopped AS DATE) BETWEEN CAST($P{begin_Date of Discharge} AS DATE) AND CAST($P{end_Date of Discharge} AS DATE))
     AND (ObsWardStay.WardStay = 'Yes' OR ObsHDUStay.HDUStay = 'Yes')
 GROUP BY PatientDemographics.visit_id
-ORDER BY PatientDemographics.DOA asc]]>
+ORDER BY PatientDemographics.DOA asc;]]>
 		</queryString>
 		<field name="visit_id" class="java.lang.Integer">
 			<property name="com.jaspersoft.studio.field.label" value="visit_id"/>
@@ -741,6 +726,10 @@ ORDER BY PatientDemographics.DOA asc]]>
 			<property name="com.jaspersoft.studio.field.label" value="SignedOffConsult"/>
 			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
 		</field>
+		<field name="DeathClassification" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="DeathClassification"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
 	</subDataset>
 	<parameter name="begin_Date of Discharge" class="java.util.Date">
 		<parameterDescription><![CDATA[]]></parameterDescription>
@@ -770,7 +759,7 @@ WHERE
 	<pageHeader>
 		<band height="29">
 			<textField>
-				<reportElement x="0" y="0" width="3200" height="29" uuid="0889690e-62ce-4c15-a2c4-1f7ac1ea05eb">
+				<reportElement x="0" y="0" width="3490" height="29" uuid="0889690e-62ce-4c15-a2c4-1f7ac1ea05eb">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
@@ -784,7 +773,7 @@ WHERE
 	<summary>
 		<band height="60" splitType="Stretch">
 			<componentElement>
-				<reportElement x="0" y="0" width="3200" height="60" uuid="586bf6a6-2ee2-47f0-834f-89b31f95a1d9">
+				<reportElement x="0" y="0" width="3490" height="60" uuid="586bf6a6-2ee2-47f0-834f-89b31f95a1d9">
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
@@ -1015,8 +1004,31 @@ WHERE
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="471" uuid="8a59a1bc-5f77-45bb-8412-99eccfcdcf60">
+					<jr:column width="290" uuid="6f876553-a7ff-4735-81aa-fca2f3b89c45">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="290" height="30" uuid="b59873e8-220c-4bb8-a938-92952d613afd"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Classification of Death]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="290" height="30" uuid="7f070a15-12a6-4658-acb7-50ca2e9c8cb4"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{DeathClassification}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="471" uuid="8a59a1bc-5f77-45bb-8412-99eccfcdcf60">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1040,7 +1052,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="90" uuid="73d728ed-4ef3-43ff-a5c4-475bcaa1272f">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1064,7 +1076,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="90" uuid="1281abf4-36ef-4685-acd4-b212e1ba87ba">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1078,7 +1090,7 @@ WHERE
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="90" height="30" uuid="5c2128c8-e532-4157-9353-dc0c302e0000"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="30" uuid="5c2128c8-e532-4157-9353-dc0c302e0000"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1088,7 +1100,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="95" uuid="e0608e7d-fe06-492c-acc3-6a5c9ed50ce9">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1102,7 +1114,7 @@ WHERE
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="95" height="30" uuid="2eaebf8d-927a-47d0-82a2-819948e114b2"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="95" height="30" uuid="2eaebf8d-927a-47d0-82a2-819948e114b2"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1112,7 +1124,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="105" uuid="7b374c2b-de60-40a4-b47e-07d5f8d828a6">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1126,7 +1138,7 @@ WHERE
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="105" height="30" uuid="aadeadeb-b8d9-48b2-9eb8-17591c14dcc6"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="105" height="30" uuid="aadeadeb-b8d9-48b2-9eb8-17591c14dcc6"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1136,7 +1148,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="70" uuid="3da9d431-1fc9-4f7e-bf5e-609ce9caa9d7">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1160,7 +1172,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="70" uuid="a010cd71-3a15-4664-a630-6dd8b5539835">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1184,7 +1196,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="50" uuid="ae1d2925-294f-446a-8b48-a3e866c2ed40">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column18"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1208,7 +1220,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="65" uuid="25e68ba1-24c5-4b05-8b1f-96c605f73e6f">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column18"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column19"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1232,7 +1244,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="60" uuid="a4f22952-5c27-459f-bbc7-37c40693239b">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column19"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column20"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1256,7 +1268,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="60" uuid="a1d85be8-b74b-492e-b2e1-4af36b05623b">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column20"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column21"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1284,7 +1296,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="120" uuid="3f429c68-cff4-49f2-8828-ffc62e08ca40">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column21"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column22"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1308,7 +1320,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="110" uuid="1cf0e6e9-8c73-46e9-bb98-13dcdbbf854e">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column22"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column23"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1332,7 +1344,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="95" uuid="b4b758a3-75ac-4425-841c-6096e8f37e7e">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column23"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column24"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1356,7 +1368,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="96" uuid="d71d35c3-2b0b-4939-ae9b-c5f18ce4a864">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column24"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column25"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1380,7 +1392,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="59" uuid="4e640e2e-91de-4565-b25d-5220a336a17e">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column25"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column26"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1404,7 +1416,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="60" uuid="93f27db8-d4c3-4e3a-814a-b8bba09cc3ab">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column26"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column27"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1428,7 +1440,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="95" uuid="b44fbad3-1814-4d6a-b415-89f03caf8871">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column27"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column28"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1452,7 +1464,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="90" uuid="d9afa87d-a55a-41c4-8754-2ed73c5c4e75">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column28"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column29"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1476,7 +1488,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="139" uuid="1144b930-1e80-4e7d-a32d-4b4c193e7b7a">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column29"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column30"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1500,7 +1512,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="114" uuid="20eb403e-aea4-4e3c-aaa3-229d0d0d558c">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column30"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column31"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
@@ -1524,7 +1536,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="120" uuid="b69a3af5-1534-4f26-845a-be48fc63c3f3">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column31"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column32"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="30" uuid="ec746d9d-8632-4e41-9a78-4cd69f13a618"/>
@@ -1547,7 +1559,7 @@ WHERE
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="146" uuid="948f7eea-efe4-4ba9-90d8-cbab6ed159d5">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column32"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column33"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="146" height="30" uuid="7b462a3e-7154-4295-a83e-d1604a79f515"/>
