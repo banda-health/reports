@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ward Audit" pageWidth="3490" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3490" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ward Audit" pageWidth="3790" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3790" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Kijabe IMed"/>
-	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Kijabe IMed Live Test"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="290"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="699"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<style name="Table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -52,7 +43,7 @@
 		</box>
 	</style>
 	<subDataset name="tableDataset" uuid="501d3cdf-b24e-471c-988c-262dcec1293d">
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Kijabe IMed"/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Kijabe IMed Live Test"/>
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="372"/>
 		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="617"/>
@@ -97,6 +88,7 @@
     ObsICUSedation.ICUSedation,
     ObsICUIntubated.ICUIntubated,
     ObsICU1stRespiratoryRate.ICU1stRespiratoryRate,
+    ObsPrimaryService.PrimaryService,
     ObsSignedOffConsult.SignedOffConsult,
     ObsDeathClassification.DeathClassification
 FROM
@@ -431,6 +423,25 @@ GROUP BY v.visit_id
 ) AS ObsHIV ON PatientDemographics.visit_id = ObsHIV.visit_id
 LEFT OUTER JOIN
 (
+SELECT 
+    cname.name as PrimaryService, 
+    v.visit_id
+FROM obs obs
+    INNER JOIN encounter enc on obs.encounter_id = enc.encounter_id
+    INNER JOIN encounter_type enc_type ON enc.encounter_type = enc_type.encounter_type_id
+    AND enc_type.uuid = '7dc1632c-f947-474f-b92c-7add68019aec'
+    INNER JOIN visit v on enc.visit_id = v.visit_id
+    INNER JOIN concept_name cname ON obs.value_coded = cname.concept_id
+    AND cname.locale = "en"
+    INNER JOIN concept c ON cname.concept_id = c.concept_id
+    INNER JOIN concept PrimaryServiceQn ON obs.concept_id = PrimaryServiceQn.concept_id
+    AND PrimaryServiceQn.uuid = '161630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+WHERE  
+	  obs.voided = 0
+	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+) AS ObsPrimaryService ON PatientDemographics.visit_id = ObsPrimaryService.visit_id
+LEFT OUTER JOIN
+(
 SELECT
 	cname.name as PalliativeConsult,
     v.visit_id
@@ -722,6 +733,10 @@ ORDER BY PatientDemographics.DOA asc;]]>
 		<field name="ICU1stRespiratoryRate" class="java.lang.String">
 			<property name="com.jaspersoft.studio.field.label" value="ICU1stRespiratoryRate"/>
 		</field>
+		<field name="PrimaryService" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="PrimaryService"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
+		</field>
 		<field name="SignedOffConsult" class="java.lang.String">
 			<property name="com.jaspersoft.studio.field.label" value="SignedOffConsult"/>
 			<property name="com.jaspersoft.studio.field.tree.path" value="concept_name"/>
@@ -759,7 +774,7 @@ WHERE
 	<pageHeader>
 		<band height="29">
 			<textField>
-				<reportElement x="0" y="0" width="3490" height="29" uuid="0889690e-62ce-4c15-a2c4-1f7ac1ea05eb">
+				<reportElement x="0" y="0" width="3790" height="29" uuid="0889690e-62ce-4c15-a2c4-1f7ac1ea05eb">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
@@ -773,7 +788,7 @@ WHERE
 	<summary>
 		<band height="60" splitType="Stretch">
 			<componentElement>
-				<reportElement x="0" y="0" width="3490" height="60" uuid="586bf6a6-2ee2-47f0-834f-89b31f95a1d9">
+				<reportElement x="0" y="0" width="3790" height="60" uuid="586bf6a6-2ee2-47f0-834f-89b31f95a1d9">
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
@@ -1027,12 +1042,12 @@ WHERE
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="471" uuid="8a59a1bc-5f77-45bb-8412-99eccfcdcf60">
+					<jr:column width="510" uuid="8a59a1bc-5f77-45bb-8412-99eccfcdcf60">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="471" height="30" uuid="2d4f1b64-5942-4296-8c87-4ea33d04a9f6"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="510" height="30" uuid="2d4f1b64-5942-4296-8c87-4ea33d04a9f6"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12" isBold="true"/>
@@ -1042,7 +1057,7 @@ WHERE
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="471" height="30" uuid="85dff3f3-21ee-48d7-91eb-aa18559fa9ad"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="510" height="30" uuid="85dff3f3-21ee-48d7-91eb-aa18559fa9ad"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1295,12 +1310,12 @@ WHERE
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="120" uuid="3f429c68-cff4-49f2-8828-ffc62e08ca40">
+					<jr:column width="175" uuid="3f429c68-cff4-49f2-8828-ffc62e08ca40">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column22"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="30" uuid="4638b086-ff49-4abc-a9a1-99ef8fc33684"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="175" height="30" uuid="4638b086-ff49-4abc-a9a1-99ef8fc33684"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12" isBold="true"/>
@@ -1310,7 +1325,7 @@ WHERE
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="30" uuid="fc632dfb-1188-42d8-a812-1d0a1f8c2912"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="175" height="30" uuid="fc632dfb-1188-42d8-a812-1d0a1f8c2912"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1558,8 +1573,31 @@ WHERE
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="146" uuid="948f7eea-efe4-4ba9-90d8-cbab6ed159d5">
+					<jr:column width="206" uuid="50e866eb-b77f-436f-9a8f-c0ee1f6ed19d">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column33"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="206" height="30" uuid="753f5f48-8f02-4fb6-b1c3-a2c6325129e4"/>
+								<box leftPadding="2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Primary Service]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="206" height="30" uuid="b6ef52e1-4361-47b2-9846-7bf287424387"/>
+								<box leftPadding="2"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{PrimaryService}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="146" uuid="948f7eea-efe4-4ba9-90d8-cbab6ed159d5">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column34"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="146" height="30" uuid="7b462a3e-7154-4295-a83e-d1604a79f515"/>
