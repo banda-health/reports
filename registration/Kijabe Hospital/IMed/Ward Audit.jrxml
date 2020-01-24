@@ -3,7 +3,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ward Audit" pageWidth="3790" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="3790" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Kijabe IMed Live Test"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Kijabe IMed"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="290"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="699"/>
 	<style name="Table">
@@ -130,6 +130,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsDeathClassification ON PatientDemographics.visit_id = ObsDeathClassification.visit_id
 LEFT OUTER JOIN
 (
@@ -149,6 +150,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsSignedOffConsult ON PatientDemographics.visit_id = ObsSignedOffConsult.visit_id
 LEFT OUTER JOIN
 (
@@ -184,6 +186,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsICUIntubated ON PatientDemographics.visit_id = ObsICUIntubated.visit_id
 LEFT OUTER JOIN
 (
@@ -203,6 +206,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsICUSedation ON PatientDemographics.visit_id = ObsICUSedation.visit_id
 LEFT OUTER JOIN
 (
@@ -254,6 +258,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsICU1stMAP ON PatientDemographics.visit_id = ObsICU1stMAP.visit_id
 LEFT OUTER JOIN
 (
@@ -273,6 +278,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsICU1stSBP ON PatientDemographics.visit_id = ObsICU1stSBP.visit_id
 LEFT OUTER JOIN
 (
@@ -292,6 +298,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsICUInfection ON PatientDemographics.visit_id = ObsICUInfection.visit_id
 LEFT OUTER JOIN
 (
@@ -311,6 +318,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsICUReceivedvaospressors ON PatientDemographics.visit_id = ObsICUReceivedvaospressors.visit_id
 LEFT OUTER JOIN
 (
@@ -330,6 +338,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsICUMechanicalventilation ON PatientDemographics.visit_id = ObsICUMechanicalventilation.visit_id
 LEFT OUTER JOIN
 (
@@ -349,6 +358,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsICUSurgery ON PatientDemographics.visit_id = ObsICUSurgery.visit_id
 LEFT OUTER JOIN
 (
@@ -384,6 +394,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsPatientDiabetic ON PatientDemographics.visit_id = ObsPatientDiabetic.visit_id
 LEFT OUTER JOIN
 (
@@ -439,6 +450,7 @@ FROM obs obs
 WHERE  
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsPrimaryService ON PatientDemographics.visit_id = ObsPrimaryService.visit_id
 LEFT OUTER JOIN
 (
@@ -458,6 +470,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsPalliativeConsult ON PatientDemographics.visit_id = ObsPalliativeConsult.visit_id
 LEFT OUTER JOIN
 (
@@ -477,6 +490,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsPreOP ON PatientDemographics.visit_id = ObsPreOP.visit_id
 LEFT OUTER JOIN
 (
@@ -516,6 +530,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsDeathHospital ON PatientDemographics.visit_id = ObsDeathHospital.visit_id
 LEFT OUTER JOIN
 (
@@ -535,6 +550,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsICUStay ON PatientDemographics.visit_id = ObsICUStay.visit_id
 LEFT OUTER JOIN
 (
@@ -554,6 +570,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsCompleteAuditData ON PatientDemographics.visit_id = ObsCompleteAuditData.visit_id
 LEFT OUTER JOIN
 (
@@ -573,6 +590,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsWardStay ON PatientDemographics.visit_id = ObsWardStay.visit_id
 LEFT OUTER JOIN
 (
@@ -592,6 +610,7 @@ FROM obs obs
 WHERE
 	  obs.voided = 0
 	  AND cname.concept_name_type = "FULLY_SPECIFIED"
+GROUP BY v.visit_id
 ) AS ObsHDUStay ON PatientDemographics.visit_id = ObsHDUStay.visit_id
 LEFT OUTER JOIN
 (
@@ -786,13 +805,13 @@ WHERE
 		</band>
 	</pageHeader>
 	<summary>
-		<band height="60" splitType="Stretch">
+		<band height="47" splitType="Stretch">
 			<componentElement>
-				<reportElement x="0" y="0" width="3790" height="60" uuid="586bf6a6-2ee2-47f0-834f-89b31f95a1d9">
+				<reportElement x="0" y="0" width="3790" height="47" uuid="586bf6a6-2ee2-47f0-834f-89b31f95a1d9">
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="tableDataset" uuid="85c42104-6f69-4779-aaac-24b6c94d8405">
@@ -816,9 +835,9 @@ WHERE
 								<text><![CDATA[Done?]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="45" height="30" uuid="5220178c-7795-4e8f-a81d-29d29322aec1"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="45" height="17" uuid="5220178c-7795-4e8f-a81d-29d29322aec1"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -839,9 +858,9 @@ WHERE
 								<text><![CDATA[Patient Name]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="200" height="30" uuid="34de1894-4e4e-4ff8-bd07-035df07f3c96"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="200" height="17" uuid="34de1894-4e4e-4ff8-bd07-035df07f3c96"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -863,9 +882,9 @@ WHERE
 								<text><![CDATA[Hosp ID #]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="30" uuid="a4255e10-42e6-4e68-ab25-5ca31acc9ee9"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="17" uuid="a4255e10-42e6-4e68-ab25-5ca31acc9ee9"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -888,9 +907,9 @@ WHERE
 								<text><![CDATA[Age]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="40" height="30" uuid="cb958729-ea5c-488c-bbb8-8ab3239f578e"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="40" height="17" uuid="cb958729-ea5c-488c-bbb8-8ab3239f578e"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -912,9 +931,9 @@ WHERE
 								<text><![CDATA[Gender]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="30" uuid="f6277d13-f6e3-4328-9f25-21caf7b3999a"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="17" uuid="f6277d13-f6e3-4328-9f25-21caf7b3999a"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -936,9 +955,9 @@ WHERE
 								<text><![CDATA[DOA (MM/DD/YYYY)]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" pattern="MM/dd/yyyy" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="105" height="30" uuid="4c6331b5-3856-4d55-9035-14a3462aa124"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="105" height="17" uuid="4c6331b5-3856-4d55-9035-14a3462aa124"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -960,9 +979,9 @@ WHERE
 								<text><![CDATA[DOD (MM/DD/YYYY)]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" pattern="MM/dd/yyyy" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="110" height="30" uuid="dc6a5cbd-a30d-4f63-a0fb-f62dbb6f62e0"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="110" height="17" uuid="dc6a5cbd-a30d-4f63-a0fb-f62dbb6f62e0"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -984,9 +1003,9 @@ WHERE
 								<text><![CDATA[LOS (DAYS)]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="30" uuid="fdc37bf3-239e-42d3-85b9-a7dc80bc58d7"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="17" uuid="fdc37bf3-239e-42d3-85b9-a7dc80bc58d7"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1008,9 +1027,9 @@ WHERE
 								<text><![CDATA[Death]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="30" uuid="d4a3bcb6-5f70-486e-90fe-6fda98f1a3fd"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="17" uuid="d4a3bcb6-5f70-486e-90fe-6fda98f1a3fd"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1031,9 +1050,9 @@ WHERE
 								<text><![CDATA[Classification of Death]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="290" height="30" uuid="7f070a15-12a6-4658-acb7-50ca2e9c8cb4"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="290" height="17" uuid="7f070a15-12a6-4658-acb7-50ca2e9c8cb4"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1055,9 +1074,9 @@ WHERE
 								<text><![CDATA[Discharge Diagnosis]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="510" height="30" uuid="85dff3f3-21ee-48d7-91eb-aa18559fa9ad"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="510" height="17" uuid="85dff3f3-21ee-48d7-91eb-aa18559fa9ad"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1079,9 +1098,9 @@ WHERE
 								<text><![CDATA[Ward during admission]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="30" uuid="51611802-e4f1-42c7-b916-2b8c48743ad5"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="17" uuid="51611802-e4f1-42c7-b916-2b8c48743ad5"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1103,9 +1122,9 @@ WHERE
 								<text><![CDATA[HDU during admission]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="30" uuid="5c2128c8-e532-4157-9353-dc0c302e0000"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="17" uuid="5c2128c8-e532-4157-9353-dc0c302e0000"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1127,9 +1146,9 @@ WHERE
 								<text><![CDATA[HDU Co-Mngt only]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="95" height="30" uuid="2eaebf8d-927a-47d0-82a2-819948e114b2"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="95" height="17" uuid="2eaebf8d-927a-47d0-82a2-819948e114b2"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1151,9 +1170,9 @@ WHERE
 								<text><![CDATA[Pre-op clearance only]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="105" height="30" uuid="aadeadeb-b8d9-48b2-9eb8-17591c14dcc6"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="105" height="17" uuid="aadeadeb-b8d9-48b2-9eb8-17591c14dcc6"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1175,9 +1194,9 @@ WHERE
 								<text><![CDATA[Palliative Consult]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="30" uuid="f47a8ed0-a675-43e5-9a97-eead87e4356c"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="17" uuid="f47a8ed0-a675-43e5-9a97-eead87e4356c"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1199,9 +1218,9 @@ WHERE
 								<text><![CDATA[HIV]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="30" uuid="f5ca7ae0-ee5b-47c9-93b6-448ca1374375"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="17" uuid="f5ca7ae0-ee5b-47c9-93b6-448ca1374375"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1223,9 +1242,9 @@ WHERE
 								<text><![CDATA[CD4]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="30" uuid="fd3d9883-59b7-4b9a-851c-d8f527a97ce7"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="17" uuid="fd3d9883-59b7-4b9a-851c-d8f527a97ce7"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1247,9 +1266,9 @@ WHERE
 								<text><![CDATA[Diabetic]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="65" height="30" uuid="0ff96a24-483d-435b-95c9-5f7a5d0eb184"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="65" height="17" uuid="0ff96a24-483d-435b-95c9-5f7a5d0eb184"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1271,9 +1290,9 @@ WHERE
 								<text><![CDATA[A1c]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="30" uuid="23d89703-2f2c-4386-9eb9-4f23c97e7922"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="17" uuid="23d89703-2f2c-4386-9eb9-4f23c97e7922"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1297,9 +1316,9 @@ WHERE
 								<text><![CDATA[ICU Stay]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="30" uuid="0a68dabb-8c24-4bc3-934a-37590182c838">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="17" uuid="0a68dabb-8c24-4bc3-934a-37590182c838">
 									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 								</reportElement>
 								<box leftPadding="2"/>
@@ -1323,9 +1342,9 @@ WHERE
 								<text><![CDATA[ICU Surgery]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="175" height="30" uuid="fc632dfb-1188-42d8-a812-1d0a1f8c2912"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="175" height="17" uuid="fc632dfb-1188-42d8-a812-1d0a1f8c2912"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1347,9 +1366,9 @@ WHERE
 								<text><![CDATA[ICU Mechanical ventilation]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="110" height="30" uuid="1a486093-eb48-42bd-ad5f-b3b88ddd13f7"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="110" height="17" uuid="1a486093-eb48-42bd-ad5f-b3b88ddd13f7"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1371,9 +1390,9 @@ WHERE
 								<text><![CDATA[ICU Received vaospressors]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="95" height="30" uuid="8b67ff6b-a209-4af9-bc4e-dc1a15742358"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="95" height="17" uuid="8b67ff6b-a209-4af9-bc4e-dc1a15742358"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1395,9 +1414,9 @@ WHERE
 								<text><![CDATA[ICU Infection]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="96" height="30" uuid="0e0e09d0-98b1-451c-b0b9-6b292822d0f4"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="96" height="17" uuid="0e0e09d0-98b1-451c-b0b9-6b292822d0f4"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1419,9 +1438,9 @@ WHERE
 								<text><![CDATA[ICU 1stSBP]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="59" height="30" uuid="7cc8532c-2bd6-40be-9ef9-f2b5fda6b811"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="59" height="17" uuid="7cc8532c-2bd6-40be-9ef9-f2b5fda6b811"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1443,9 +1462,9 @@ WHERE
 								<text><![CDATA[ICU 1stMAP]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="30" uuid="9d08216a-2f39-4da0-8b72-22de286cb55f"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="17" uuid="9d08216a-2f39-4da0-8b72-22de286cb55f"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1467,9 +1486,9 @@ WHERE
 								<text><![CDATA[ICU 1stHeart Rate]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="95" height="30" uuid="d5fb7361-4176-415b-aac7-81193e527383"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="95" height="17" uuid="d5fb7361-4176-415b-aac7-81193e527383"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1491,9 +1510,9 @@ WHERE
 								<text><![CDATA[ICU 1st GCS score]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="30" uuid="d7d0e084-a5be-4991-9148-62c689fa1a7f"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="17" uuid="d7d0e084-a5be-4991-9148-62c689fa1a7f"/>
 								<box leftPadding="2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1515,9 +1534,9 @@ WHERE
 								<text><![CDATA[Patient Intubated at 1st GCS score]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="139" height="30" uuid="cc3536df-9d32-4fe2-8050-97b2d1a6541e"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="139" height="17" uuid="cc3536df-9d32-4fe2-8050-97b2d1a6541e"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1539,9 +1558,9 @@ WHERE
 								<text><![CDATA[Sedation before 1st ICU GCS]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="114" height="30" uuid="1f4fdc0d-fef5-4157-a04d-e6855fb6b5c5"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="114" height="17" uuid="1f4fdc0d-fef5-4157-a04d-e6855fb6b5c5"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1562,9 +1581,9 @@ WHERE
 								<text><![CDATA[1st Respiratory Rate in ICU]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="30" uuid="f6539207-0ad2-4a95-b3fd-fef59fe82929"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="120" height="17" uuid="f6539207-0ad2-4a95-b3fd-fef59fe82929"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1585,9 +1604,9 @@ WHERE
 								<text><![CDATA[Primary Service]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="206" height="30" uuid="b6ef52e1-4361-47b2-9846-7bf287424387"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="206" height="17" uuid="b6ef52e1-4361-47b2-9846-7bf287424387"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
@@ -1608,9 +1627,9 @@ WHERE
 								<text><![CDATA[Signed off consult before discharge]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table_TD" height="17">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="146" height="30" uuid="eb8b579b-7851-49eb-b089-40299563c854"/>
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="146" height="17" uuid="eb8b579b-7851-49eb-b089-40299563c854"/>
 								<box leftPadding="2"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="12"/>
